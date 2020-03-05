@@ -2,8 +2,21 @@ apiVersion: v1
 entries:
   pgadmin4:
   - apiVersion: v1
+    appVersion: 4.19.0
+    created: "2020-03-05T17:23:43.672276615+01:00"
+    description: pgAdmin is a web based administration tool for PostgreSQL database
+    digest: deb70b79cd2e0be9b2c62cfa8840040713ececa358b4278775648fcb4f6642f8
+    home: https://www.pgadmin.org/
+    maintainers:
+    - email: rowanruseler@gmail.com
+      name: rowanruseler
+    name: pgadmin4
+    urls:
+    - https://helm.runix.net/pgadmin4-1.2.4.tgz
+    version: 1.2.4
+  - apiVersion: v1
     appVersion: 4.18.0
-    created: "2020-03-05T17:07:32.837106064+01:00"
+    created: "2020-03-05T17:23:43.671517034+01:00"
     description: pgAdmin is a web based administration tool for PostgreSQL database
     digest: be8189a9e34c3f93613bc616a8fb39536cfc434e523bb413585dfb471c889b13
     home: https://www.pgadmin.org/
@@ -16,7 +29,7 @@ entries:
     version: 1.2.3
   - apiVersion: v1
     appVersion: 4.18.0
-    created: "2020-03-05T17:07:32.835786051+01:00"
+    created: "2020-03-05T17:23:43.670740116+01:00"
     description: pgAdmin is a web based administration tool for PostgreSQL database
     digest: 2af1f1c087e4fd5408e7d29ce3bd97179cd18cb6eda26f2d76567ca1cc5cdf03
     home: https://www.pgadmin.org/
@@ -27,4 +40,4 @@ entries:
     urls:
     - https://helm.runix.net/pgadmin4-1.2.2.tgz
     version: 1.2.2
-generated: "2020-03-05T17:07:32.834129805+01:00"
+generated: "2020-03-05T17:23:43.669656548+01:00"
