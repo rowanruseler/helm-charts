@@ -13,6 +13,11 @@ service:
   type: ClusterIP
   port: 80
 
+  ## Specify the nodePort value for the service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+
 ## Strategy used to replace old Pods by new ones
 ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 ##
