@@ -71,6 +71,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+## Provide the name for an existing secret.
+## Useful to avoid specifying password and server config in YAML files
+existingSecret: ""
 
 ## pgAdmin4 startup configuration
 ## Values in here get injected as environment variables

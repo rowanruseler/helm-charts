@@ -20,6 +20,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if not .Values.existingSecret }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    {{- end }}
     spec:
       initContainers:
         - name: init-pgadmin
