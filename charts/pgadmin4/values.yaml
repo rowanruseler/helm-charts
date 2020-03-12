@@ -80,6 +80,24 @@ extraConfigmapMounts: []
   #   configMap: certs-configmap
 #   readOnly: true
 
+## Specify additional containers in extraContainers.
+## For example, to add an authentication proxy to a pgadmin4 pod.
+extraContainers: |
+# - name: proxy
+#   image: quay.io/gambol99/keycloak-proxy:latest
+#   args:
+#   - -provider=github
+#   - -client-id=
+#   - -client-secret=
+#   - -github-org=<ORG_NAME>
+#   - -email-domain=*
+#   - -cookie-secret=
+#   - -http-address=http://0.0.0.0:4181
+#   - -upstream-url=http://127.0.0.1:3000
+#   ports:
+#     - name: proxy-web
+#       containerPort: 4181
+
 ## Provide the name for an existing secret.
 ## Useful to avoid specifying password and server config in YAML files
 existingSecret: ""
