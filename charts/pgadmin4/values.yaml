@@ -71,6 +71,15 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+# Additional config maps to be mounted inside a container
+# Can be used to map config maps for sidecar as well
+extraConfigmapMounts: []
+  # - name: certs-configmap
+  #   mountPath: /etc/ssl/certs
+  #   subPath: ca-certificates.crt # (optional)
+  #   configMap: certs-configmap
+#   readOnly: true
+
 ## Provide the name for an existing secret.
 ## Useful to avoid specifying password and server config in YAML files
 existingSecret: ""
