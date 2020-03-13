@@ -47,6 +47,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
+| `service.portName` | Name of the port on the service | `http` |
+| `service.targetPort` | Internal service port | `http` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
@@ -56,6 +58,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.hosts` | Ingress accepted hostnames | `nil` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `ingress.path` | Ingress path mapping | `` |
+| `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
+| `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `{}` |
 | `env.email` | pgAdmin4 default email | `chart@example.local` |
 | `env.password` | pgAdmin4 default password | `SuperSecret` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
@@ -69,6 +73,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
+| `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
 | `env.email` | pgAdmin4 default email | `chart@example.local` |
 | `env.password` | pgAdmin4 default password | `SuperSecret` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
