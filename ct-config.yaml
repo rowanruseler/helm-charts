@@ -1,0 +1,4 @@
+# https://github.com/helm/chart-testing/blob/master/README.md
+remote: origin
+chart-dirs:
+  - charts

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pgadmin.fullname" . }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+    {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
+      protocol: TCP
+      name: {{ .Values.service.portName }}
+  selector:
+    app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
