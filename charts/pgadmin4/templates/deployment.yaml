@@ -35,6 +35,9 @@ spec:
               mountPath: /var/lib/pgadmin
           securityContext:
             runAsUser: 0
+    {{- with .Values.extraInitContainers }}
+      {{ tpl . $ | nindent 8 }}
+    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -62,10 +65,18 @@ spec:
               value: !!string {{ .Values.env.enhanced_cookie_protection }}
             - name: PGADMIN_DEFAULT_EMAIL
               value: {{ .Values.env.email }}
+          {{- if .Values.env.pgpassfile }}
+            - name: PGPASSFILE
+              value: {{ .Values.env.pgpassfile }}
+          {{- end }}
             - name: PGADMIN_DEFAULT_PASSWORD
               valueFrom:
                 secretKeyRef:
+          {{- if not .Values.existingSecret }}
                   name: {{ $fullName }}
+          {{- else }}
+                  name: {{ .Values.existingSecret }}
+          {{- end }}
                   key: password
           volumeMounts:
             - name: pgadmin-data
@@ -76,6 +87,12 @@ spec:
               subPath: servers.json
           {{- end }}
           {{- range .Values.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath | default "" }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               subPath: {{ .subPath | default "" }}
@@ -98,6 +115,13 @@ spec:
         - name: {{ .name }}
           configMap:
             name: {{ .configMap }}
+            defaultMode: {{ .defaultMode | default 256 }}
+      {{- end }}
+      {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secret }}
+            defaultMode: {{ .defaultMode | default 256 }}
       {{- end }}
       {{- if .Values.serverDefinitions.enabled }}
         - name: definitions
