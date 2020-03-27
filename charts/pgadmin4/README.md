@@ -59,9 +59,12 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.hosts.path` | Ingress path mapping | `` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
+| `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `{}` |
+| `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `{}` |
 | `env.email` | pgAdmin4 default email | `chart@example.local` |
 | `env.password` | pgAdmin4 default password | `SuperSecret` |
+| `env.pgpassfile` | Path to pgpasssfile (optional)  | `` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
