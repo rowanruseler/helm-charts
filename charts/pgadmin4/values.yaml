@@ -192,3 +192,7 @@ tolerations: []
 ## Pod affinity
 ##
 affinity: {}
+
+## Pod annotations
+##
+podAnnotations: {}
