@@ -83,6 +83,10 @@ spec:
                   name: {{ .Values.existingSecret }}
           {{- end }}
                   key: password
+          {{- range .Values.env.variables }}
+            - name: {{ .name }}
+              value: {{ .value }}
+          {{- end }}
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin

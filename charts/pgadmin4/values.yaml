@@ -114,8 +114,15 @@ env:
 
   ## If True, allows pgAdmin4 to create session cookies based on IP address
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/4.18/config_py.html
-  #
+  ##
   enhanced_cookie_protection: "False"
+
+  ## Add custom environment variables that will be injected to deployment
+  variables: []
+  # - name: PGADMIN_LISTEN_ADDRESS
+  #   value: "0.0.0.0"
+  # - name: PGADMIN_LISTEN_PORT
+  #   value: "8080"
 
 persistentVolume:
   ## If true, pgAdmin4 will create/use a Persistent Volume Claim
