@@ -55,8 +55,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.servers` | Pre-configured server parameters | `` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
-| `ingress.hosts.host` | Ingress accepted hostnames | `nil` |
-| `ingress.hosts.path` | Ingress path mapping | `` |
+| `ingress.hosts.host` | Ingress accepted hostname | `nil` |
+| `ingress.hosts.paths` | Ingress paths list | `[]` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
