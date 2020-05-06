@@ -31,7 +31,8 @@ spec:
     {{- end }}
     spec:
       initContainers:
-        - name: init-pgadmin
+      {{- if .Values.VolumePermissions.enabled }}
+        - name: init-chmod-data
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
@@ -40,9 +41,11 @@ spec:
               mountPath: /var/lib/pgadmin
           securityContext:
             runAsUser: 0
-    {{- with .Values.extraInitContainers }}
-      {{ tpl . $ | nindent 8 }}
-    {{- end }}
+      {{- end }}
+      {{- with .Values.extraInitContainers }}
+        {{ tpl . $ | nindent 8 }}
+        - name
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -83,6 +86,10 @@ spec:
                   name: {{ .Values.existingSecret }}
           {{- end }}
                   key: password
+          {{- range .Values.env.variables }}
+            - name: {{ .name }}
+              value: {{ .value }}
+          {{- end }}
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin

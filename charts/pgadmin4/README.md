@@ -43,7 +43,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `4.20` |
+| `image.tag` | Docker image tag | `"4.21"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.port` | Service port | `80` |
@@ -73,6 +73,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `resources` | CPU/memory resource requests/limits | `{}` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
+| `extraInitContainers` | Init containers to launch alongside the app | `[]` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
