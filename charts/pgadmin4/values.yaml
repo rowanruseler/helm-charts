@@ -6,7 +6,7 @@ replicaCount: 1
 ##
 image:
   repository: dpage/pgadmin4
-  tag: "4.20"
+  tag: "4.21"
   pullPolicy: IfNotPresent
 
 service:
@@ -32,7 +32,7 @@ strategy: {}
 
 ## Server definitions will be loaded at launch time. This allows connection
 ## information to be pre-loaded into the instance of pgAdmin4 in the container.
-## Ref: https://www.pgadmin.org/docs/pgadmin4/4.13/import_export_servers.html
+## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
 ##
 serverDefinitions:
   ## If true, server definitions will be created
@@ -63,7 +63,7 @@ ingress:
     #
     ## When setting `ingress.hosts.paths`, pgAdmin needs additional header
     ## to be passed.
-    ## Ref: https://www.pgadmin.org/docs/pgadmin4/4.20/container_deployment.html#http-via-nginx
+    ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#http-via-nginx
     # nginx.ingress.kubernetes.io/configuration-snippet: |
     #   proxy_set_header X-Script-Name /pgadmin4;
     #
@@ -127,11 +127,13 @@ env:
   password: SuperSecret
 
   ## If True, allows pgAdmin4 to create session cookies based on IP address
-  ## Ref: https://www.pgadmin.org/docs/pgadmin4/4.18/config_py.html
+  ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
   ##
   enhanced_cookie_protection: "False"
 
   ## Add custom environment variables that will be injected to deployment
+  ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+  ##
   variables: []
   # - name: PGADMIN_LISTEN_ADDRESS
   #   value: "0.0.0.0"
