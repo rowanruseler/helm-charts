@@ -3,7 +3,20 @@ entries:
   pgadmin4:
   - apiVersion: v1
     appVersion: 4.20.0
-    created: "2020-05-04T11:01:34.715947529Z"
+    created: "2020-05-06T12:10:47.22040642Z"
+    description: pgAdmin4 is a web based administration tool for PostgreSQL database
+    digest: 281622f8fe7e6f05db8c745e7051b6c6d95849cffbdb9588f766df2f62681b41
+    home: https://www.pgadmin.org/
+    maintainers:
+    - email: rowanruseler@gmail.com
+      name: rowanruseler
+    name: pgadmin4
+    urls:
+    - pgadmin4-1.2.15.tgz
+    version: 1.2.15
+  - apiVersion: v1
+    appVersion: 4.20.0
+    created: "2020-05-06T12:10:47.219672023Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: ade25a9fd5242cf9f33502f926f001f4ebb4e6a0bb2f5e2e954584ff98d270cc
     home: https://www.pgadmin.org/
@@ -16,7 +29,7 @@ entries:
     version: 1.2.14
   - apiVersion: v1
     appVersion: 4.20.0
-    created: "2020-05-04T11:01:34.715138214Z"
+    created: "2020-05-06T12:10:47.218664428Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: 16ca45005e363bf81843268cbe170ea7a43df229a439909ef2bf818361dda48b
     home: https://www.pgadmin.org/
@@ -29,7 +42,7 @@ entries:
     version: 1.2.13
   - apiVersion: v1
     appVersion: 4.20.0
-    created: "2020-05-04T11:01:34.714291999Z"
+    created: "2020-05-06T12:10:47.217538834Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: d510d9af00686a663e6dd918c810a5898bbb3e2f133474f29b1d84304bd592dd
     home: https://www.pgadmin.org/
@@ -42,7 +55,7 @@ entries:
     version: 1.2.12
   - apiVersion: v1
     appVersion: 4.19.0
-    created: "2020-05-04T11:01:34.713442083Z"
+    created: "2020-05-06T12:10:47.169562971Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: c7dcd02a81ab824740f0256a7cac87d9bbfe016f713908a15d35b5c68f885d46
     home: https://www.pgadmin.org/
@@ -55,7 +68,7 @@ entries:
     version: 1.2.11
   - apiVersion: v1
     appVersion: 4.19.0
-    created: "2020-05-04T11:01:34.712628069Z"
+    created: "2020-05-06T12:10:47.168914874Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: 530ea759a16bdb408e50fa2982e8a99eb832046cfe2c026785b601c4e0b7d439
     home: https://www.pgadmin.org/
@@ -68,7 +81,7 @@ entries:
     version: 1.2.10
   - apiVersion: v1
     appVersion: 4.19.0
-    created: "2020-05-04T11:01:34.717522958Z"
+    created: "2020-05-06T12:10:47.221708013Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: fbb40e9e2f420d93c470019d723184dd67b9161ed06f6b3a5f94d404b0ab6d4b
     home: https://www.pgadmin.org/
@@ -81,7 +94,7 @@ entries:
     version: 1.2.9
   - apiVersion: v1
     appVersion: 4.19.0
-    created: "2020-05-04T11:01:34.716685642Z"
+    created: "2020-05-06T12:10:47.221046716Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: a354ab549e5caa03f1d2726a2af949aa0ec57872b36dfae267037dab40c179c8
     home: https://www.pgadmin.org/
@@ -92,4 +105,4 @@ entries:
     urls:
     - pgadmin4-1.2.8.tgz
     version: 1.2.8
-generated: "2020-05-04T11:01:34.711694852Z"
+generated: "2020-05-06T12:10:47.167854779Z"
