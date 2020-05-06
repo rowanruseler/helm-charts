@@ -206,7 +206,7 @@ readinessProbe:
 VolumePermissions:
   ## If true, enables an InitContainer to set permissions on /var/lib/pgadmin.
   ##
-  enabled: true
+  enabled: false
 
 ## Additional InitContainers to initialize the pod
 ##
