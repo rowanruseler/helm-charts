@@ -200,6 +200,18 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
+## Required to be enabled pre pgAdmin4 4.16 release, to set the ACL on /var/lib/pgadmin.
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+##
+VolumePermissions:
+  ## If true, enables an InitContainer to set permissions on /var/lib/pgadmin.
+  ##
+  enabled: false
+
+## Additional InitContainers to initialize the pod
+##
+extraInitContainers: []
+
 ## Node labels for pgAdmin4 pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
