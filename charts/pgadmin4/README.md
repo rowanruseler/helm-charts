@@ -73,6 +73,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `resources` | CPU/memory resource requests/limits | `{}` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
+| `extraInitContainers` | Init containers to launch alongside the app | `[]` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
