@@ -67,11 +67,12 @@ ingress:
     # nginx.ingress.kubernetes.io/configuration-snippet: |
     #   proxy_set_header X-Script-Name /pgadmin4;
     #
-    ## If TLS is terminated elsewhere (on external load balancer),
-    ## you may want to redirect to `https://` URL scheme.
+    ## If TLS is terminated elsewhere (on external load balancer), you may want
+    ## to redirect to `https://` URL scheme along with rewriting URL path if
+    ## `ingress.hosts.paths` is set. This is specific for image version `4.21`.
     ## Ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-redirect
-    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^(http://)(.+)$"
-    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$2"
+    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/$"
+    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/"
     ##
     # kubernetes.io/tls-acme: "true"
 
