@@ -44,7 +44,6 @@ spec:
       {{- end }}
       {{- with .Values.extraInitContainers }}
         {{ tpl . $ | nindent 8 }}
-        - name
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
