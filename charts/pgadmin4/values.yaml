@@ -69,11 +69,14 @@ ingress:
     #
     ## If TLS is terminated elsewhere (on external load balancer), you may want
     ## to redirect to `https://` URL scheme along with rewriting URL path if
-    ## `ingress.hosts.paths` is set. This is specific for image version `4.21`.
+    ## `ingress.hosts.paths` is set. This is specific for image version `4.22`.
     ## Ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-redirect
-    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/$"
-    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/"
-    ##
+    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/(pgadmin4/)?(.*)$"
+    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/$3"
+    #
+    ## Secure Ingress with kube-lego or cert-manager if they are deployed into
+    ## the cluster.
+    ## Ref: https://cert-manager.io/docs/usage/ingress/#optional-configuration
     # kubernetes.io/tls-acme: "true"
 
   ## pgAdmin4 Ingress hostnames with optional path
