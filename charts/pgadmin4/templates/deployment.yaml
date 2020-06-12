@@ -86,7 +86,7 @@ spec:
           {{- end }}
                   key: password
           {{- range .Values.env.variables }}
-            - name: {{ .name | quote}}
+            - name: {{ .name | quote }}
               value: {{ .value | quote }}
           {{- end }}
           volumeMounts:
