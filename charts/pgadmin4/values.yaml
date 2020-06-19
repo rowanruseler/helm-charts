@@ -19,7 +19,7 @@ service:
   annotations: {}
     ## Special annotations at the service level, e.g
     ## this will set vnet internal IP's rather than public ip's
-    ## service.beta.kubernetes.io/azure-load-balancer-internal: "true" 
+    ## service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
   ## Specify the nodePort value for the service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
