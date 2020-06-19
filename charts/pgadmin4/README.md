@@ -46,6 +46,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.tag` | Docker image tag | `"4.22"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
+| `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
 | `service.portName` | Name of the port on the service | `http` |
 | `service.targetPort` | Internal service port | `http` |
