@@ -16,6 +16,11 @@ service:
   # targetPort: 4181 To be used with a proxy extraContainer
   portName: http
 
+  annotations: {}
+    ## Special annotations at the service level, e.g
+    ## this will set vnet internal IP's rather than public ip's
+    ## service.beta.kubernetes.io/azure-load-balancer-internal: "true" 
+
   ## Specify the nodePort value for the service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
