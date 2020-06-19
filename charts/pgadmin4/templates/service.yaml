@@ -3,9 +3,11 @@ kind: Service
 metadata:
   name: {{ include "pgadmin.fullname" . }}
   labels:
-    {{- include "pgadmin.labels" . | nindent 4 }
+    {{- include "pgadmin.labels" . | nindent 4 }}
+  {{- if .Values.service.annotations }}
   annotations:
     {{- .Values.service.annotations | toYaml | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
