@@ -82,6 +82,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `podAnnotations` | Annotations for pod | `{}` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
+| `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
