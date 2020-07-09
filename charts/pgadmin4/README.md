@@ -98,6 +98,6 @@ provided while installing the chart. For example:
 $ helm install runix/pgadmin4 --name my-release -f values.yaml
 ```
 
-> **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/values.yaml)
+> **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/examples/).
 
 [dpage/pgadmin4]: https://hub.docker.com/r/dpage/pgadmin4
