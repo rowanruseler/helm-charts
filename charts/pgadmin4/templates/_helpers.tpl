@@ -38,8 +38,8 @@ Common labels
 app.kubernetes.io/name: {{ include "pgadmin.name" . }}
 helm.sh/chart: {{ include "pgadmin.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if .Values.image.tag }}
+app.kubernetes.io/version: {{ .Values.image.tag | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
