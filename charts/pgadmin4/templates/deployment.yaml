@@ -41,6 +41,8 @@ spec:
               mountPath: /var/lib/pgadmin
           securityContext:
             runAsUser: 0
+          resources:
+            {{- .Values.init.resources | toYaml | nindent 12 }}
       {{- end }}
       {{- with .Values.extraInitContainers }}
         {{ tpl . $ | nindent 8 }}

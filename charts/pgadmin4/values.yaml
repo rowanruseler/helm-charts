@@ -74,7 +74,7 @@ ingress:
     #
     ## If TLS is terminated elsewhere (on external load balancer), you may want
     ## to redirect to `https://` URL scheme along with rewriting URL path if
-    ## `ingress.hosts.paths` is set. This is specific for image version `4.22`.
+    ## `ingress.hosts.paths` is set. This is specific for image version >= 4.22.
     ## Ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-redirect
     # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/(pgadmin4/)?(.*)$"
     # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/$3"
@@ -89,6 +89,7 @@ ingress:
   hosts:
     - host: chart-example.local
       paths: []
+        # - /pgadmin4
 
   ## pgAdmin4 Ingress TLS configuration
   ## Secrets must be manually created in the namespace
@@ -104,7 +105,14 @@ extraConfigmapMounts: []
   #   mountPath: /etc/ssl/certs
   #   subPath: ca-certificates.crt # (optional)
   #   configMap: certs-configmap
-#   readOnly: true
+  #   readOnly: true
+
+extraSecretMounts: []
+  # - name: pgpassfile
+  #   secret: pgpassfile
+  #   subPath: pgpassfile
+  #   mountPath: "/var/lib/pgadmin/storage/pgadmin/file.pgpass"
+  #   readOnly: true
 
 ## Specify additional containers in extraContainers.
 ## For example, to add an authentication proxy to a pgadmin4 pod.
@@ -130,10 +138,12 @@ existingSecret: ""
 
 ## pgAdmin4 startup configuration
 ## Values in here get injected as environment variables
-##
+## Needed chart reinstall for apply changes
 env:
+  # can be email or nickname
   email: chart@example.local
   password: SuperSecret
+  # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
 
   ## If True, allows pgAdmin4 to create session cookies based on IP address
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
@@ -221,7 +231,16 @@ VolumePermissions:
 
 ## Additional InitContainers to initialize the pod
 ##
-extraInitContainers: []
+extraInitContainers: |
+#   - name: add-folder-for-pgpass
+#     image: "dpage/pgadmin4:4.23"
+#     command: ["/bin/mkdir", "-p", "/var/lib/pgadmin/storage/pgadmin"]
+#     volumeMounts:
+#       - name: pgadmin-data
+#         mountPath: /var/lib/pgadmin
+#     securityContext:
+#       runAsUser: 5050
+
 
 ## Node labels for pgAdmin4 pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -240,3 +259,8 @@ affinity: {}
 ## Pod annotations
 ##
 podAnnotations: {}
+
+init:
+  ## Init container resources
+  ##
+  resources: {}
