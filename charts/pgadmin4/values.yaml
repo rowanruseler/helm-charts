@@ -6,7 +6,7 @@ replicaCount: 1
 ##
 image:
   repository: dpage/pgadmin4
-  tag: "4.22"
+  tag: "4.23"
   pullPolicy: IfNotPresent
 
 service:
