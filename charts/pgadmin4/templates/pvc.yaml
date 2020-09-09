@@ -8,7 +8,7 @@ metadata:
     {{- include "pgadmin.labels" . | nindent 4 }}
   {{- if .Values.persistentVolume.annotations }}
   annotations:
-    {{- .Values.persistentVolume.annotaions | toYaml | nindent 4 }}
+    {{- .Values.persistentVolume.annotations | toYaml | nindent 4 }}
   {{- end }}
 spec:
   accessModes:
