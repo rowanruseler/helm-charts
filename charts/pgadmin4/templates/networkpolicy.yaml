@@ -1,3 +1,4 @@
+{{- if .Values.networkPolicy.enabled -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
@@ -15,3 +16,4 @@ spec:
   ingress:
   - ports:
     - port: {{ .Values.service.targetPort }}
+{{- end }}
