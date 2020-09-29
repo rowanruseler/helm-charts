@@ -55,6 +55,9 @@ serverDefinitions:
   #    "MaintenanceDB": "postgres"
   #  }
 
+networkPolicy:
+  enabled: true
+
 ingress:
   ## If true, pgAdmin4 Ingress will be created
   ##

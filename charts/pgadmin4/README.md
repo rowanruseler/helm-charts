@@ -54,6 +54,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `` |
+| `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.hosts.host` | Ingress accepted hostname | `nil` |
