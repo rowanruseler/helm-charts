@@ -20,6 +20,9 @@ This chart bootstraps a [pgAdmin4](https://www.pgadmin.org/) deployment on a [Ku
 To install the chart with the release name `my-release`:
 
 ```console
+$ # Helm 2
+$ helm install --name my-release runix/pgadmin4 
+$ # Helm 3
 $ helm install my-release runix/pgadmin4
 ```
 
@@ -88,6 +91,10 @@ The command removes nearly all the Kubernetes components associated with the cha
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
+$ # Helm 2
+$ helm install runix/pgadmin4 --name my-release \
+  --set env.password=SuperSecret
+$ # Helm 3
 $ helm install my-release runix/pgadmin4 \
   --set env.password=SuperSecret
 ```
@@ -96,6 +103,9 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example:
 
 ```bash
+$ # Helm 2
+$ helm install runix/pgadmin4 --name my-release -f values.yaml
+$ # Helm 3
 $ helm install my-release runix/pgadmin4 -f values.yaml
 ```
 
