@@ -5,6 +5,7 @@ replicaCount: 1
 ## pgAdmin4 container image
 ##
 image:
+  registry: docker.io
   repository: dpage/pgadmin4
   tag: "4.28"
   pullPolicy: IfNotPresent

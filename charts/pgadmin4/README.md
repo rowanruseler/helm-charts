@@ -45,6 +45,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
+| `image.registry` | Docker image registry | `docker.io` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
 | `image.tag` | Docker image tag | `"4.28"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
