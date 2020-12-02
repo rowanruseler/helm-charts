@@ -2,6 +2,13 @@
 
 replicaCount: 1
 
+## Define values for tests/
+test:
+  image:
+    registry: docker.io
+    repository: busybox
+    tag: latest
+
 ## pgAdmin4 container image
 ##
 image:
