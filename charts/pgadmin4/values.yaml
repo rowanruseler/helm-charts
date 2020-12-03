@@ -2,13 +2,6 @@
 
 replicaCount: 1
 
-## Define values for tests/
-test:
-  image:
-    registry: docker.io
-    repository: busybox
-    tag: latest
-
 ## pgAdmin4 container image
 ##
 image:
@@ -275,3 +268,11 @@ init:
   ## Init container resources
   ##
   resources: {}
+
+## Define values for chart tests
+test:
+  ## Container image for test-connection.yaml
+  image:
+    registry: docker.io
+    repository: busybox
+    tag: latest
