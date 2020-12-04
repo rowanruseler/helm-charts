@@ -5,6 +5,7 @@ replicaCount: 1
 ## pgAdmin4 container image
 ##
 image:
+  registry: docker.io
   repository: dpage/pgadmin4
   tag: "4.28"
   pullPolicy: IfNotPresent
@@ -267,3 +268,11 @@ init:
   ## Init container resources
   ##
   resources: {}
+
+## Define values for chart tests
+test:
+  ## Container image for test-connection.yaml
+  image:
+    registry: docker.io
+    repository: busybox
+    tag: latest
