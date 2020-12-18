@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   registry: docker.io
   repository: dpage/pgadmin4
-  tag: "4.28"
+  tag: "4.29"
   pullPolicy: IfNotPresent
 
 service:
