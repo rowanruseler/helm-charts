@@ -71,6 +71,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@example.local` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
+| `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
