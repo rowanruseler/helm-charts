@@ -58,14 +58,22 @@ spec:
         {{- if .Values.livenessProbe }}
           livenessProbe:
             httpGet:
+              {{- if .Values.env.contextPath }}
+              path: "{{ .Values.env.contextPath }}/misc/ping"
+              {{- else }}
               path: /misc/ping
+              {{- end }}
               port: 80
             {{- .Values.livenessProbe | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
+              {{- if .Values.env.contextPath }}
+              path: "{{ .Values.env.contextPath }}/misc/ping"
+              {{- else }}
               path: /misc/ping
+              {{- end }}
               port: 80
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
@@ -87,6 +95,10 @@ spec:
                   name: {{ .Values.existingSecret }}
           {{- end }}
                   key: password
+          {{- if .Values.env.contextPath }}
+            - name: SCRIPT_NAME
+              value: {{ .Values.env.contextPath }}
+          {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
