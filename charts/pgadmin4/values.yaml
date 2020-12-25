@@ -148,11 +148,11 @@ env:
   email: chart@example.local
   password: SuperSecret
   # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
-  
   ## If True, allows pgAdmin4 to create session cookies based on IP address
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
   ##
   enhanced_cookie_protection: "False"
+  
   ## Add custom environment variables that will be injected to deployment
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
   ##
