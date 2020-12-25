@@ -8,7 +8,7 @@ jobs:
       matrix:
         kubernetesVersion: ["v1.14.10", "v1.17.11"]
     runs-on: ubuntu-latest
-    # if: github.ref != 'refs/heads/master'
+    if: github.ref != 'refs/heads/master'
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
       uses: helm/chart-testing-action@v2.0.1
     
     - name: Run chart-testing (lint)
-      run: ct lint --all --lint-conf '.ci/ct-config.yaml'
+      run: ct lint --lint-conf '.ci/ct-config.yaml'
       
     - name: Install kind
       uses: helm/kind-action@v1.1.0
@@ -49,4 +49,4 @@ jobs:
         kubectl get pods -n kube-system
     
     - name: Run chart-testing (install)
-      run: ct install --all --config '.ci/ct-config.yaml'
+      run: ct install --config '.ci/ct-config.yaml'
