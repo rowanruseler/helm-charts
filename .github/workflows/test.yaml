@@ -8,30 +8,45 @@ jobs:
       matrix:
         kubernetesVersion: ["v1.13.12", "v1.17.2"]
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/master'
+    # if: github.ref != 'refs/heads/master'
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+
     - name: Shellcheck
-      uses: ludeeus/action-shellcheck@0.1.0
+      uses: ludeeus/action-shellcheck@1.0.0
+      
+      # prerequisite for helm/chart-testing-action@v2.0.1
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: v3.4.0
+        # matches version used by helm/chart-testing@v3.3.0
+        # helm/chart-testing-action@v2.0.1 uses helm/chart-testing@v3.3.0
+    
+      # prerequisite for helm/chart-testing-action@v2.0.1 - lint tools
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+        
+    - name: Install Chart Testing Action
+      uses: helm/chart-testing-action@v2.0.1
+    
+    - name: Run chart-testing (lint)
+      run: ct lint --all --lint-conf '.ci/ct-config.yaml'
+      
     - name: Install kind
-      uses: helm/kind-action@v1.0.0-alpha.3
+      uses: helm/kind-action@v1.1.0
       with:
         node_image: "kindest/node:${{ matrix.kubernetesVersion }}"
         config: .ci/kind-config.yaml
-        install_local_path_provisioner: true
+        
     - name: Verify kind
       run: |
         kubectl cluster-info
         kubectl get nodes -o wide
         kubectl get pods -n kube-system
-    - name: Run chart-testing (lint)
-      uses: helm/chart-testing-action@v1.0.0-alpha.3
-      with:
-        command: lint
-        config: .ci/ct-config.yaml
+    
     - name: Run chart-testing (install)
-      uses: helm/chart-testing-action@v1.0.0-alpha.3
-      with:
-        command: install
-        config: .ci/ct-config.yaml
+      run: ct install --all -config '.ci/ct-config.yaml'
