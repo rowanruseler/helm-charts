@@ -49,6 +49,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.repository` | Docker image | `dpage/pgadmin4` |
 | `image.tag` | Docker image tag | `"4.29"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
+| `annotations` | Deployment Annotations | `{}` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |

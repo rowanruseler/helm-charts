@@ -5,6 +5,12 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- if .Values.annotations }}
+    {{- .Values.annotations | toYaml | nindent 4 }}
+  {{- end }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

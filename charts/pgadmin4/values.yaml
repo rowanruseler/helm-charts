@@ -10,6 +10,9 @@ image:
   tag: "4.29"
   pullPolicy: IfNotPresent
 
+## Deployment annotations
+annotations: {}
+
 service:
   type: ClusterIP
   port: 80
