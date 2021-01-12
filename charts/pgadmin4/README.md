@@ -21,7 +21,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # Helm 2
-$ helm install --name my-release runix/pgadmin4 
+$ helm install --name my-release runix/pgadmin4
 $ # Helm 3
 $ helm install my-release runix/pgadmin4
 ```

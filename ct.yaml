@@ -1,5 +1,8 @@
 # See https://github.com/helm/chart-testing#configuration
 remote: origin
+target-branch: master
 chart-dirs:
   - charts
+chart-repos:
+  - runix=https://helm.runix.net
 helm-extra-args: --timeout 600s
