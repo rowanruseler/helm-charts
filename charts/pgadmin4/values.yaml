@@ -151,7 +151,7 @@ env:
   email: chart@example.local
   password: SuperSecret
   # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
-  
+
   # set context path for application (e.g. /pgadmin4/*)
   # contextPath: /pgadmin4
 
