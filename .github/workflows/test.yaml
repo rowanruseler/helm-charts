@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: "0"
 
     - name: Shellcheck
       uses: ludeeus/action-shellcheck@1.0.0
@@ -31,7 +33,7 @@ jobs:
         python-version: 3.7
         
     - name: Install Chart Testing Action
-      uses: helm/chart-testing-action@v2.0.1
+      uses: helm/chart-testing-action@v1.0.0
     
     - name: Run chart-testing (lint)
       run: ct lint --lint-conf '.ci/ct-config.yaml'
