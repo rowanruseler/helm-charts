@@ -23,4 +23,4 @@ jobs:
           VALIDATE_KUBERNETES_KUBEVAL: false
           VALIDATE_YAML: false
           DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CR_TOKEN }}
