@@ -10,7 +10,8 @@ keywords:
   - sql
 home: https://www.pgadmin.org/
 icon: https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png
-source: https://github.com/rowanruseler/helm-charts
+sources: 
+  - https://github.com/rowanruseler/helm-charts
 maintainers:
   - name: rowanruseler
     email: rowanruseler@gmail.com
