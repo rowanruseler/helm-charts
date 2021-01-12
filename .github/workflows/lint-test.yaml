@@ -1,5 +1,7 @@
+# Documentation
+# https://github.com/helm/chart-testing-action
 name: Lint and Test Charts
-on: [pull_request, push]
+on: pull_request
 
 jobs:
   lint-test:
