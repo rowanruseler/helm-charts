@@ -49,6 +49,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.repository` | Docker image | `dpage/pgadmin4` |
 | `image.tag` | Docker image tag | `"4.29"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
+| `annotations` | Deployment Annotations | `{}` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
@@ -92,6 +93,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
 | `test.image.tag` | Docker image tag for test| `latest` |
+| `test.resources` | CPU/memory resource requests/limits for test | `{}` |
+| `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

@@ -7,9 +7,18 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  securityContext:
+    runAsNonRoot: true
+  {{- if .Values.test.securityContext }}
+    {{- .Values.test.securityContext | toYaml | nindent 4 }}
+  {{- end }}
   containers:
     - name: wget
       image: "{{ .Values.test.image.registry }}/{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
       command: ['wget']
       args:  ['{{ include "pgadmin.fullname" . }}:{{ .Values.service.port }}']
+      resources:
+        {{- .Values.test.resources | toYaml | nindent 8 }}
+      securityContext:
+        readOnlyRootFilesystem: true
   restartPolicy: Never

@@ -10,6 +10,9 @@ image:
   tag: "4.29"
   pullPolicy: IfNotPresent
 
+## Deployment annotations
+annotations: {}
+
 service:
   type: ClusterIP
   port: 80
@@ -279,3 +282,16 @@ test:
     registry: docker.io
     repository: busybox
     tag: latest
+  ## Resources request/limit for test-connection Pod
+  resources: {}
+#     limits:
+#       cpu: 25m
+#       memory: 16Mi
+#     requests:
+#       cpu: 50m
+#       memory: 32Mi
+  ## Security context for test-connection Pod
+  securityContext:
+    runAsUser: 5051
+    runAsGroup: 5051
+    fsGroup: 5051
