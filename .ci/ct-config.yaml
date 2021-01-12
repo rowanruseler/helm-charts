@@ -4,5 +4,5 @@ target-branch: main
 chart-dirs:
   - charts
 chart-repos:
-  - runix: https://helm.runix.net
+  - runix=https://helm.runix.net
 helm-extra-args: --timeout 600s
