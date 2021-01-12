@@ -148,6 +148,9 @@ env:
   email: chart@example.local
   password: SuperSecret
   # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
+  
+  # set context path for application (e.g. /pgadmin4/*)
+  # contextPath: /pgadmin4
 
   ## If True, allows pgAdmin4 to create session cookies based on IP address
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
