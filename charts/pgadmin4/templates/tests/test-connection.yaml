@@ -19,6 +19,4 @@ spec:
       args:  ['{{ include "pgadmin.fullname" . }}:{{ .Values.service.port }}']
       resources:
         {{- .Values.test.resources | toYaml | nindent 8 }}
-      securityContext:
-        readOnlyRootFilesystem: true
   restartPolicy: Never
