@@ -15,8 +15,19 @@ spec:
   containers:
     - name: wget
       image: "{{ .Values.test.image.registry }}/{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
-      command: ['wget']
-      args:  ['{{ include "pgadmin.fullname" . }}:{{ .Values.service.port }}']
+      env:
+        - name: PGADMIN_HOST
+          value: {{ include "pgadmin.fullname" . }}
+        - name: PGADMIN_PORT
+          value: "{{ .Values.service.port }}"
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          response=$(wget -qSO - http://${PGADMIN_HOST}:${PGADMIN_PORT} 2>&1)
+          check=$(echo $response | grep -c '200 OK'); echo $check; if [[ $check -gt 0 ]]; then echo "Response OK"; else exit 1; fi
       resources:
         {{- .Values.test.resources | toYaml | nindent 8 }}
+      securityContext:
+        readOnlyRootFilesystem: true
   restartPolicy: Never
