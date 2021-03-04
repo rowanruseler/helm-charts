@@ -108,6 +108,10 @@ spec:
             - name: SCRIPT_NAME
               value: {{ .Values.env.contextPath }}
           {{- end }}
+          {{- if .Values.serverDefinitions.enabled }}
+            - name: PGADMIN_SERVER_JSON_FILE
+              value: /pgadmin4/servers.json
+          {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
