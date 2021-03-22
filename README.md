@@ -4,7 +4,7 @@
 
 ## Usage
 
-Add the repository: `helm repo add runix https://helm.runix.net/`
+Add the repository: `helm repo add runix https://helm.runix.net`
 
 ## Charts
 
