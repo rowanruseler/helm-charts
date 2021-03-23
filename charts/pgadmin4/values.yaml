@@ -163,6 +163,11 @@ env:
   ## Add custom environment variables that will be injected to deployment
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
   ##
+
+  ## LDAP is used, LDAP Bind Password can be set here and it will be added
+  ## towards the secrets.
+  # ldapBindPassword:
+
   variables: []
   # - name: PGADMIN_LISTEN_ADDRESS
   #   value: "0.0.0.0"
