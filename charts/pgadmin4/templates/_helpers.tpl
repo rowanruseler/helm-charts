@@ -45,6 +45,14 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
+Selector labels
+*/}}
+{{- define "pgadmin.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Generate chart secret name
 */}}
 {{- define "pgadmin.secretName" -}}

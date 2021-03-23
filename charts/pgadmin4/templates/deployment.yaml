@@ -15,8 +15,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pgadmin.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "pgadmin.selectorLabels" . | nindent 6 }}
 {{- if .Values.strategy }}
   strategy:
     {{- .Values.strategy | toYaml | nindent 4 }}
