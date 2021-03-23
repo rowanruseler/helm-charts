@@ -307,3 +307,11 @@ test:
     runAsUser: 5051
     runAsGroup: 5051
     fsGroup: 5051
+
+## Pod Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  enabled: false
+  ## Name of an already existing service account. Setting this value disables the automatic service account creation.
+  # name:
