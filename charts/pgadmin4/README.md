@@ -7,7 +7,7 @@
 ## TL;DR;
 
 ```console
-$ helm repo add runix https://helm.runix.net/
+$ helm repo add runix https://helm.runix.net
 $ helm install runix/pgadmin4
 ```
 
