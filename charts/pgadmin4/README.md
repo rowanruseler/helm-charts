@@ -56,7 +56,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `service.portName` | Name of the port on the service | `http` |
 | `service.targetPort` | Internal service port | `http` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
-| `serviceAccount.enabled` | Adds ServiceAccount to the pod. | `false` |
+| `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
+| `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
 | `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
