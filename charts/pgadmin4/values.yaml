@@ -255,6 +255,9 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+## Horizontal Pod Autoscaling
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+#
 autoscaling:
   enabled: false
   minReplicas: 1
