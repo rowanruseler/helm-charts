@@ -36,7 +36,7 @@ spec:
     {{- end }}
 
     spec:
-    {{- if .Values.serviceAccount.enabled }}
+    {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
     {{- end }}
     {{- if or (.Values.VolumePermissions.enabled) .Values.extraInitContainers }}
