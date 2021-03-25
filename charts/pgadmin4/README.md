@@ -71,27 +71,31 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
+| `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@example.local` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
+| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
 | `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 containers | `` |
-| `resources` | CPU/memory resource requests/limits | `{}` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
 | `extraInitContainers` | Init containers to launch alongside the app | `[]` |
+| `resources` | CPU/memory resource requests/limits | `{}` |
+| `autoscaling.enabled` | Enables Autoscaling | `false` |
+| `autoscaling.minReplicas` | Minimum amount of Replicas | `1` |
+| `autoscaling.maxReplicas` | Maximum amount of Replicas| `100` |
+| `autoscaling.targetCPUUtilizationPercentage` | Target CPU Utilization in percentage | `80` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
-| `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
-| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
