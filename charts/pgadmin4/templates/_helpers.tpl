@@ -82,17 +82,6 @@ Return the appropriate apiVersion for deployment.
 {{- end -}}
 
 {{/*
-Return the appropriate apiVersion for ingress.
-*/}}
-{{- define "ingress.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
-{{- print "networking.k8s.io/v1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Return the appropriate apiVersion for network policy.
 */}}
 {{- define "networkPolicy.apiVersion" -}}

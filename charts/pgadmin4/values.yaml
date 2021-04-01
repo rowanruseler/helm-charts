@@ -75,43 +75,17 @@ networkPolicy:
   enabled: true
 
 ingress:
-  ## If true, pgAdmin4 Ingress will be created
-  ##
   enabled: false
-
-  ## pgAdmin4 Ingress annotations
-  ##
   annotations: {}
-    ## Indicate that the ingress should be handled by NGINX controller
     # kubernetes.io/ingress.class: nginx
-    #
-    ## When setting `ingress.hosts.paths`, pgAdmin needs additional header
-    ## to be passed.
-    ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#http-via-nginx
-    # nginx.ingress.kubernetes.io/configuration-snippet: |
-    #   proxy_set_header X-Script-Name /pgadmin4;
-    #
-    ## If TLS is terminated elsewhere (on external load balancer), you may want
-    ## to redirect to `https://` URL scheme along with rewriting URL path if
-    ## `ingress.hosts.paths` is set. This is specific for image version >= 4.22.
-    ## Ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-redirect
-    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/(pgadmin4/)?(.*)$"
-    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/$3"
-    #
-    ## Secure Ingress with kube-lego or cert-manager if they are deployed into
-    ## the cluster.
-    ## Ref: https://cert-manager.io/docs/usage/ingress/#optional-configuration
     # kubernetes.io/tls-acme: "true"
-
-  ## pgAdmin4 Ingress hostnames with optional path
-  ## Must be provided if Ingress is enabled
   hosts:
     - host: chart-example.local
-      paths: []
-        # - /pgadmin4
-
-  ## pgAdmin4 Ingress TLS configuration
-  ## Secrets must be manually created in the namespace
+      paths:
+        - path: /
+          backend:
+            serviceName: chart-example.local
+            servicePort: 80
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
