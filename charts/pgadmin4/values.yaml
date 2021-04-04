@@ -221,7 +221,7 @@ VolumePermissions:
 ##
 extraInitContainers: |
 #   - name: add-folder-for-pgpass
-#     image: "dpage/pgadmin4:4.23"
+#     image: "dpage/pgadmin4:latest"
 #     command: ["/bin/mkdir", "-p", "/var/lib/pgadmin/storage/pgadmin"]
 #     volumeMounts:
 #       - name: pgadmin-data
