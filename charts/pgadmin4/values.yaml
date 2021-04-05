@@ -269,6 +269,12 @@ affinity: {}
 ##
 podAnnotations: {}
 
+## Pod labels
+##
+podLabels: {}
+  # key1: value1
+  # key2: value2
+
 init:
   ## Init container resources
   ##

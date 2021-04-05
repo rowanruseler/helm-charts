@@ -97,6 +97,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
+| `podLabels` | Labels for pod | `{}` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
