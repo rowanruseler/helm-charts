@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $kubeVersion := .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeVersion := .Capabilities.KubeVersion.Version -}}
 {{- if semverCompare ">=1.19-0" $kubeVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare "<=1.13-0" $kubeVersion -}}
@@ -37,14 +37,15 @@ spec:
         {{- range .paths }}
           - path: {{ .path }}
           {{- if and .pathType (semverCompare ">=1.18-0" $kubeVersion) }}
-          pathType: {{ .pathType }}
+            pathType: {{ .pathType }}
           {{- end }}
             backend:
             {{- if semverCompare ">=1.19-0" $kubeVersion }}
-              name: {{ $fullName }}
-              port:
-                number: {{ $svcPort }}
-            {{- else -}}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+            {{- else }}
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
             {{- end }}
