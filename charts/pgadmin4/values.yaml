@@ -74,6 +74,8 @@ serverDefinitions:
 networkPolicy:
   enabled: true
 
+## Ingress
+## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
   annotations: {}
@@ -83,9 +85,7 @@ ingress:
     - host: chart-example.local
       paths:
         - path: /
-          backend:
-            serviceName: chart-example.local
-            servicePort: 80
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
