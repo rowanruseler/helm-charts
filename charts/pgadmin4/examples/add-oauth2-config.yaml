@@ -30,7 +30,7 @@ type: Opaque
 stringData:
   config_local.py: |-
     MASTER_PASSWORD_REQUIRED = True
-    AUTHENTICATION_SOURCES = ['oauth2', 'insternal']
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
     OAUTH2_AUTO_CREATE_USER = True
     OAUTH2_CONFIG = [
       {
