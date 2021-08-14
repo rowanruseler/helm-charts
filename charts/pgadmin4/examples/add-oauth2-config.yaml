@@ -30,17 +30,17 @@ type: Opaque
 stringData:
   config_local.py: |-
     MASTER_PASSWORD_REQUIRED = True
-    AUTHENTICATION_SOURCES = ['internal', 'oauth2']
+    AUTHENTICATION_SOURCES = ['oauth2', 'insternal']
     OAUTH2_AUTO_CREATE_USER = True
     OAUTH2_CONFIG = [
       {
           'OAUTH2_NAME': 'google',
           'OAUTH2_DISPLAY_NAME': 'Google',
           'OAUTH2_CLIENT_ID': '[your_client_id]',
-          'OAUTH2_CLIENT_SECRET': '[your_client_secret]',
-          'OAUTH2_TOKEN_URL': 'https://oauth2.googleapis.com/token',
+          'OAUTH2_CLIENT_SECRET': '[your_client_secret',
+          'OAUTH2_TOKEN_URL': 'https://www.googleapis.com/oauth2/v3/token',
           'OAUTH2_AUTHORIZATION_URL': 'https://accounts.google.com/o/oauth2/v2/auth',
-          'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/auth/',
+          'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/oauth2/v3/'
           'OAUTH2_USERINFO_ENDPOINT': 'userinfo',
           'OAUTH2_ICON': 'fa-google',
           'OAUTH2_BUTTON_COLOR': '#0000ff',
