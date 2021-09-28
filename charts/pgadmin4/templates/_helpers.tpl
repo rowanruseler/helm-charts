@@ -45,6 +45,14 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
+Selector labels
+*/}}
+{{- define "pgadmin.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Generate chart secret name
 */}}
 {{- define "pgadmin.secretName" -}}
@@ -70,17 +78,6 @@ Return the appropriate apiVersion for deployment.
 {{- print "apps/v1beta2" -}}
 {{- else -}}
 {{- print "apps/v1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the appropriate apiVersion for ingress.
-*/}}
-{{- define "ingress.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- else -}}
-{{- print "extensions/v1beta1" -}}
 {{- end -}}
 {{- end -}}
 

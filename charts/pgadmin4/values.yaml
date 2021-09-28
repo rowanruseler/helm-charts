@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   registry: docker.io
   repository: dpage/pgadmin4
-  tag: "5.0"
+  tag: "5.7"
   pullPolicy: IfNotPresent
 
 ## Deployment annotations
@@ -16,7 +16,7 @@ annotations: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: http
+  targetPort: 80
   # targetPort: 4181 To be used with a proxy extraContainer
   portName: http
 
@@ -29,6 +29,18 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
   ##
   # nodePort:
+
+## Pod Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
 
 ## Strategy used to replace old Pods by new ones
 ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
@@ -62,44 +74,18 @@ serverDefinitions:
 networkPolicy:
   enabled: true
 
+## Ingress
+## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  ## If true, pgAdmin4 Ingress will be created
-  ##
   enabled: false
-
-  ## pgAdmin4 Ingress annotations
-  ##
   annotations: {}
-    ## Indicate that the ingress should be handled by NGINX controller
     # kubernetes.io/ingress.class: nginx
-    #
-    ## When setting `ingress.hosts.paths`, pgAdmin needs additional header
-    ## to be passed.
-    ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#http-via-nginx
-    # nginx.ingress.kubernetes.io/configuration-snippet: |
-    #   proxy_set_header X-Script-Name /pgadmin4;
-    #
-    ## If TLS is terminated elsewhere (on external load balancer), you may want
-    ## to redirect to `https://` URL scheme along with rewriting URL path if
-    ## `ingress.hosts.paths` is set. This is specific for image version >= 4.22.
-    ## Ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-redirect
-    # nginx.ingress.kubernetes.io/proxy-redirect-from: "~^http://([^/]+)/(pgadmin4/)?(.*)$"
-    # nginx.ingress.kubernetes.io/proxy-redirect-to: "https://$1/pgadmin4/$3"
-    #
-    ## Secure Ingress with kube-lego or cert-manager if they are deployed into
-    ## the cluster.
-    ## Ref: https://cert-manager.io/docs/usage/ingress/#optional-configuration
     # kubernetes.io/tls-acme: "true"
-
-  ## pgAdmin4 Ingress hostnames with optional path
-  ## Must be provided if Ingress is enabled
   hosts:
     - host: chart-example.local
-      paths: []
-        # - /pgadmin4
-
-  ## pgAdmin4 Ingress TLS configuration
-  ## Secrets must be manually created in the namespace
+      paths:
+        - path: /
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -206,14 +192,6 @@ securityContext:
   runAsGroup: 5050
   fsGroup: 5050
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
 ## pgAdmin4 readiness and liveness probe initial delay and timeout
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 ##
@@ -243,7 +221,7 @@ VolumePermissions:
 ##
 extraInitContainers: |
 #   - name: add-folder-for-pgpass
-#     image: "dpage/pgadmin4:4.23"
+#     image: "dpage/pgadmin4:latest"
 #     command: ["/bin/mkdir", "-p", "/var/lib/pgadmin/storage/pgadmin"]
 #     volumeMounts:
 #       - name: pgadmin-data
@@ -251,6 +229,30 @@ extraInitContainers: |
 #     securityContext:
 #       runAsUser: 5050
 
+containerPorts:
+  http: 80
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## Horizontal Pod Autoscaling
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+#
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 ## Node labels for pgAdmin4 pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -269,6 +271,12 @@ affinity: {}
 ## Pod annotations
 ##
 podAnnotations: {}
+
+## Pod labels
+##
+podLabels: {}
+  # key1: value1
+  # key2: value2
 
 init:
   ## Init container resources

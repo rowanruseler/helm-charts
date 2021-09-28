@@ -19,5 +19,4 @@ spec:
       protocol: TCP
       name: {{ .Values.service.portName }}
   selector:
-    app.kubernetes.io/name: {{ include "pgadmin.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "pgadmin.selectorLabels" . | nindent 4 }}
