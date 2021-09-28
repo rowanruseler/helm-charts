@@ -16,7 +16,7 @@ annotations: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: http
+  targetPort: 80
   # targetPort: 4181 To be used with a proxy extraContainer
   portName: http
 
