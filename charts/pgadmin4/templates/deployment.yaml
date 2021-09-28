@@ -15,8 +15,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pgadmin.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "pgadmin.selectorLabels" . | nindent 6 }}
 {{- if .Values.strategy }}
   strategy:
     {{- .Values.strategy | toYaml | nindent 4 }}
@@ -26,6 +25,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations }}
       annotations:
       {{- if .Values.podAnnotations }}
@@ -37,6 +39,9 @@ spec:
     {{- end }}
 
     spec:
+    {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
+    {{- end }}
     {{- if or (.Values.VolumePermissions.enabled) .Values.extraInitContainers }}
       initContainers:
       {{- if .Values.VolumePermissions.enabled }}
@@ -62,28 +67,28 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.containerPorts.http }}
               protocol: TCP
         {{- if .Values.livenessProbe }}
           livenessProbe:
             httpGet:
+              port: http
               {{- if .Values.env.contextPath }}
               path: "{{ .Values.env.contextPath }}/misc/ping"
               {{- else }}
               path: /misc/ping
               {{- end }}
-              port: 80
             {{- .Values.livenessProbe | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
+              port: http
               {{- if .Values.env.contextPath }}
               path: "{{ .Values.env.contextPath }}/misc/ping"
               {{- else }}
               path: /misc/ping
               {{- end }}
-              port: 80
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
           env:
@@ -107,6 +112,10 @@ spec:
           {{- if .Values.env.contextPath }}
             - name: SCRIPT_NAME
               value: {{ .Values.env.contextPath }}
+          {{- end }}
+          {{- if .Values.serverDefinitions.enabled }}
+            - name: PGADMIN_SERVER_JSON_FILE
+              value: /pgadmin4/servers.json
           {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}

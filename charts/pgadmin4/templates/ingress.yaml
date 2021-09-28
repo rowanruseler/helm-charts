@@ -1,14 +1,22 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
-apiVersion: {{ template "ingress.apiVersion" . }}
+{{- $svcPort := .Values.service.port -}}
+{{- $kubeVersion := .Capabilities.KubeVersion.Version -}}
+{{- if semverCompare ">=1.19-0" $kubeVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare "<=1.13-0" $kubeVersion -}}
+apiVersion: extensions/v1beta1
+{{- else -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
-  {{- if .Values.ingress.annotations }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- .Values.ingress.annotations | toYaml | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
@@ -27,10 +35,20 @@ spec:
       http:
         paths:
         {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .path }}
+          {{- if and .pathType (semverCompare ">=1.18-0" $kubeVersion) }}
+            pathType: {{ .pathType }}
+          {{- end }}
             backend:
+            {{- if semverCompare ">=1.19-0" $kubeVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+            {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: http
+              servicePort: {{ $svcPort }}
+            {{- end }}
         {{- end }}
   {{- end }}
 {{- end }}

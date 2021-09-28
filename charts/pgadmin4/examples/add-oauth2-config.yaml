@@ -1,0 +1,60 @@
+#
+# values.yaml
+#
+
+# Add config_local.py file to set OAUTH2 configuration
+# For details check documentation
+# https://www.pgadmin.org/docs/pgadmin4/5.5/oauth2.html
+
+extraSecretMounts:
+  - name: config-local
+    secret: pgadmin4-config
+    subPath: config_local.py
+    mountPath: "/pgadmin4/config_local.py"
+    readOnly: true
+
+#
+# secrets.yaml
+# To setup Google OAUTH
+## https://support.google.com/googleapi/answer/6158849?hl=en#
+# To setup Github OAUTH
+## https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
+# redirect|callback URI to set:
+## https://pgadmin4.example.com/oauth2/authorize 
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: pgadmin4-config
+type: Opaque
+stringData:
+  config_local.py: |-
+    MASTER_PASSWORD_REQUIRED = True
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+    OAUTH2_AUTO_CREATE_USER = True
+    OAUTH2_CONFIG = [
+      {
+          'OAUTH2_NAME': 'google',
+          'OAUTH2_DISPLAY_NAME': 'Google',
+          'OAUTH2_CLIENT_ID': '[your_client_id]',
+          'OAUTH2_CLIENT_SECRET': '[your_client_secret',
+          'OAUTH2_TOKEN_URL': 'https://www.googleapis.com/oauth2/v3/token',
+          'OAUTH2_AUTHORIZATION_URL': 'https://accounts.google.com/o/oauth2/v2/auth',
+          'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/oauth2/v3/'
+          'OAUTH2_USERINFO_ENDPOINT': 'userinfo',
+          'OAUTH2_ICON': 'fa-google',
+          'OAUTH2_BUTTON_COLOR': '#0000ff',
+      },
+      {
+          'OAUTH2_NAME': 'github',
+          'OAUTH2_DISPLAY_NAME': 'Github',
+          'OAUTH2_CLIENT_ID': '[your_client_id]',
+          'OAUTH2_CLIENT_SECRET': '[your_client_secret]',
+          'OAUTH2_TOKEN_URL': 'https://github.com/login/oauth/access_token',
+          'OAUTH2_AUTHORIZATION_URL': 'https://github.com/login/oauth/authorize',
+          'OAUTH2_API_BASE_URL': 'https://api.github.com/',
+          'OAUTH2_USERINFO_ENDPOINT': 'user',
+          'OAUTH2_ICON': 'fa-github',
+          'OAUTH2_BUTTON_COLOR': '#0000ff',
+      }
+    ]

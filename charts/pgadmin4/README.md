@@ -7,8 +7,8 @@
 ## TL;DR;
 
 ```console
-$ helm repo add runix https://helm.runix.net/
-$ helm install runix/pgadmin4
+helm repo add runix https://helm.runix.net
+helm install runix/pgadmin4
 ```
 
 ## Introduction
@@ -21,9 +21,9 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # Helm 2
-$ helm install --name my-release runix/pgadmin4
+helm install --name my-release runix/pgadmin4
 $ # Helm 3
-$ helm install my-release runix/pgadmin4
+helm install my-release runix/pgadmin4
 ```
 
 The command deploys pgAdmin4 on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.
@@ -47,7 +47,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `"4.29"` |
+| `image.tag` | Docker image tag | `"5.7"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `annotations` | Deployment Annotations | `{}` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
@@ -56,6 +56,9 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `service.portName` | Name of the port on the service | `http` |
 | `service.targetPort` | Internal service port | `http` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
+| `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
+| `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
+| `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `` |
@@ -68,27 +71,34 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
+| `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@example.local` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
+| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
+| `persistentVolume.existingClaim` | Persistent Volume existing claim name| | `unset` |
 | `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 containers | `` |
-| `resources` | CPU/memory resource requests/limits | `{}` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
 | `extraInitContainers` | Init containers to launch alongside the app | `[]` |
+| `containerPorts.http` | Sets http port inside pgadmin container | `80` |
+| `resources` | CPU/memory resource requests/limits | `{}` |
+| `autoscaling.enabled` | Enables Autoscaling | `false` |
+| `autoscaling.minReplicas` | Minimum amount of Replicas | `1` |
+| `autoscaling.maxReplicas` | Maximum amount of Replicas| `100` |
+| `autoscaling.targetCPUUtilizationPercentage` | Target CPU Utilization in percentage | `80` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
-| `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
-| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
+| `podLabels` | Labels for pod | `{}` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
@@ -98,23 +108,23 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
-```bash
+```console
 $ # Helm 2
-$ helm install runix/pgadmin4 --name my-release \
+helm install runix/pgadmin4 --name my-release \
   --set env.password=SuperSecret
 $ # Helm 3
-$ helm install my-release runix/pgadmin4 \
+helm install my-release runix/pgadmin4 \
   --set env.password=SuperSecret
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example:
 
-```bash
+```console
 $ # Helm 2
-$ helm install runix/pgadmin4 --name my-release -f values.yaml
+helm install runix/pgadmin4 --name my-release -f values.yaml
 $ # Helm 3
-$ helm install my-release runix/pgadmin4 -f values.yaml
+helm install my-release runix/pgadmin4 -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/examples/).
