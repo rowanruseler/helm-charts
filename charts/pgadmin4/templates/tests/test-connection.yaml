@@ -5,7 +5,8 @@ metadata:
   labels:
 {{ include "pgadmin.labels" . | indent 4 }}
   annotations:
-    "helm.sh/hook": test-success
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   securityContext:
     runAsNonRoot: true
