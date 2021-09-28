@@ -7,8 +7,8 @@
 ## TL;DR;
 
 ```console
-$ helm repo add runix https://helm.runix.net
-$ helm install runix/pgadmin4
+helm repo add runix https://helm.runix.net
+helm install runix/pgadmin4
 ```
 
 ## Introduction
@@ -21,9 +21,9 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # Helm 2
-$ helm install --name my-release runix/pgadmin4
+helm install --name my-release runix/pgadmin4
 $ # Helm 3
-$ helm install my-release runix/pgadmin4
+helm install my-release runix/pgadmin4
 ```
 
 The command deploys pgAdmin4 on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.
@@ -47,7 +47,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
-| `image.tag` | Docker image tag | `"5.5"` |
+| `image.tag` | Docker image tag | `"5.6"` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `annotations` | Deployment Annotations | `{}` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
@@ -108,23 +108,23 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
-```bash
+```console
 $ # Helm 2
-$ helm install runix/pgadmin4 --name my-release \
+helm install runix/pgadmin4 --name my-release \
   --set env.password=SuperSecret
 $ # Helm 3
-$ helm install my-release runix/pgadmin4 \
+helm install my-release runix/pgadmin4 \
   --set env.password=SuperSecret
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example:
 
-```bash
+```console
 $ # Helm 2
-$ helm install runix/pgadmin4 --name my-release -f values.yaml
+helm install runix/pgadmin4 --name my-release -f values.yaml
 $ # Helm 3
-$ helm install my-release runix/pgadmin4 -f values.yaml
+helm install my-release runix/pgadmin4 -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/examples/).
