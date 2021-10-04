@@ -64,9 +64,7 @@ Defines a JSON file containing server definitions. This allows connection inform
 */}}
 {{- define "pgadmin.serverDefinitions" -}}
 {
-  "Servers": {
-{{ .Values.serverDefinitions.servers | indent 4 }}
-  }
+  "Servers": {{ .Values.serverDefinitions.servers | toJson }}
 }
 {{- end -}}
 
