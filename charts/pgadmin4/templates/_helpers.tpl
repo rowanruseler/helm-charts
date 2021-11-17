@@ -37,12 +37,11 @@ Common labels
 {{- define "pgadmin.labels" -}}
 app.kubernetes.io/name: {{ include "pgadmin.name" . }}
 helm.sh/chart: {{ include "pgadmin.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- if .Values.image.tag }}
-app.kubernetes.io/version: {{ .Values.image.tag | quote }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
+{{- end }}
 
 {{/*
 Selector labels

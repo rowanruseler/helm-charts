@@ -7,7 +7,8 @@ replicaCount: 1
 image:
   registry: docker.io
   repository: dpage/pgadmin4
-  tag: "5.7"
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
   pullPolicy: IfNotPresent
 
 ## Deployment annotations
