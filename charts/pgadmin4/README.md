@@ -26,7 +26,7 @@ $ # Helm 3
 helm install my-release runix/pgadmin4
 ```
 
-The command deploys pgAdmin4 on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.
+The command deploys pgAdmin4 on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -82,7 +82,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
-| `persistentVolume.existingClaim` | Persistent Volume existing claim name| | `unset` |
+| `persistentVolume.existingClaim` | Persistent Volume existing claim name | `unset` |
 | `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 containers | `` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
