@@ -65,6 +65,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
+| `ingress.ingressClassName` | Ingress class name | `""` |
 | `ingress.hosts.host` | Ingress accepted hostname | `nil` |
 | `ingress.hosts.paths` | Ingress paths list | `[]` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
