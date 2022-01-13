@@ -61,16 +61,15 @@ serverDefinitions:
   ##
   enabled: false
 
-  servers: |-
-  #  "1": {
-  #    "Name": "Minimally Defined Server",
-  #    "Group": "Servers",
-  #    "Port": 5432,
-  #    "Username": "postgres",
-  #    "Host": "localhost",
-  #    "SSLMode": "prefer",
-  #    "MaintenanceDB": "postgres"
-  #  }
+  servers:
+  #  firstServer:
+  #    Name: "Minimally Defined Server"
+  #    Group: "Servers"
+  #    Port: 5432
+  #    Username: "postgres"
+  #    Host: "localhost"
+  #    SSLMode: "prefer"
+  #    MainteanceDB: "postgres"
 
 networkPolicy:
   enabled: true

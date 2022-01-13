@@ -61,7 +61,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
-| `serverDefinitions.servers` | Pre-configured server parameters | `` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
