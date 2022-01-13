@@ -68,6 +68,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.hosts.host` | Ingress accepted hostname | `nil` |
 | `ingress.hosts.paths` | Ingress paths list | `[]` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
+| `ingress.ingressClassName` | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+) | `""` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
