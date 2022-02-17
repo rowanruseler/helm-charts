@@ -16,7 +16,7 @@ annotations: {}
 
 ## Deployment entrypoint override
 ## Useful when there's a requirement to modify container's default entrypoint
-## For example: https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
+## Example ref: https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
 ## command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
 
 service:
