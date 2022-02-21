@@ -50,7 +50,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.tag` | Docker image tag | `""` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `annotations` | Deployment Annotations | `{}` |
-| `command` | Deployment command override | [["/entrypoint.sh"]](https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206) |
+| `command` | Deployment command override | `""` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |

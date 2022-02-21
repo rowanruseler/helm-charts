@@ -15,9 +15,10 @@ image:
 annotations: {}
 
 ## Deployment entrypoint override
-## Useful when there's a requirement to modify container's default entrypoint
-## Example ref: https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
-## command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
+## Useful when there's a requirement to modify container's default:
+## https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
+## ref: https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206
+# command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
 
 service:
   type: ClusterIP
