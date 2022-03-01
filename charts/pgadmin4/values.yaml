@@ -14,6 +14,12 @@ image:
 ## Deployment annotations
 annotations: {}
 
+## Deployment entrypoint override
+## Useful when there's a requirement to modify container's default:
+## https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
+## ref: https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206
+# command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
+
 service:
   type: ClusterIP
   port: 80
@@ -69,7 +75,7 @@ serverDefinitions:
   #    Username: "postgres"
   #    Host: "localhost"
   #    SSLMode: "prefer"
-  #    MainteanceDB: "postgres"
+  #    MaintenanceDB: "postgres"
 
 networkPolicy:
   enabled: true
