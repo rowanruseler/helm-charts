@@ -144,6 +144,9 @@ spec:
               subPath: {{ .subPath | default "" }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+            {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
+          {{- end }}
           resources:
             {{- .Values.resources | toYaml | nindent 12 }}
     {{- with .Values.extraContainers }}
@@ -168,6 +171,9 @@ spec:
           secret:
             secretName: {{ .secret }}
             defaultMode: {{ .defaultMode | default 256 }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+        {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
       {{- if .Values.serverDefinitions.enabled }}
         - name: definitions

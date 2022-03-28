@@ -114,6 +114,10 @@ extraSecretMounts: []
   #   mountPath: "/var/lib/pgadmin/storage/pgadmin/file.pgpass"
   #   readOnly: true
 
+## Additional volumes to be mounted inside a container
+##
+extraVolumeMounts: []
+
 ## Specify additional containers in extraContainers.
 ## For example, to add an authentication proxy to a pgadmin4 pod.
 extraContainers: |
@@ -191,6 +195,10 @@ persistentVolume:
   ##
   # storageClass: "-"
   # existingClaim: ""
+
+##Additional volumes to be added to the deployment
+##
+extraVolumes: []
 
 ## Security context to be added to pgAdmin4 pods
 ##
