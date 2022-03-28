@@ -196,7 +196,7 @@ persistentVolume:
   # storageClass: "-"
   # existingClaim: ""
 
-##Additional volumes to be added to the deployment
+## Additional volumes to be added to the deployment
 ##
 extraVolumes: []
 
