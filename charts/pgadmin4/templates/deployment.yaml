@@ -121,8 +121,7 @@ spec:
               value: /pgadmin4/servers.json
           {{- end }}
           {{- range .Values.env.variables }}
-            - name: {{ .name | quote }}
-              value: {{ .value | quote }}
+            - {{ . | toJson }}
           {{- end }}
           volumeMounts:
             - name: pgadmin-data
