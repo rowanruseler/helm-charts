@@ -37,7 +37,7 @@ stringData:
           'OAUTH2_NAME': 'google',
           'OAUTH2_DISPLAY_NAME': 'Google',
           'OAUTH2_CLIENT_ID': '[your_client_id]',
-          'OAUTH2_CLIENT_SECRET': '[your_client_secret',
+          'OAUTH2_CLIENT_SECRET': '[your_client_secret]',
           'OAUTH2_TOKEN_URL': 'https://www.googleapis.com/oauth2/v3/token',
           'OAUTH2_AUTHORIZATION_URL': 'https://accounts.google.com/o/oauth2/v2/auth',
           'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/oauth2/v3/'
