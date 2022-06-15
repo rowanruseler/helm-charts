@@ -14,6 +14,9 @@ image:
 ## Deployment annotations
 annotations: {}
 
+## priorityClassName
+priorityClassName: ""
+
 ## Deployment entrypoint override
 ## Useful when there's a requirement to modify container's default:
 ## https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
