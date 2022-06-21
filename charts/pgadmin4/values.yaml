@@ -169,6 +169,16 @@ env:
   # - name: PGADMIN_LISTEN_PORT
   #   value: "8080"
 
+## Additional environment variables from ConfigMaps
+envVarsFromConfigMaps: []
+  # - array-of
+  # - config-map-names
+
+## Additional environment variables from Secrets
+envVarsFromSecrets: []
+  # - array-of
+  # - secret-names
+
 persistentVolume:
   ## If true, pgAdmin4 will create/use a Persistent Volume Claim
   ## If false, use emptyDir

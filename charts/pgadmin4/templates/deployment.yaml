@@ -127,6 +127,17 @@ spec:
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
           {{- end }}
+          {{- if or .Values.envVarsFromConfigMaps .Values.envVarsFromSecrets }}
+          envFrom:
+            {{- range .Values.envVarsFromConfigMaps }}
+            - configMapRef:
+                name: {{ . | quote }}
+            {{- end }}
+            {{- range .Values.envVarsFromSecrets }}
+            - secretRef:
+                name: {{ . | quote }}
+            {{- end }}
+          {{- end }}
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin

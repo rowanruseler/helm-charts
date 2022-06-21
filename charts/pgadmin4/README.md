@@ -81,6 +81,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
+| `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
+| `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
