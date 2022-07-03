@@ -36,6 +36,7 @@ Common labels
 */}}
 {{- define "pgadmin.labels" -}}
 app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 helm.sh/chart: {{ include "pgadmin.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
