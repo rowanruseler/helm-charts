@@ -98,6 +98,9 @@ spec:
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
           env:
+          {{- if .Values.env.variablesRaw }}
+            {{- .Values.env.variablesRaw | toYaml | nindent 12 }}
+          {{- end }}
             - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
               value: {{ .Values.env.enhanced_cookie_protection | quote }}
             - name: PGADMIN_DEFAULT_EMAIL
@@ -126,9 +129,6 @@ spec:
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
-          {{- end }}
-          {{- if .Values.env.variablesRaw }}
-            {{- .Values.env.variablesRaw | toYaml | nindent 12 }}
           {{- end }}
           {{- if or .Values.envVarsFromConfigMaps .Values.envVarsFromSecrets }}
           envFrom:
