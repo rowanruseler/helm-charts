@@ -169,6 +169,17 @@ env:
   # - name: PGADMIN_LISTEN_PORT
   #   value: "8080"
 
+  ## Add custom environment variables that will be injected to deployment
+  ## Add variable with all key value, Useful for csi
+  ## Ref: https://www.vaultproject.io/docs/platform/k8s/csi/examples
+  ##
+  variablesRaw: []
+  # - name: MY_VAR
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: MY_VAULT_CONFIG
+  #       key: MY_VAULT_KEY
+  
 ## Additional environment variables from ConfigMaps
 envVarsFromConfigMaps: []
   # - array-of

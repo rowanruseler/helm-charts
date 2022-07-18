@@ -20,7 +20,7 @@ extraSecretMounts:
 # To setup Github OAUTH
 ## https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
 # redirect|callback URI to set:
-## https://pgadmin4.example.com/oauth2/authorize 
+## https://pgadmin4.example.com/oauth2/authorize
 ---
 kind: Secret
 apiVersion: v1
@@ -40,7 +40,7 @@ stringData:
           'OAUTH2_CLIENT_SECRET': '[your_client_secret]',
           'OAUTH2_TOKEN_URL': 'https://www.googleapis.com/oauth2/v3/token',
           'OAUTH2_AUTHORIZATION_URL': 'https://accounts.google.com/o/oauth2/v2/auth',
-          'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/oauth2/v3/'
+          'OAUTH2_API_BASE_URL': 'https://www.googleapis.com/oauth2/v3/',
           'OAUTH2_USERINFO_ENDPOINT': 'userinfo',
           'OAUTH2_ICON': 'fa-google',
           'OAUTH2_BUTTON_COLOR': '#0000ff',
