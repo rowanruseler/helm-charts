@@ -139,9 +139,13 @@ extraContainers: |
 #     - name: proxy-web
 #       containerPort: 4181
 
-## Provide the name for an existing secret.
-## Useful to avoid specifying password and server config in YAML files
+## @param existingSecret Name of existing secret to use for default pgadmin credentials. `env.password` will be ignored and picked up from this secret.
+##
 existingSecret: ""
+## @param secretKeys.pgadminPasswordKey Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set.
+##
+secretKeys:
+  pgadminPasswordKey: PGADMIN_DEFAULT_PASSWORD
 
 ## pgAdmin4 startup configuration
 ## Values in here get injected as environment variables
