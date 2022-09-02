@@ -111,10 +111,11 @@ spec:
                 secretKeyRef:
           {{- if not .Values.existingSecret }}
                   name: {{ $fullName }}
+                  key: password
           {{- else }}
                   name: {{ .Values.existingSecret }}
+                  key: {{ .Values.secretKeys.pgadminPasswordKey }}
           {{- end }}
-                  key: password
           {{- if .Values.env.contextPath }}
             - name: SCRIPT_NAME
               value: {{ .Values.env.contextPath }}
