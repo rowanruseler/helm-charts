@@ -53,6 +53,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `priorityClassName` | Deployment priorityClassName | `""` |
 | `command` | Deployment command override | `""` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
+| `service.clusterIP` | Service type Cluster IP | `""` |
+| `service.loadBalancerIP` | Service Load Balancer IP | `""` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
 | `service.portName` | Name of the port on the service | `http` |
