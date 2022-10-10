@@ -224,6 +224,10 @@ securityContext:
   runAsGroup: 5050
   fsGroup: 5050
 
+containerSecurityContext:
+  enabled: false
+  allowPrivilegeEscalation: false
+
 ## pgAdmin4 readiness and liveness probe initial delay and timeout
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 ##

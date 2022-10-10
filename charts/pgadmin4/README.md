@@ -89,7 +89,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
 | `persistentVolume.existingClaim` | Persistent Volume existing claim name | | `unset` |
-| `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 containers | `` |
+| `securityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 pod | `` |
+| `containerSecurityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 container | `` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
