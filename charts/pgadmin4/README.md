@@ -75,7 +75,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password. | `""` |
-| `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"PGADMIN_DEFAULT_PASSWORD"` |
+| `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@example.local` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
