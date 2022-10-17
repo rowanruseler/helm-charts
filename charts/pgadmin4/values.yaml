@@ -25,6 +25,8 @@ priorityClassName: ""
 
 service:
   type: ClusterIP
+  clusterIP: ""
+  loadBalancerIP: ""
   port: 80
   targetPort: 80
   # targetPort: 4181 To be used with a proxy extraContainer
