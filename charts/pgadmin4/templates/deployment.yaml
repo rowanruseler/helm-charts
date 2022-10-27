@@ -89,6 +89,17 @@ spec:
               {{- end }}
             {{- .Values.livenessProbe | toYaml | nindent 12 }}
         {{- end }}
+        {{- if .Values.startupProbe }}
+          startupProbe:
+            httpGet:
+              port: http
+              {{- if .Values.env.contextPath }}
+              path: "{{ .Values.env.contextPath }}/misc/ping"
+              {{- else }}
+              path: /misc/ping
+              {{- end }}
+            {{- .Values.startupProbe | toYaml | nindent 12 }}
+        {{- end }}
         {{- if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
