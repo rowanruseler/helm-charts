@@ -330,12 +330,12 @@ test:
     tag: latest
   ## Resources request/limit for test-connection Pod
   resources: {}
-#     limits:
-#       cpu: 25m
-#       memory: 16Mi
-#     requests:
-#       cpu: 50m
-#       memory: 32Mi
+    # limits:
+    #   cpu: 50m
+    #   memory: 32Mi
+    # requests:
+    #   cpu: 25m
+    #   memory: 16Mi
   ## Security context for test-connection Pod
   securityContext:
     runAsUser: 5051
