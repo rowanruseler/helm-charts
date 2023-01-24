@@ -20,4 +20,5 @@ ingress:
   hosts:
   - host: chart-example.local
     paths:
-      - /pgadmin4
+      - path: /pgadmin4
+        pathType: ImplementationSpecific
