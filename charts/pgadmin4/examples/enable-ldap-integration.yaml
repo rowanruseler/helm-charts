@@ -34,7 +34,9 @@ ingress:
   enabled: true
   hosts:
     - host: pgadmin.example.test
-      paths: ["/"]
+      paths: 
+        - path: "/"
+          pathType: ImplementationSpecific
 persistentVolume:
   enabled: true
   size: "10Gi"
