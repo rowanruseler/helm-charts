@@ -97,6 +97,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `startupProbe` | [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
+| `extraDeploy` | list of extra manifests to deploy | `[]` |
 | `extraInitContainers` | Init containers to launch alongside the app | `[]` |
 | `containerPorts.http` | Sets http port inside pgadmin container | `80` |
 | `resources` | CPU/memory resource requests/limits | `{}` |

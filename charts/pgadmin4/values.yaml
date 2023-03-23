@@ -255,6 +255,10 @@ VolumePermissions:
   ##
   enabled: false
 
+## @param extraDeploy list of extra manifests to deploy
+##
+extraDeploy: []
+
 ## Additional InitContainers to initialize the pod
 ##
 extraInitContainers: |
