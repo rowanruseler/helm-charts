@@ -74,6 +74,9 @@ spec:
         {{- if .Values.command }}
           command: {{ .Values.command }}
         {{- end }}
+        {{- if .Values.args }}
+          args: {{ .Values.args }}
+        {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.containerPorts.http }}
