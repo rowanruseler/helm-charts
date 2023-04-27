@@ -72,11 +72,12 @@ spec:
           securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.command }}
-          command: {{ .Values.command }}
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
         {{- end }}
         {{- if .Values.args }}
-          args: {{ .Values.args }}
-        {{- end }}
+          args:
+            {{- toYaml .Values.args | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.containerPorts.http }}
