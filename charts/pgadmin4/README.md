@@ -110,7 +110,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
 | `podLabels` | Labels for pod | `{}` |
-| `namespace` | Namespace where to deploy | `null` |
+| `namespace` | Namespace where to deploy resources | `null` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
