@@ -101,3 +101,10 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
+
+{{/*
+Create the name of the namespace
+*/}}
+{{- define "pgadmin.namespaceName" -}}
+{{- default .Release.Namespace .Values.namespace }}
+{{- end }}

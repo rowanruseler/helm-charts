@@ -3,6 +3,7 @@ apiVersion: {{ template "deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ $fullName }}
+  namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
 {{- if .Values.annotations }}
