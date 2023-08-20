@@ -213,7 +213,7 @@ spec:
       {{- if .Values.serverDefinitions.enabled }}
         - name: definitions
           secret:
-            secretName: {{ template "pgadmin.secretName" . }}
+            secretName: {{ template "pgadmin.secretName" . }}-server-definitions
             items:
             - key: servers.json
               path: servers.json
