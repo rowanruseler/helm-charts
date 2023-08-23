@@ -314,6 +314,15 @@ affinity: {}
 ##
 podAnnotations: {}
 
+## Deployment labels
+##
+labels: {}
+
+## Deployment matchLabels
+##
+matchLabels: {}
+
+
 ## Pod labels
 ##
 podLabels: {}
