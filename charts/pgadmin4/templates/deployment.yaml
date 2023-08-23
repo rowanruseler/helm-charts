@@ -6,6 +6,9 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 {{- if .Values.annotations }}
   annotations:
   {{- if .Values.annotations }}
@@ -17,6 +20,9 @@ spec:
   selector:
     matchLabels:
       {{- include "pgadmin.selectorLabels" . | nindent 6 }}
+      {{- with .Values.matchLabels }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
 {{- if .Values.strategy }}
   strategy:
     {{- .Values.strategy | toYaml | nindent 4 }}
