@@ -6,8 +6,7 @@
 # https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
 
 extraConfigmapMounts:
-  - name: config-local
-    secret: pgadmin4-config
+  - name: pgadmin4-config
     subPath: config_local.py
     mountPath: "/pgadmin4/config_local.py"
     readOnly: true
