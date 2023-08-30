@@ -72,6 +72,10 @@ serverDefinitions:
   ##
   enabled: false
 
+  ## The resource type to use for deploying server definitions.
+  ## Can either be ConfigMap or Secret
+  resourceType: ConfigMap
+
   servers:
   #  firstServer:
   #    Name: "Minimally Defined Server"

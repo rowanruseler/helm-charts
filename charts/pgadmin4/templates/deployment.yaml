@@ -35,7 +35,7 @@ spec:
         {{- .Values.podAnnotations | toYaml | nindent 8 }}
       {{- end }}
       {{- if not .Values.existingSecret }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
 
@@ -212,8 +212,13 @@ spec:
       {{- end }}
       {{- if .Values.serverDefinitions.enabled }}
         - name: definitions
+          {{- if eq .Values.serverDefinitions.resourceType "Secret" }}
           secret:
-            secretName: {{ template "pgadmin.secretName" . }}-server-definitions
+            secretName: {{ $fullName }}-server-definitions
+          {{- else }}
+          configMap:
+            name: {{ $fullName }}-server-definitions
+          {{- end }}
             items:
             - key: servers.json
               path: servers.json
