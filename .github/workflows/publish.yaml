@@ -2,7 +2,7 @@ name: "Publish charts to repo"
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   publish:
