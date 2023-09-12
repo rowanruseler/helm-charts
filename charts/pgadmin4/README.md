@@ -140,6 +140,6 @@ $ # Helm 3
 helm install my-release runix/pgadmin4 -f values.yaml
 ```
 
-> **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/master/charts/pgadmin4/examples/).
+> **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/main/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/main/charts/pgadmin4/examples/).
 
 [dpage/pgadmin4]: https://hub.docker.com/r/dpage/pgadmin4
