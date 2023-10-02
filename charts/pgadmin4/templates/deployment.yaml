@@ -43,6 +43,7 @@ spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
     {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
     {{- if or (.Values.VolumePermissions.enabled) .Values.extraInitContainers }}
       initContainers:
       {{- if .Values.VolumePermissions.enabled }}
