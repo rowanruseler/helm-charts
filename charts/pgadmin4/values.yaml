@@ -53,6 +53,10 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
+  # Opt out of API credential automounting.
+  # If you don't want the kubelet to automatically mount a ServiceAccount's API credentials,
+  # you can opt out of the default behavior
+  automountServiceAccountToken: false
 
 ## Strategy used to replace old Pods by new ones
 ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
