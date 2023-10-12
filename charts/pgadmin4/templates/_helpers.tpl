@@ -35,12 +35,10 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "pgadmin.labels" -}}
-app.kubernetes.io/name: {{ include "pgadmin.name" . }}
-helm.sh/chart: {{ include "pgadmin.chart" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/name: {{ include "pgadmin.name" . }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+helm.sh/chart: {{ include "pgadmin.chart" . }}
 {{- end }}
 
 {{/*
