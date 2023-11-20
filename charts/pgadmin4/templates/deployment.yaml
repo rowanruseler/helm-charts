@@ -54,6 +54,7 @@ spec:
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
+              subPath: {{ .Values.persistentVolume.subPath | default "" }}
           securityContext:
             runAsUser: 0
           resources:
@@ -163,6 +164,7 @@ spec:
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
+              subPath: {{ .Values.persistentVolume.subPath | default "" }}
           {{- if .Values.serverDefinitions.enabled }}
             - name: definitions
               mountPath: /pgadmin4/servers.json

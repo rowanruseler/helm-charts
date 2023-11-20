@@ -222,6 +222,8 @@ persistentVolume:
   ##
   # storageClass: "-"
   # existingClaim: ""
+  ## Sub-directory of the PV to mount
+  # subPath: ""
 
 ## Additional volumes to be added to the deployment
 ##
