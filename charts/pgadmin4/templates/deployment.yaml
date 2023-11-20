@@ -201,7 +201,7 @@ spec:
       {{- range .Values.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
-            name: {{ .name }}
+            name: {{ .configMap }}
             defaultMode: {{ .defaultMode | default 256 }}
       {{- end }}
       {{- range .Values.extraSecretMounts }}
