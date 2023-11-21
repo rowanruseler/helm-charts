@@ -201,13 +201,13 @@ spec:
       {{- range .Values.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
-            name: {{ .configMap }}
+            name: {{ tpl (.configMap) $ }}
             defaultMode: {{ .defaultMode | default 256 }}
       {{- end }}
       {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
           secret:
-            secretName: {{ .secret }}
+            secretName: {{ tpl (.secret) $ }}
             defaultMode: {{ .defaultMode | default 256 }}
       {{- end }}
       {{- if .Values.extraVolumes }}
