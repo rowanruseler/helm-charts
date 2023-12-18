@@ -121,6 +121,10 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 
+> The values for "extraConfigmapMounts.[].configMap" and "extraSecretMounts.[].secret" can be either a simple string
+or a template string.
+Then it will be resolved for you.
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```console
