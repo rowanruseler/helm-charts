@@ -92,5 +92,22 @@ data:
         'OAUTH2_SCOPE': 'User.Read',
         'OAUTH2_ICON': 'fa-microsoft',
         'OAUTH2_BUTTON_COLOR': '#0000ff',
+      },
+      {
+        'OAUTH2_NAME': 'microsoft-oidc',
+        'OAUTH2_DISPLAY_NAME': 'Microsoft OIDC',
+        'OAUTH2_CLIENT_ID': os.environ['OAUTH2_CLIENT_ID'],
+        'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+        'OAUTH2_TOKEN_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/token',
+        'OAUTH2_AUTHORIZATION_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/authorize',
+        'OAUTH2_SERVER_METADATA_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/v2.0/.well-known/openid-configuration',
+        'OAUTH2_API_BASE_URL': 'https://graph.microsoft.com/v1.0/',
+        'OAUTH2_USERINFO_ENDPOINT': 'https://graph.microsoft.com/oidc/userinfo',
+        'OAUTH2_SCOPE': 'openid profile email',
+        'OAUTH2_ICON': 'fa-microsoft',
+        'OAUTH2_BUTTON_COLOR': '#0000ff',
+        'OAUTH2_ADDITIONAL_CLAIMS': {
+          'groups': ["{LIST_OF_YOUR_GROUP_GUIDS}"],
+        }
       }
     ]
