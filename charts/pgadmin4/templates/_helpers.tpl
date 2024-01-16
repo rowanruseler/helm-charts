@@ -39,6 +39,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/name: {{ include "pgadmin.name" . }}
 app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 helm.sh/chart: {{ include "pgadmin.chart" . }}
+{{- with .Values.commonLabels }}
+{{ toYaml .  }}
+{{- end }}
 {{- end }}
 
 {{/*
