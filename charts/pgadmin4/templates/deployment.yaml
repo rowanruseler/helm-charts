@@ -92,39 +92,48 @@ spec:
             {{- toYaml .Values.args | nindent 12 }}
         {{- end }}
           ports:
-            - name: http
+            - name: {{ .Values.service.portName }}
               containerPort: {{ .Values.containerPorts.http }}
               protocol: TCP
         {{- if .Values.livenessProbe }}
           livenessProbe:
             httpGet:
-              port: http
+              port: {{ .Values.service.portName }}
               {{- if .Values.env.contextPath }}
               path: "{{ .Values.env.contextPath }}/misc/ping"
               {{- else }}
               path: /misc/ping
+              {{- end }}
+              {{- if or (eq (.Values.service.portName | lower) "http") (eq (.Values.service.portName | lower) "https") }}
+              scheme: {{ upper .Values.service.portName }}
               {{- end }}
             {{- .Values.livenessProbe | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.startupProbe }}
           startupProbe:
             httpGet:
-              port: http
+              port: {{ .Values.service.portName }}
               {{- if .Values.env.contextPath }}
               path: "{{ .Values.env.contextPath }}/misc/ping"
               {{- else }}
               path: /misc/ping
+              {{- end }}
+              {{- if or (eq (.Values.service.portName | lower) "http") (eq (.Values.service.portName | lower) "https") }}
+              scheme: {{ upper .Values.service.portName }}
               {{- end }}
             {{- .Values.startupProbe | toYaml | nindent 12 }}
         {{- end }}
         {{- if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
-              port: http
+              port: {{ .Values.service.portName }}
               {{- if .Values.env.contextPath }}
               path: "{{ .Values.env.contextPath }}/misc/ping"
               {{- else }}
               path: /misc/ping
+              {{- end }}
+              {{- if or (eq (.Values.service.portName | lower) "http") (eq (.Values.service.portName | lower) "https") }}
+              scheme: {{ upper .Values.service.portName }}
               {{- end }}
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
