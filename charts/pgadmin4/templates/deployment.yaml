@@ -26,7 +26,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- with .Values.podLabels }}
+        {{- with (merge .Values.podLabels .Values.commonLabels) }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
