@@ -50,6 +50,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.tag` | Docker image tag | `""` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
 | `annotations` | Deployment Annotations | `{}` |
+| `commonLabels` | Add labels to all the deployed resources | `{}` |
 | `priorityClassName` | Deployment priorityClassName | `""` |
 | `command` | Deployment command override | `""` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
