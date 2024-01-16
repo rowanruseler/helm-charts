@@ -323,6 +323,10 @@ affinity: {}
 ## Pod annotations
 ##
 podAnnotations: {}
+templatedPodAnnotations: |-
+#   checksum/configmap-oauth2: {{ include "<parent-chart-name>/templates/configmap-oauth2.yaml" $ | sha256sum }}
+#   checksum/secret-oauth2: "{{ include "<parent-chart-name>/templates/secret-oauth2.yaml" $ | sha256sum }}"
+#   checksum/secret-pgpass: "{{ include "<parent-chart-name>/templates/secret-pgpass.yaml" $ | sha256sum }}"
 
 ## Pod labels
 ##

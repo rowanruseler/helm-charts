@@ -29,13 +29,22 @@ spec:
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-    {{- if or (not .Values.existingSecret) .Values.podAnnotations }}
+    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations .Values.serverDefinitions.enabled }}
       annotations:
       {{- if .Values.podAnnotations }}
         {{- .Values.podAnnotations | toYaml | nindent 8 }}
       {{- end }}
+      {{- with .Values.templatedPodAnnotations }}
+        {{- tpl . $ | nindent 8 }}
+      {{- end }}
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if and .Values.serverDefinitions.enabled ( eq .Values.serverDefinitions.resourceType "Secret" ) }}
+        checksum/secret-server-definitions: {{ include (print $.Template.BasePath "/server-definitions-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if and .Values.serverDefinitions.enabled ( ne .Values.serverDefinitions.resourceType "Secret" ) }}
+        checksum/config-server-definitions: {{ include (print $.Template.BasePath "/server-definitions-configmap.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
 
