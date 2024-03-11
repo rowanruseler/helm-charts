@@ -198,6 +198,19 @@ envVarsFromSecrets: []
   # - array-of
   # - secret-names
 
+## Additional environment variables
+envVarsExtra: []
+  # - name: POSTGRES_USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: pgadmin.pgadmin-db.credentials.postgresql.acid.zalan.do
+  #       key: username
+  # - name: POSTGRES_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: pgadmin.pgadmin-db.credentials.postgresql.acid.zalan.do
+  #       key: password
+
 persistentVolume:
   ## If true, pgAdmin4 will create/use a Persistent Volume Claim
   ## If false, use emptyDir

@@ -89,6 +89,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
 | `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
 | `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
+| `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
