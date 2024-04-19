@@ -85,6 +85,12 @@ serverDefinitions:
   ## Can either be ConfigMap or Secret
   resourceType: ConfigMap
 
+  # If resource type is set to ConfigMap, specify existingConfigmap containing definitions
+  existingConfigmap: ""
+
+  # If resource type is set to Secret, specify existingSecret containing definitions
+  existingSecret: ""
+
   servers:
   #  firstServer:
   #    Name: "Minimally Defined Server"

@@ -1,4 +1,5 @@
-{{- if and .Values.serverDefinitions.enabled ( ne .Values.serverDefinitions.resourceType "Secret" ) }}
+{{- if not .Values.serverDefinitions.existingConfigmap -}}
+{{- if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "ConfigMap") (.Values.serverDefinitions.servers) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,4 +10,5 @@ metadata:
 data:
   servers.json: |-
 {{ include "pgadmin.serverDefinitions" . | indent 4 }}
+{{- end }}
 {{- end }}

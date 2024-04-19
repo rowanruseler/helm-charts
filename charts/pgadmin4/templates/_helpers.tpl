@@ -109,3 +109,74 @@ Create the name of the namespace
 {{- define "pgadmin.namespaceName" -}}
 {{- default .Release.Namespace .Values.namespace }}
 {{- end }}
+
+{{/*
+Generate serverDefinitions configMap name
+*/}}
+{{- define "pgadmin.serverDefinitionsConfigmap" -}}
+{{- if eq .Values.serverDefinitions.resourceType "ConfigMap" -}}
+    {{- if .Values.serverDefinitions.existingConfigmap }}
+        {{- printf "%s" (.Values.serverDefinitions.existingConfigmap) }}
+    {{- else }}
+        {{- include "pgadmin.fullname" . }}-server-definitions
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Generate serverDefinitions secret name
+*/}}
+{{- define "pgadmin.serverDefinitionsSecret" -}}
+{{- if eq .Values.serverDefinitions.resourceType "Secret" -}}
+    {{- if .Values.serverDefinitions.existingSecret }}
+        {{- printf "%s" (.Values.serverDefinitions.existingSecret) }}
+    {{- else if .Values.existingSecret }}
+        {{- printf "%s" (.Values.existingSecret) }}
+    {{- else }}
+        {{- include "pgadmin.fullname" . }}-server-definitions
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Compile all warnings into a single message.
+*/}}
+{{- define "pgadmin.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "pgadmin.validateValues.serverDefinitionsType" .) -}}
+{{- $messages := append $messages (include "pgadmin.validateValues.serverDefinitionsContent" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Verify serverDefinitions.resourceType
+*/}}
+{{- define "pgadmin.validateValues.serverDefinitionsType" -}}
+{{- $allowedResourceTypes := list "ConfigMap" "Secret" -}}
+{{- if .Values.serverDefinitions.enabled -}}
+    {{- if not (has .Values.serverDefinitions.resourceType $allowedResourceTypes) -}}
+        pgadmin: serverDefinitions.resourceType
+        Invalid value for '.Values.serverDefinitions.resourceType'. Allowed values are either ConfigMap or Secret.
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Verify serverDefinitions.content
+*/}}
+{{- define "pgadmin.validateValues.serverDefinitionsContent" -}}
+{{- if .Values.serverDefinitions.enabled -}}
+    {{- if and (eq .Values.serverDefinitions.resourceType "ConfigMap") (not .Values.serverDefinitions.servers) (not .Values.serverDefinitions.existingConfigmap) -}}
+        pgadmin: serverDefinitions.servers
+        One of '.Values.serverDefinitions.servers' or '.Values.serverDefinitions.existingConfigmap' must be defined.
+    {{- else if and (eq .Values.serverDefinitions.resourceType "Secret") (not .Values.serverDefinitions.servers) (not .Values.serverDefinitions.existingSecret) (not .Values.existingSecret) -}}
+        pgadmin: serverDefinitions.servers
+        One of '.Values.serverDefinitions.servers', '.Values.serverDefinitions.existingSecret' or '.Values.existingSecret' must be defined.
+    {{- end }}
+{{- end }}
+{{- end }}
