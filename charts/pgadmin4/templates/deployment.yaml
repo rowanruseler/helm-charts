@@ -41,7 +41,6 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
-
     spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
@@ -157,9 +156,11 @@ spec:
             - name: SCRIPT_NAME
               value: {{ .Values.env.contextPath }}
           {{- end }}
-          {{- if .Values.serverDefinitions.enabled }}
+          {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
+          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: PGADMIN_SERVER_JSON_FILE
               value: /pgadmin4/servers.json
+          {{- end }}
           {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
@@ -180,10 +181,12 @@ spec:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
               subPath: {{ .Values.persistentVolume.subPath | default "" }}
-          {{- if .Values.serverDefinitions.enabled }}
+          {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
+          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: definitions
               mountPath: /pgadmin4/servers.json
               subPath: servers.json
+          {{- end }}
           {{- end }}
           {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -228,18 +231,21 @@ spec:
       {{- if .Values.extraVolumes }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.serverDefinitions.enabled }}
+      {{- if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "Secret") -}}
+        {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
         - name: definitions
-          {{- if eq .Values.serverDefinitions.resourceType "Secret" }}
           secret:
-            secretName: {{ $fullName }}-server-definitions
-          {{- else }}
+            secretName: {{ include "pgadmin.serverDefinitionsSecret" . }}
+        {{- end }}
+      {{- else if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "ConfigMap") -}}
+        {{ if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.servers) }}
+        - name: definitions
           configMap:
-            name: {{ $fullName }}-server-definitions
-          {{- end }}
+            name: {{ include "pgadmin.serverDefinitionsConfigmap" . }}
             items:
             - key: servers.json
               path: servers.json
+        {{- end }}
       {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
