@@ -8,7 +8,7 @@
 
 ```console
 helm repo add runix https://helm.runix.net
-helm install runix/pgadmin4
+helm install pgadmin4 runix/pgadmin4
 ```
 
 ## Introduction
