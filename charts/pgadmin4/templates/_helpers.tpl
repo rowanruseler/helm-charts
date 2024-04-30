@@ -130,10 +130,10 @@ Generate serverDefinitions secret name
 {{- if eq .Values.serverDefinitions.resourceType "Secret" -}}
     {{- if .Values.serverDefinitions.existingSecret }}
         {{- printf "%s" (.Values.serverDefinitions.existingSecret) }}
+    {{- else if .Values.serverDefinitions.servers }}
+        {{- include "pgadmin.fullname" . }}-server-definitions
     {{- else if .Values.existingSecret }}
         {{- printf "%s" (.Values.existingSecret) }}
-    {{- else }}
-        {{- include "pgadmin.fullname" . }}-server-definitions
     {{- end }}
 {{- end }}
 {{- end }}
