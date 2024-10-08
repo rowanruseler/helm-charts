@@ -344,6 +344,25 @@ tolerations: []
 ##
 affinity: {}
 
+## Pod DNS Policy
+## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+
+dnsPolicy: ""
+
+## Update pod DNS Config
+## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+
+dnsConfig: {}
+#  nameservers:
+#    - 192.0.2.1
+#  searches:
+#    - ns1.svc.cluster-domain.example
+#    - my.dns.search.suffix
+#  options:
+#    - name: ndots
+#      value: "2"
+#    - name: edns0
+
 ## Pod annotations
 ##
 podAnnotations: {}
