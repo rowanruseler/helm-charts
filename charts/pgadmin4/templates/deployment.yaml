@@ -45,6 +45,16 @@ spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
     {{- end }}
+    {{- if .Values.hostAliases }}
+      hostAliases:
+      {{- range .Values.hostAliases }}
+      - ip: {{ .ip | quote }}
+        hostname:
+        {{- range .hostnames }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
     {{- if or (.Values.VolumePermissions.enabled) .Values.extraInitContainers }}
       initContainers:

@@ -65,6 +65,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
 | `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
 | `serviceAccount.automountServiceAccountToken` | Opt out of API credential automounting. | `false` |
+| `hostAliases` | Add entries to Pod /etc/hosts | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
 | `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `ConfigMap` |
