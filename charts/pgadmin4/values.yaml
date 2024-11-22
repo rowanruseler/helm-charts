@@ -61,6 +61,14 @@ serviceAccount:
   # you can opt out of the default behavior
   automountServiceAccountToken: false
 
+## Pod HostAliases
+## ref: https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/
+##
+hostAliases:
+  # - ip: "127.0.0.1"
+  #   hostnames:
+  #   - "pgadmin4.local"
+
 ## Strategy used to replace old Pods by new ones
 ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 ##
