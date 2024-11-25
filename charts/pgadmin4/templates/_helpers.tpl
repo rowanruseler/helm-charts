@@ -107,7 +107,7 @@ Usage:
 Create the name of the namespace
 */}}
 {{- define "pgadmin.namespaceName" -}}
-{{- default .Release.Namespace .Values.namespace }}
+{{- default .Release.Namespace .Values.namespace | quote }}
 {{- end }}
 
 {{/*
