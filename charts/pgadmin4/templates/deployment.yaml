@@ -66,7 +66,7 @@ spec:
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
-              subPath: {{ .Values.persistentVolume.subPath | default "" }}
+              subPath: "{{ .Values.persistentVolume.subPath }}"
           securityContext:
             runAsUser: 0
           resources:
@@ -190,7 +190,7 @@ spec:
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
-              subPath: {{ .Values.persistentVolume.subPath | default "" }}
+              subPath: "{{ .Values.persistentVolume.subPath }}"
           {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
           {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: definitions
@@ -201,13 +201,13 @@ spec:
           {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath | default "" }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
-              subPath: {{ .subPath | default "" }}
+              subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- if .Values.extraVolumeMounts }}

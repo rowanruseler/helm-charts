@@ -135,7 +135,7 @@ ingress:
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/ssl/certs
-  #   subPath: ca-certificates.crt # (optional)
+  #   subPath: ""
   #   configMap: certs-configmap
   #   readOnly: true
 
@@ -254,8 +254,11 @@ persistentVolume:
   ##
   # storageClass: "-"
   # existingClaim: ""
-  ## Sub-directory of the PV to mount
-  # subPath: ""
+
+  ## Subdirectory of pgAdmin4 Persistent Volume to mount
+  ## Useful if the volume's root directory is not empty
+  ##
+  subPath: ""
 
 ## Additional volumes to be added to the deployment
 ##
