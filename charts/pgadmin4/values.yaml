@@ -14,6 +14,9 @@ image:
 ## Deployment annotations
 annotations: {}
 
+## revisionHistoryLimit The number of old history to retain to allow rollback
+revisionHistoryLimit: 10
+
 ## commonLabels Add labels to all the deployed resources
 commonLabels: {}
 
