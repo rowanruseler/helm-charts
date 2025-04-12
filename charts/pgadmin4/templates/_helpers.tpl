@@ -63,7 +63,7 @@ Generate chart secret name
 Defines a JSON file containing server definitions. This allows connection information to be pre-loaded into the instance of pgAdmin in the container. Note that server definitions are only loaded on first launch, i.e. when the configuration database is created, and not on subsequent launches using the same configuration database.
 */}}
 {{- define "pgadmin.serverDefinitions" -}}
-{{ tpl ( dict "Servers" .Values.serverDefinitions.servers | toPrettyJson) . }}
+{{ tpl (dict "Servers" .Values.serverDefinitions.servers | toPrettyJson) . }}
 {{- end -}}
 
 {{/*
