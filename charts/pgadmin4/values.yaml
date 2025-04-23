@@ -102,6 +102,9 @@ serverDefinitions:
   # If resource type is set to Secret, specify existingSecret containing definitions
   existingSecret: ""
 
+  # If resource type is set to Secret, use stringData instead of data
+  useStringData: false
+
   servers:
   #  firstServer:
   #    Name: "Minimally Defined Server"
