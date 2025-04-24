@@ -72,6 +72,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `ConfigMap` |
 | `serverDefinitions.existingConfigmap` | The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap` | `""` |
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
+| `serverDefinitions.useStringData` | The Secret will template using plainText stringData instead of data | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
