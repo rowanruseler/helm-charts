@@ -50,7 +50,7 @@ spec:
       hostAliases:
       {{- range .Values.hostAliases }}
       - ip: {{ .ip | quote }}
-        hostname:
+        hostnames:
         {{- range .hostnames }}
         - {{ . | quote }}
         {{- end }}
