@@ -71,7 +71,7 @@ Create the name of the namespace
 Defines a JSON file containing server definitions.
 */}}
 {{- define "pgadmin.serverDefinitions" -}}
-{{ tpl (toPrettyJson (dict "Servers" .Values.serverDefinitions.servers)) . }}
+{{ tpl (dict "Servers" .Values.serverDefinitions.servers | toYaml) . | fromYaml | toPrettyJson }}
 {{- end -}}
 
 {{- define "pgadmin.serverDefinitionsConfigmap" -}}
