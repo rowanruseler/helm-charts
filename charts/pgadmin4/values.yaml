@@ -114,7 +114,7 @@ serverDefinitions:
   #    Group: "Servers"
   #    Username: "postgres"
   #    Host: "{{ .Values.example.host }}"
-  #    Port: {{ .Values.example.port }}
+  #    Port: "{{ .Values.example.port }}"
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
