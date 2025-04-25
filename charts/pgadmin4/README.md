@@ -4,6 +4,11 @@
 
 [pgAdmin4](https://www.pgadmin.org/) is the leading Open Source management tool for Postgres, the world’s most advanced Open Source database. pgAdmin4 is designed to meet the needs of both novice and experienced Postgres users alike, providing a powerful graphical interface that simplifies the creation, maintenance and use of database objects.
 
+## Prerequisites
+
+* Kubernetes 1.19+
+* Helm 3.7+
+
 ## TL;DR;
 
 ```console
@@ -20,9 +25,6 @@ This chart bootstraps a [pgAdmin4](https://www.pgadmin.org/) deployment on a [Ku
 To install the chart with the release name `my-release`:
 
 ```console
-$ # Helm 2
-helm install --name my-release runix/pgadmin4
-$ # Helm 3
 helm install my-release runix/pgadmin4
 ```
 
@@ -72,6 +74,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `ConfigMap` |
 | `serverDefinitions.existingConfigmap` | The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap` | `""` |
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
+| `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
@@ -137,10 +140,6 @@ Then it will be resolved for you.
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```console
-$ # Helm 2
-helm install runix/pgadmin4 --name my-release \
-  --set env.password=SuperSecret
-$ # Helm 3
 helm install my-release runix/pgadmin4 \
   --set env.password=SuperSecret
 ```
@@ -149,9 +148,6 @@ Alternatively, a YAML file that specifies the values for the parameters can be
 provided while installing the chart. For example:
 
 ```console
-$ # Helm 2
-helm install runix/pgadmin4 --name my-release -f values.yaml
-$ # Helm 3
 helm install my-release runix/pgadmin4 -f values.yaml
 ```
 

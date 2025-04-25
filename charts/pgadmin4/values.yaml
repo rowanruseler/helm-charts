@@ -125,10 +125,10 @@ networkPolicy:
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
+  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  # ingressClassName: ""
   hosts:
     - host: chart-example.local
       paths:
@@ -183,7 +183,7 @@ existingSecret: ""
 ## @param secretKeys.pgadminPasswordKey Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set.
 ##
 secretKeys:
-  pgadminPasswordKey: password
+  pgadminPasswordKey: ""
 
 ## pgAdmin4 startup configuration
 ## Values in here get injected as environment variables
@@ -289,17 +289,19 @@ containerSecurityContext:
 ##
 livenessProbe:
   initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 15
-  successThreshold: 1
+  periodSeconds: 20
+  timeoutSeconds: 5
   failureThreshold: 3
 
 readinessProbe:
-  initialDelaySeconds: 30
-  periodSeconds: 60
-  timeoutSeconds: 15
-  successThreshold: 1
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
   failureThreshold: 3
+
+startupProbe:
+  failureThreshold: 30
+  periodSeconds: 2
 
 ## Required to be enabled pre pgAdmin4 4.16 release, to set the ACL on /var/lib/pgadmin.
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
