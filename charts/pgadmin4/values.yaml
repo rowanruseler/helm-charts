@@ -107,14 +107,14 @@ serverDefinitions:
   useStringData: false
 
   # Inline server definitions (ignore if you point to an existing resource)
-  # You can use Helm templates here, e.g. Host: "{{ .Values.example.host }}"
+  # You can use Helm templates here, e.g. Host: '{{ .Values.example.host }}'
   servers:
   #  firstServer:
   #    Name: "Minimally Defined Server"
   #    Group: "Servers"
   #    Username: "postgres"
-  #    Host: "{{ .Values.example.host }}"
-  #    Port: {{ .Values.example.port }}
+  #    Host: '{{ .Values.example.host }}'
+  #    Port: '{{ .Values.example.port }}'
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
