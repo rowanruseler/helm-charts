@@ -1,0 +1,79 @@
+#
+# values.yaml
+#
+example:
+  host: "localhost"
+  port: 443
+  shared: false
+  timeout: "60" # _helpers.tpl should convert this to an int
+  maintenancedb: postgres # _helpers.tpl should convert this to a str
+
+## Pre-load pgAdmin4 with servers at first start-up.
+## Servers are imported only the first time the config DB is created.
+## Docs: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
+##
+serverDefinitions:
+  # Enable/disable server import
+  enabled: true
+
+  # Storage for the server JSON:
+  #   ConfigMap - plain text (good for non-secret data)
+  #   Secret    - base-64 (better for credentials)
+  resourceType: Secret
+
+  # Set to true to put raw JSON under `stringData` (handy for dry-runs/debug).
+  # Leave false to keep the default base-64 in `data`.
+  useStringData: true
+
+  # Inline server definitions (ignore if you point to an existing resource)
+  # You can use Helm templates here, e.g. Host: "{{ .Values.example.host }}"
+  servers:
+    1:
+      Name: "Minimally Defined Server"
+      Group: "Server Group 1"
+      Port: '{{ .Values.example.port }}'
+      Username: "postgres"
+      Host: "{{ .Values.example.host }}"
+      MaintenanceDB: '{{ .Values.example.maintenancedb }}'
+      ConnectionParameters: {
+        "sslmode": "prefer",
+        "connect_timeout": '{{ .Values.example.timeout }}'
+      }
+    2:
+     Name: "Fully Defined Server"
+     Group: "Server Group 2"
+     Host: "host.domain.com"
+     Port: "{{ .Values.example.port }}"
+     MaintenanceDB: "postgres"
+     Username: "postgres"
+     Role: "my_role_name"
+     Comment: "This server has every option configured in the JSON"
+     DBRestriction: "live_db test_db"
+     Shared: false
+     SharedUsername: "postgres"
+     BGColor: "#ff9900"
+     FGColor: "#000000"
+     Service: "postgresql-10"
+     UseSSHTunnel: 1
+     TunnelHost: "192.168.1.253"
+     TunnelPort: 22
+     TunnelUsername: "username"
+     TunnelAuthentication: 1
+     TunnelIdentityFile: "/Users/<user>/.ssh/id_rsa.pub"
+     TunnelKeepAlive: 30
+     PasswordExecCommand: "echo 'test'"
+     PasswordExecExpiration: 100
+     KerberosAuthentication: true
+     ConnectionParameters: {
+       "sslmode": "prefer",
+       "connect_timeout": 10,
+       "passfile": "/Users/<user>/.pgpass",
+       "sslcert": "/Users/<user>/.ssh/cert"
+     }
+     Tags: [
+       {
+         "color": "#EC0BB4",
+         "text": "Development"
+       }
+     ]
+     PostConnectionSQL: "set timezone='America/New_York'"

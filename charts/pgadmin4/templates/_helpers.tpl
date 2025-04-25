@@ -69,9 +69,36 @@ Create the name of the namespace
 
 {{/*
 Defines a JSON file containing server definitions.
+Recursively walk through a map or slice and cast string values:
+- Convert numeric strings (e.g., "443") to integers
+- Convert boolean strings ("true"/"false") to actual bools
+Useful for ensuring generated JSON has the correct types.
 */}}
+{{- define "pgadmin.serverDefinitionsConvert" -}}
+{{- $obj := . }}
+{{- if kindIs "map" $obj }}
+  {{- range $k, $v := $obj }}
+    {{- if kindIs "string" $v }}
+      {{- if regexMatch "^[0-9]+$" $v }}
+        {{- $_ := set $obj $k (atoi $v) }}
+      {{- else if regexMatch "(?i)^(true|false)$" $v }}
+        {{- $_ := set $obj $k (eq (lower $v) "true") }}
+      {{- end }}
+    {{- else }}
+      {{- include "pgadmin.serverDefinitionsConvert" $v }}
+    {{- end }}
+  {{- end }}
+{{- else if kindIs "slice" $obj }}
+  {{- range $i, $v := $obj }}
+    {{- include "pgadmin.serverDefinitionsConvert" $v }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "pgadmin.serverDefinitions" -}}
-{{ tpl (toPrettyJson (dict "Servers" .Values.serverDefinitions.servers)) . }}
+{{- $raw := tpl (toYaml .Values.serverDefinitions.servers) . | fromYaml }}
+{{- include "pgadmin.serverDefinitionsConvert" $raw }}
+{{ tpl (toPrettyJson (dict "Servers" $raw)) . }}
 {{- end -}}
 
 {{- define "pgadmin.serverDefinitionsConfigmap" -}}
@@ -120,7 +147,6 @@ Usage:
         {{- tpl (.value | toYaml) .context }}
     {{- end }}
 {{- end -}}
-
 
 {{/*
 Validation helpers.
