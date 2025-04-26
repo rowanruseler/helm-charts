@@ -54,6 +54,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Image Templating
+*/}}
+{{- define "pgadmin.image" -}}
+{{ default .Values.image.registry .Values.global.imageRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- end }}
+
+{{/*
 Generate chart secret name
 */}}
 {{- define "pgadmin.secretName" -}}
