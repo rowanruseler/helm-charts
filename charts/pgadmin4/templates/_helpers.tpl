@@ -57,7 +57,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Image Templating
 */}}
 {{- define "pgadmin.image" -}}
-{{ default .Values.image.registry .Values.global.imageRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{ printf "%s/%s:%s" (default .Values.image.registry .Values.global.imageRegistry) .Values.image.repository (default .Chart.AppVersion .Values.image.tag) }}
 {{- end }}
 
 {{/*
