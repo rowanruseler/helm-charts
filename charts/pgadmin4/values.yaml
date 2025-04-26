@@ -1,3 +1,7 @@
+# Globals
+global:
+  imageRegistry: ""
+
 # Default values for pgAdmin4.
 
 replicaCount: 1
