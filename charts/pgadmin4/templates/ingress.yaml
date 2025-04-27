@@ -15,10 +15,7 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  annotations: {{- tpl (ternary .Values.ingress.annotations (.Values.ingress.annotations | toYaml) (kindIs "string" .Values.ingress.annotations)) . | nindent 4 }}
 spec:
 {{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
