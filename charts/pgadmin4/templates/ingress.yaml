@@ -4,8 +4,6 @@
 {{- $ingressSupportsPathType := eq (include "pgadmin.ingress.supportsPathType" .) "true" -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $ingressPath := .Values.ingress.path -}}
-{{- $ingressPathType := .Values.ingress.pathType -}}
 apiVersion: {{ include "pgadmin.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
@@ -41,7 +39,7 @@ spec:
         {{- range .paths }}
           - path: {{ .path }}
           {{- if $ingressSupportsPathType }}
-            pathType: {{ .ingressPathType }}
+            pathType: {{ .pathType }}
           {{- end }}
             backend:
             {{- if $ingressApiIsStable }}
