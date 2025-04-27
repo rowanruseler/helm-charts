@@ -80,9 +80,12 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
-| `ingress.ingressClassName` | Ingress class name | `""` |
+| `ingress.labels` | Custom labels | `{}` |
+| `ingress.ingressClassName` | Ingress Class Name. MAY be required for Kubernetes versions >= 1.18 | `""` |
 | `ingress.hosts.host` | Ingress accepted hostname | `nil` |
 | `ingress.hosts.paths` | Ingress paths list | `[]` |
+| `ingress.hosts.paths.path` | Ingress accepted path | `/` |
+| `ingress.hosts.paths.pathType` | Ingress type of path | `Prefix` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
