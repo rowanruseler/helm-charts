@@ -1,25 +1,26 @@
 {{- if .Values.ingress.enabled -}}
+{{- $ingressApiIsStable := eq (include "pgadmin.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsIngressClassName := eq (include "pgadmin.ingress.supportsIngressClassName" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "pgadmin.ingress.supportsPathType" .) "true" -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $kubeVersion := .Capabilities.KubeVersion.Version -}}
-{{- if semverCompare ">=1.19-0" $kubeVersion -}}
-apiVersion: networking.k8s.io/v1
-{{- else if semverCompare "<=1.13-0" $kubeVersion -}}
-apiVersion: extensions/v1beta1
-{{- else -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- end }}
+{{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPathType := .Values.ingress.pathType -}}
+apiVersion: {{ include "pgadmin.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
+    {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations: {{- tpl (ternary .Values.ingress.annotations (.Values.ingress.annotations | toYaml) (kindIs "string" .Values.ingress.annotations)) . | nindent 4 }}
 spec:
-{{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
-  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
-{{- end }}
+{{- if and $ingressSupportsIngressClassName .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+{{- end -}}
 {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
@@ -39,11 +40,11 @@ spec:
         paths:
         {{- range .paths }}
           - path: {{ .path }}
-          {{- if and .pathType (semverCompare ">=1.18-0" $kubeVersion) }}
-            pathType: {{ .pathType }}
+          {{- if $ingressSupportsPathType }}
+            pathType: {{ .ingressPathType }}
           {{- end }}
             backend:
-            {{- if semverCompare ">=1.19-0" $kubeVersion }}
+            {{- if $ingressApiIsStable }}
               service:
                 name: {{ $fullName }}
                 port:

@@ -68,6 +68,27 @@ Create the name of the namespace
 {{- end }}
 
 {{/*
+Return if ingress is stable.
+*/}}
+{{- define "pgadmin.ingress.isStable" -}}
+{{- eq (include "pgadmin.ingress.apiVersion" .) "networking.k8s.io/v1" }}
+{{- end }}
+
+{{/*
+Return if ingress supports ingressClassName.
+*/}}
+{{- define "pgadmin.ingress.supportsIngressClassName" -}}
+{{- or (eq (include "pgadmin.ingress.isStable" .) "true") (and (eq (include "pgadmin.ingress.apiVersion" .) "networking.k8s.io/v1beta1") (semverCompare ">= 1.18-0" .Capabilities.KubeVersion.Version)) }}
+{{- end }}
+
+{{/*
+Return if ingress supports pathType.
+*/}}
+{{- define "pgadmin.ingress.supportsPathType" -}}
+{{- or (eq (include "pgadmin.ingress.isStable" .) "true") (and (eq (include "pgadmin.ingress.apiVersion" .) "networking.k8s.io/v1beta1") (semverCompare ">= 1.18-0" .Capabilities.KubeVersion.Version)) }}
+{{- end }}
+
+{{/*
 Defines a JSON file containing server definitions.
 Recursively walk through a map or slice and cast string values:
 - Convert numeric strings (e.g., "443") to integers
@@ -134,6 +155,19 @@ Return the appropriate apiVersion for network policy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for ingress.
+*/}}
+{{- define "pgadmin.ingress.apiVersion" -}}
+{{- if and ($.Capabilities.APIVersions.Has "networking.k8s.io/v1") (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) }}
+{{- print "networking.k8s.io/v1" }}
+{{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+{{- print "networking.k8s.io/v1beta1" }}
+{{- else }}
+{{- print "extensions/v1beta1" }}
+{{- end }}
+{{- end }}
 
 {{/*
 Renders a value that contains template.
