@@ -61,7 +61,7 @@ spec:
       initContainers:
       {{- if .Values.VolumePermissions.enabled }}
         - name: init-chmod-data
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "pgadmin.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
           volumeMounts:
@@ -82,7 +82,7 @@ spec:
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "pgadmin.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
@@ -258,9 +258,10 @@ spec:
               path: servers.json
         {{- end }}
       {{- end }}
-    {{- if .Values.imagePullSecrets }}
+    {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
+    {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}
       imagePullSecrets:
-        {{- .Values.imagePullSecrets | toYaml | nindent 8 }}
+        {{ $pullSecrets | nindent 8 | trim }}
     {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

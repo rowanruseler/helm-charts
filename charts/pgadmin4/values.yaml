@@ -1,4 +1,10 @@
-# Default values for pgAdmin4.
+global:
+  # Overrides the Docker registry globally for all images.
+  imageRegistry: ""
+  # Add additional image pull secrets globally.
+  # Support both full format (- name: secret) and short format (- secret).
+  # These will be merged with any chart-specific pull secrets.
+  imagePullSecrets: []
 
 replicaCount: 1
 
@@ -11,6 +17,12 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+  #  - RegistryKeySecret
+  
 ## Deployment annotations
 annotations: {}
 

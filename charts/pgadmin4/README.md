@@ -46,11 +46,14 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `global.imageRegistry` | Global image pull registry for all images | `""` |
+| `global.imagePullSecrets` | Global image pull secrets, support both full format (- name: secret) and short format (- secret) | `[]` |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
 | `image.tag` | Docker image tag | `""` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
+| `imagePullSecrets` | Docker image pull secrets | `[]` |
 | `annotations` | Deployment Annotations | `{}` |
 | `revisionHistoryLimit` | The number of old history to retain to allow rollback | `10` |
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
