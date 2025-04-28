@@ -82,7 +82,7 @@ spec:
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ include "pgadmin.image" . }}
+          image: {{ include "pgadmin.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
