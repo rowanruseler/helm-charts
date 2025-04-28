@@ -258,9 +258,11 @@ spec:
               path: servers.json
         {{- end }}
       {{- end }}
-      {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
-      imagePullSecrets: {{- concat .Values.imagePullSecrets .Values.global.imagePullSecrets | toYaml | nindent 8 }}
-      {{- end }}
+    {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
+    {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}
+      imagePullSecrets:
+        {{ $pullSecrets | nindent 8 | trim }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
         {{- .Values.nodeSelector | toYaml | nindent 8 }}
