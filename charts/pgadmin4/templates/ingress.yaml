@@ -14,7 +14,9 @@ metadata:
     {{- with .Values.ingress.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  annotations: {{- tpl (ternary .Values.ingress.annotations (.Values.ingress.annotations | toYaml) (kindIs "string" .Values.ingress.annotations)) . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations: {{- tpl (ternary . (. | toYaml) (kindIs "string" .)) $ | nindent 4 }}
+  {{- end }}
 spec:
 {{- if and $ingressSupportsIngressClassName .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName }}
