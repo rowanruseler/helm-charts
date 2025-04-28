@@ -1,6 +1,8 @@
 global:
   # Overrides the Docker registry globally for all images.
   imageRegistry: ""
+  # Additional global imagePullSecrets
+  imagePullSecrets: []
 
 replicaCount: 1
 
@@ -15,6 +17,9 @@ image:
 
 ## Deployment annotations
 annotations: {}
+
+## image Pull Secrets
+imagePullSecrets: []
 
 ## revisionHistoryLimit The number of old history to retain to allow rollback
 revisionHistoryLimit: 10
