@@ -1,7 +1,9 @@
 global:
   # Overrides the Docker registry globally for all images.
   imageRegistry: ""
-  # Additional global imagePullSecrets
+  # Add additional image pull secrets globally.
+  # Support both full format (- name: secret) and short format (- secret).
+  # These will be merged with any chart-specific pull secrets.
   imagePullSecrets: []
 
 replicaCount: 1
