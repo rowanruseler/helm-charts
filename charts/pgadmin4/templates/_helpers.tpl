@@ -65,6 +65,21 @@ Return full image path using global or local registry.
 {{ printf "%s:%s" .Values.image.repository $tag }}
 {{- end }}
 {{- end }}
+
+{{/*
+Return list of imagePullSecrets from global and local values.
+*/}}
+{{- define "pgadmin.imagePullSecrets" -}}
+{{- $secrets := concat .Values.global.imagePullSecrets .Values.imagePullSecrets }}
+{{- range $secrets }}
+{{- if eq (typeOf .) "map[string]interface {}" }}
+- {{ toYaml (dict "name" .name) | trim }}
+{{- else }}
+- name: {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{/*
 Generate chart secret name
 */}}
