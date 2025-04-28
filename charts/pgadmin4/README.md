@@ -46,8 +46,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `global.imageRegistry` | Override image registry | `""` |
-| `global.imagePullSecrets` | Additional global imagePullSecrets | `[]` |
+| `global.imageRegistry` | Global image pull registry for all images | `""` |
+| `global.imagePullSecrets` | Global image pull secrets, support both full format (- name: secret) and short format (- secret) | `[]` |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
 | `image.repository` | Docker image | `dpage/pgadmin4` |
