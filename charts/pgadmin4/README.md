@@ -53,7 +53,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `image.repository` | Docker image | `dpage/pgadmin4` |
 | `image.tag` | Docker image tag | `""` |
 | `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
-| `imagePullSecrets` | Image Pull Secrets | `[]` |
+| `imagePullSecrets` | Docker image pull secrets | `[]` |
 | `annotations` | Deployment Annotations | `{}` |
 | `revisionHistoryLimit` | The number of old history to retain to allow rollback | `10` |
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
