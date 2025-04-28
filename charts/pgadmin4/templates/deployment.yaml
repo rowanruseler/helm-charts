@@ -6,11 +6,8 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
-{{- if .Values.annotations }}
-  annotations:
-  {{- if .Values.annotations }}
-    {{- .Values.annotations | toYaml | nindent 4 }}
-  {{- end }}
+{{- with .Values.annotations }}
+  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}

@@ -7,9 +7,8 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
-  {{- if .Values.persistentVolume.annotations }}
-  annotations:
-    {{- .Values.persistentVolume.annotations | toYaml | nindent 4 }}
+  {{- with .Values.persistentVolume.annotations }}
+  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
   accessModes:
@@ -18,7 +17,7 @@ spec:
 {{- if (eq "-" .Values.persistentVolume.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+  storageClassName: {{ .Values.persistentVolume.storageClass }}
 {{- end }}
 {{- end }}
   resources:
