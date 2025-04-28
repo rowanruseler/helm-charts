@@ -54,12 +54,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Image Templating
+Return full image path using global or local registry.
 */}}
 {{- define "pgadmin.image" -}}
-{{ printf "%s/%s:%s" (default .Values.image.registry .Values.global.imageRegistry) .Values.image.repository (default .Chart.AppVersion .Values.image.tag) }}
+{{- $registry := .Values.global.imageRegistry | default .Values.image.registry | trimSuffix "/" }}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion }}
+{{- if $registry }}
+{{ printf "%s/%s:%s" $registry .Values.image.repository $tag }}
+{{- else }}
+{{ printf "%s:%s" .Values.image.repository $tag }}
 {{- end }}
-
+{{- end }}
 {{/*
 Generate chart secret name
 */}}
