@@ -1,8 +1,6 @@
-# Globals
 global:
+  # Overrides the Docker registry globally for all images.
   imageRegistry: ""
-
-# Default values for pgAdmin4.
 
 replicaCount: 1
 
