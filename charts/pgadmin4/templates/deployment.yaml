@@ -61,7 +61,7 @@ spec:
       initContainers:
       {{- if .Values.VolumePermissions.enabled }}
         - name: init-chmod-data
-          image: {{ include "pgadmin.image" . }}
+          image: {{ include "pgadmin.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/chown", "-R", "5050:5050", "/var/lib/pgadmin"]
           volumeMounts:
