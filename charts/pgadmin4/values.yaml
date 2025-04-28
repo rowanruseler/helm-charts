@@ -21,7 +21,7 @@ image:
 imagePullSecrets: []
   #  - RegistryKeySecret
   
- ## Deployment annotations
+## Deployment annotations
 annotations: {}
 
 ## revisionHistoryLimit The number of old history to retain to allow rollback
