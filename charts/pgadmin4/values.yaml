@@ -15,11 +15,14 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 
-## Deployment annotations
-annotations: {}
-
-## image Pull Secrets
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
+  #  - RegistryKeySecret
+  
+ ## Deployment annotations
+annotations: {}
 
 ## revisionHistoryLimit The number of old history to retain to allow rollback
 revisionHistoryLimit: 10
