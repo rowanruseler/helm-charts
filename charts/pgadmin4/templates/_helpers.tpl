@@ -60,9 +60,9 @@ Return full image path using global or local registry.
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry | trimSuffix "/" }}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion }}
 {{- if $registry }}
-{{ printf "%s/%s:%s" $registry .Values.image.repository $tag }}
+{{- printf "%s/%s:%s" $registry .Values.image.repository $tag -}}
 {{- else }}
-{{ printf "%s:%s" .Values.image.repository $tag }}
+{{- printf "%s:%s" .Values.image.repository $tag -}}
 {{- end }}
 {{- end }}
 
