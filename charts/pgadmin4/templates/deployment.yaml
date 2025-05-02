@@ -24,8 +24,11 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- with (merge .Values.podLabels .Values.commonLabels) }}
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
+        {{- end }}
+        {{- with .Values.commonLabels }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
       annotations:
