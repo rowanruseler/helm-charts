@@ -206,7 +206,7 @@ secretKeys:
 env:
   # can be email or nickname
   email: chart@domain.com
-  password: SuperSecret
+  password: ""
   # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
 
   # set context path for application (e.g. /pgadmin4/*)
