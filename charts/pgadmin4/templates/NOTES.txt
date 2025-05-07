@@ -2,6 +2,11 @@ CHART NAME: {{ .Chart.Name }}
 CHART VERSION: {{ .Chart.Version }}
 APP VERSION: {{ .Chart.AppVersion }}
 
+{{ if and (eq .Values.env.password "SuperSecret") (empty .Values.existingSecret) }}
+SECURITY WARNING: 'env.password' is set to the default 'SuperSecret' and no 'existingSecret' is set.
+This is insecure. Set a strong password or use an existingSecret.
+{{- end }}
+
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
 {{- range $host := .Values.ingress.hosts }}
