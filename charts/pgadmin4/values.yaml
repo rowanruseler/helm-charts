@@ -130,6 +130,86 @@ serverDefinitions:
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
+oauth2:
+  # Enable/disable OAuth2 authentication
+  enabled: false
+  # The configmap name that holds the OAuth2 client ID and secret
+  clientId: ""
+  # The key in the secret that holds the OAuth2 client secret
+  clientSecret: ""
+
+config_local:
+  # The config_local.py file is used to override the default pgAdmin4 configuration
+  # and is mounted as a ConfigMap in the container.
+  #
+  # Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html#config-local-py
+  #
+  enabled: false
+  # The config_local.py file contents
+  data: |-
+    import os
+    MASTER_PASSWORD_REQUIRED = True
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+    OAUTH2_AUTO_CREATE_USER = True
+    OAUTH2_CONFIG = [
+      {
+          'OAUTH2_NAME': 'google',
+          'OAUTH2_DISPLAY_NAME': 'Google',
+          'OAUTH2_CLIENT_ID': os.environ['OAUTH2_CLIENT_ID'],
+          'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+          'OAUTH2_TOKEN_URL': 'https://oauth2.googleapis.com/token',
+          'OAUTH2_AUTHORIZATION_URL': 'https://accounts.google.com/o/oauth2/v2/auth',
+          'OAUTH2_API_BASE_URL': 'https://openidconnect.googleapis.com/v1/userinfo',
+          'OAUTH2_SERVER_METADATA_URL': 'https://accounts.google.com/.well-known/openid-configuration',
+          'OAUTH2_SCOPE': 'openid email profile',
+          'OAUTH2_USERINFO_ENDPOINT': 'userinfo',
+          'OAUTH2_ICON': 'fa-google',
+          'OAUTH2_BUTTON_COLOR': '#0000ff',
+      },
+      {
+          'OAUTH2_NAME': 'github',
+          'OAUTH2_DISPLAY_NAME': 'Github',
+          'OAUTH2_CLIENT_ID': os.environ['OAUTH2_CLIENT_ID'],
+          'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+          'OAUTH2_TOKEN_URL': 'https://github.com/login/oauth/access_token',
+          'OAUTH2_AUTHORIZATION_URL': 'https://github.com/login/oauth/authorize',
+          'OAUTH2_API_BASE_URL': 'https://api.github.com/',
+          'OAUTH2_USERINFO_ENDPOINT': 'user',
+          'OAUTH2_ICON': 'fa-github',
+          'OAUTH2_BUTTON_COLOR': '#0000ff',
+      },
+      {
+        'OAUTH2_NAME': 'microsoft',
+        'OAUTH2_DISPLAY_NAME': 'Microsoft',
+        'OAUTH2_CLIENT_ID': os.environ['OAUTH2_CLIENT_ID'],
+        'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+        'OAUTH2_TOKEN_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/token',
+        'OAUTH2_AUTHORIZATION_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/authorize',
+        'OAUTH2_API_BASE_URL': 'https://graph.microsoft.com/v1.0/',
+        'OAUTH2_USERINFO_ENDPOINT': 'me',
+        'OAUTH2_SCOPE': 'User.Read',
+        'OAUTH2_ICON': 'fa-microsoft',
+        'OAUTH2_BUTTON_COLOR': '#0000ff',
+      },
+      {
+        'OAUTH2_NAME': 'microsoft-oidc',
+        'OAUTH2_DISPLAY_NAME': 'Microsoft OIDC',
+        'OAUTH2_CLIENT_ID': os.environ['OAUTH2_CLIENT_ID'],
+        'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+        'OAUTH2_TOKEN_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/token',
+        'OAUTH2_AUTHORIZATION_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/oauth2/v2.0/authorize',
+        'OAUTH2_SERVER_METADATA_URL': 'https://login.microsoftonline.com/{YOUR_TENANT_ID}/v2.0/.well-known/openid-configuration',
+        'OAUTH2_API_BASE_URL': 'https://graph.microsoft.com/v1.0/',
+        'OAUTH2_USERINFO_ENDPOINT': 'https://graph.microsoft.com/oidc/userinfo',
+        'OAUTH2_SCOPE': 'openid profile email',
+        'OAUTH2_ICON': 'fa-microsoft',
+        'OAUTH2_BUTTON_COLOR': '#0000ff',
+        'OAUTH2_ADDITIONAL_CLAIMS': {
+          'groups': ["{LIST_OF_YOUR_GROUP_GUIDS}"],
+        }
+    ]
+
+
 networkPolicy:
   enabled: true
 
@@ -157,6 +237,11 @@ ingress:
 # Additional config maps to be mounted inside a container
 # Can be used to map config maps for sidecar as well
 extraConfigmapMounts: []
+  # - name: config-local
+  #   configMap: "{{ .Release.Name }}-{{ .Chart.Name }}-config"
+  #   subPath: config_local.py
+  #   mountPath: "/pgadmin4/config_local.py"
+  #   readOnly: true
   # - name: certs-configmap
   #   mountPath: /etc/ssl/certs
   #   subPath: ""
@@ -233,6 +318,7 @@ envVarsFromConfigMaps: []
 
 ## Additional environment variables from Secrets
 envVarsFromSecrets: []
+  # - "{{ .Release.Name }}-{{ .Chart.Name }}-oauth2-secret"
   # - array-of
   # - secret-names
 
