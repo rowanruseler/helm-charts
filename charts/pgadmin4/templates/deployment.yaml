@@ -6,11 +6,8 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
-{{- if .Values.annotations }}
-  annotations:
-  {{- if .Values.annotations }}
-    {{- .Values.annotations | toYaml | nindent 4 }}
-  {{- end }}
+{{- with .Values.annotations }}
+  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -27,8 +24,11 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- with (merge .Values.podLabels .Values.commonLabels) }}
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
+        {{- end }}
+        {{- with .Values.commonLabels }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
       annotations:

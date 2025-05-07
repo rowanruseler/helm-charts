@@ -32,6 +32,16 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+tpl to a map a map/string that is provided by a toMap key and context. 
+Usage:
+{{- include "pgadmin.tplToMap" (dict "toMap" .Values.myExampleMap "context" $) }}
+{{- include "pgadmin.tplToMap" (dict "toMap" .Values.myExampleString "context" $) }}
+*/}}
+{{- define "pgadmin.tplToMap" -}}
+{{- tpl (ternary .toMap (.toMap | toYaml) (kindIs "string" .toMap)) .context -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "pgadmin.labels" -}}
@@ -41,7 +51,7 @@ app.kubernetes.io/name: {{ include "pgadmin.name" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 helm.sh/chart: {{ include "pgadmin.chart" . }}
 {{- with .Values.commonLabels }}
-{{ toYaml .  }}
+{{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) }}
 {{- end }}
 {{- end }}
 
@@ -199,7 +209,7 @@ Return the appropriate apiVersion for ingress.
 {{/*
 Renders a value that contains template.
 Usage:
-{{ include "common.tplvalues.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+{{ include "common.tplvalues.render" (dict "value" .Values.path.to.the.Value "context" $) }}
 */}}
 {{- define "common.tplvalues.render" -}}
     {{- if typeIs "string" .value }}
