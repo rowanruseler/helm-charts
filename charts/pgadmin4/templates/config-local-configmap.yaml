@@ -1,0 +1,13 @@
+{{- if .Values.oauth2.enabled -}}
+{{- if and .Values.oauth2.clientId .Values.oauth2.clientSecret -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pgadmin.fullname" . }}-config
+  namespace: {{ include "pgadmin.namespaceName" . }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+data:
+  config_local.py: {{- tpl (toYaml .Values.config_local.data | nindent 4) . }}
+{{- end -}}
+{{- end -}}

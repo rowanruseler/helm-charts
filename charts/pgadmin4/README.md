@@ -79,6 +79,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
 | `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
+| `oauth2.enabled` | Bool Enable/Disable oauth section configuration | `false` |
+| `oauth2.clientId` | String OAuth2 Provider clientId  | `` |
+| `oauth2.clientSecret` | String OAuth2 Provider clientSecret | `` |
+| `config_local.enabled` | Bool Enable/Disable oauth section configuration | `false` |
+| `config_local.data` | This will populate config_local.py as multiline string | `Default Example Google Oauth` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |

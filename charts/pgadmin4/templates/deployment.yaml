@@ -30,7 +30,7 @@ spec:
         {{- with (merge .Values.podLabels .Values.commonLabels) }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
+    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations .Values.oauth2.enabled .Values.config_local.enabled }}
       annotations:
       {{- if .Values.podAnnotations }}
         {{- .Values.podAnnotations | toYaml | nindent 8 }}
@@ -40,6 +40,12 @@ spec:
       {{- end }}
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if .Values.oauth2.enabled }}
+        checksum/config-local-oauth2-secret: {{ include (print $.Template.BasePath "/config-local-oauth2-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if .Values.config_local.enabled }}
+        checksum/config-local-configmap: {{ include (print $.Template.BasePath "/config-local-configmap.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
     spec:
@@ -185,7 +191,7 @@ spec:
             {{- end }}
             {{- range .Values.envVarsFromSecrets }}
             - secretRef:
-                name: {{ . | quote }}
+                name: {{ tpl (. ) $ | quote }}
             {{- end }}
           {{- end }}
           volumeMounts:
