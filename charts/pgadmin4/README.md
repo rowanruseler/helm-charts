@@ -96,7 +96,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@domain.com` |
-| `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `""` |
+| `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `"SuperSecret"` |
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
