@@ -447,4 +447,3 @@ test:
   ## Container Security context for test-connection Pod
   containerSecurityContext:
     readOnlyRootFilesystem: true
-
