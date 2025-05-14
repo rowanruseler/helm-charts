@@ -138,6 +138,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.image.tag` | Docker image tag for test| `latest` |
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
+| `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `` |
 
 > The values for "extraConfigmapMounts.[].configMap" and "extraSecretMounts.[].secret" can be either a simple string
 or a template string.
