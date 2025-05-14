@@ -30,6 +30,8 @@ spec:
           check=$(echo $response | grep -c '200 OK'); echo $check; if [[ $check -gt 0 ]]; then echo "Response OK"; else exit 1; fi
       resources:
         {{- .Values.test.resources | toYaml | nindent 8 }}
+      {{- if .Values.test.containerSecurityContext }}
       securityContext:
-        readOnlyRootFilesystem: true
+          {{- .Values.test.containerSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
   restartPolicy: Never
