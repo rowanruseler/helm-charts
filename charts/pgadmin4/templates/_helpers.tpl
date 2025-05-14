@@ -33,9 +33,8 @@ If release name contains chart name it will be used as a full name.
 
 {{/*
 tpl to a map a map/string that is provided by a toMap key and context. 
-Usage:
-{{- include "pgadmin.tplToMap" (dict "toMap" .Values.myExampleMap "context" $) }}
-{{- include "pgadmin.tplToMap" (dict "toMap" .Values.myExampleString "context" $) }}
+Render a value as a map after templating it.
+Supports both raw string and map types as input.
 */}}
 {{- define "pgadmin.tplToMap" -}}
 {{- tpl (ternary .toMap (.toMap | toYaml) (kindIs "string" .toMap)) .context -}}
