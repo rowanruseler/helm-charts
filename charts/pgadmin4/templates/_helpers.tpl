@@ -32,7 +32,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-tpl to a map a map/string that is provided by a toMap key and context. 
 Render a value as a map after templating it.
 Supports both raw string and map types as input.
 */}}
