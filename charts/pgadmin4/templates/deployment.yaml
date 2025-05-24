@@ -4,10 +4,9 @@ kind: Deployment
 metadata:
   name: {{ $fullName }}
   namespace: {{ include "pgadmin.namespaceName" . }}
-  labels:
-    {{- include "pgadmin.labels" . | nindent 4 }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
 {{- with .Values.annotations }}
-  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
+  annotations: {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
