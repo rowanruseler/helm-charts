@@ -42,12 +42,7 @@ spec:
         checksum/secret: {{ include (print .Template.BasePath "/auth-secret.yaml") . | sha256sum }}
       {{- end }}
       {{- if and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret) }}
-        {{- if eq .Values.serverDefinitions.resourceType "ConfigMap" }}
-        checksum/server-definitions: {{ include (print .Template.BasePath "/server-definitions-configmap.yaml") . | sha256sum }}
-        {{- end }}
-        {{- if eq .Values.serverDefinitions.resourceType "Secret" }}
-        checksum/server-definitions: {{ include (print .Template.BasePath "/server-definitions-secret.yaml") . | sha256sum }}
-        {{- end }}
+        checksum/server-definitions: {{ include (print .Template.BasePath (printf "/server-definitions-%s.yaml" (lower .Values.serverDefinitions.resourceType))) . | sha256sum }}
       {{- end }}
       {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
         checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
