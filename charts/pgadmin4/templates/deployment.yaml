@@ -41,6 +41,9 @@ spec:
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
       {{- end }}
+      {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
+        checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
+      {{- end }}
     {{- end }}
     spec:
     {{- if .Values.serviceAccount.create }}
