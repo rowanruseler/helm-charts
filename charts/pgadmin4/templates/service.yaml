@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: {{ include "pgadmin.fullname" . }}
   namespace: {{ include "pgadmin.namespaceName" . }}
-  labels: {{- include "pgadmin.labels" . | nindent 4 }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
-  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
+  annotations: {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
