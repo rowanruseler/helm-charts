@@ -130,6 +130,17 @@ serverDefinitions:
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
+## Pre load pgAdmin4 with preferences
+## Docs: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html
+## To know what is the key for a specific preference just hover your keyboard on the key
+##
+preferences:
+  enabled: false
+  # existingConfigMap key must be preferences.json
+  existingConfigMap: ""
+  data:
+    misc:user_interface:theme: dark
+
 networkPolicy:
   enabled: true
 

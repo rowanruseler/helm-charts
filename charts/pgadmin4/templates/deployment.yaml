@@ -173,6 +173,10 @@ spec:
               value: /pgadmin4/servers.json
           {{- end }}
           {{- end }}
+          {{- if .Values.preferences.enabled }}
+            - name: PGADMIN_PREFERENCES_JSON_FILE
+              value: /pgadmin4/preferences.json
+          {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
@@ -198,6 +202,11 @@ spec:
               mountPath: /pgadmin4/servers.json
               subPath: servers.json
           {{- end }}
+          {{- end }}
+          {{- if .Values.preferences.enabled }}
+            - name: preferences
+              mountPath: /pgadmin4/preferences.json
+              subPath: preferences.json
           {{- end }}
           {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -257,6 +266,11 @@ spec:
             - key: servers.json
               path: servers.json
         {{- end }}
+      {{- end }}
+      {{- if .Values.preferences.enabled }}
+        - name: preferences
+          configMap:
+            name: {{ ternary (printf "%s-preferences" (include "pgadmin.fullname" .)) .Values.preferences.existingConfigMap (empty .Values.preferences.existingConfigMap) }}
       {{- end }}
     {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
     {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}

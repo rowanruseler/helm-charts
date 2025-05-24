@@ -79,6 +79,9 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
 | `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
+| `preferences.enabled` | Specifiy if to create preferences configmap and mount it | `false` |
+| `preferences.data` | Preferences Data | `{"misc:user_interface:theme": "dark"}` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
