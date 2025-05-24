@@ -31,8 +31,8 @@ spec:
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
       annotations:
-      {{- if .Values.podAnnotations }}
-        {{- .Values.podAnnotations | toYaml | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+        {{- . | toYaml | nindent 8 }}
       {{- end }}
       {{- with .Values.templatedPodAnnotations }}
         {{- tpl . $ | nindent 8 }}
