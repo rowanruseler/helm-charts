@@ -5,8 +5,7 @@ kind: NetworkPolicy
 metadata:
   name: {{ $fullName }}
   namespace: {{ include "pgadmin.namespaceName" . }}
-  labels:
-    {{- include "pgadmin.labels" . | nindent 4 }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
 spec:
   policyTypes:
     - Ingress
