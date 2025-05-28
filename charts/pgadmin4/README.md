@@ -136,6 +136,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `podLabels` | Labels for pod | `{}` |
 | `namespace` | Namespace where to deploy resources | `null` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
+| `test.enabled` | Enables test | `true` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
 | `test.image.tag` | Docker image tag for test| `latest` |
