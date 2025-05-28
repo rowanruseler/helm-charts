@@ -426,6 +426,7 @@ init:
 
 ## Define values for chart tests
 test:
+  enabled: true
   ## Container image for test-connection.yaml
   image:
     registry: docker.io

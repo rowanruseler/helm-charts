@@ -1,3 +1,4 @@
+{{- if .Values.test.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -35,3 +36,4 @@ spec:
           {{- .Values.test.containerSecurityContext | toYaml | nindent 8 }}
       {{- end }}
   restartPolicy: Never
+{{- end }}
