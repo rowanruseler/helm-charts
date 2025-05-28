@@ -25,24 +25,21 @@ spec:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         {{- with .Values.podLabels }}
-        {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | indent 8 }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
         {{- with .Values.commonLabels }}
-        {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | indent 8 }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations (and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret)) (and .Values.preferences.enabled (not .Values.preferences.existingConfigMap)) }}
       annotations:
       {{- if .Values.podAnnotations }}
-        {{ .Values.podAnnotations | toYaml | indent 8 }}
+        {{- .Values.podAnnotations | toYaml | nindent 8 }}
       {{- end }}
       {{- with .Values.templatedPodAnnotations }}
-        {{ tpl . $ | indent 8 }}
+        {{- tpl . $ | nindent 8 }}
       {{- end }}
       {{- if not .Values.existingSecret }}
-        checksum/secret: {{ include (print .Template.BasePath "/auth-secret.yaml") . | sha256sum }}
-      {{- end }}
-      {{- if and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret) }}
-        checksum/server-definitions: {{ include (print .Template.BasePath (printf "/server-definitions-%s.yaml" (lower .Values.serverDefinitions.resourceType))) . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
       {{- end }}
       {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
         checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
@@ -174,7 +171,7 @@ spec:
               value: {{ .Values.env.contextPath }}
           {{- end }}
           {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
-          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.serverDefinitions.servers) }}
+          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: PGADMIN_SERVER_JSON_FILE
               value: /pgadmin4/servers.json
           {{- end }}
@@ -203,7 +200,7 @@ spec:
               mountPath: /var/lib/pgadmin
               subPath: "{{ .Values.persistentVolume.subPath }}"
           {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
-          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.serverDefinitions.servers) }}
+          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: definitions
               mountPath: /pgadmin4/servers.json
               subPath: servers.json
@@ -258,7 +255,7 @@ spec:
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
       {{- if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "Secret") -}}
-        {{- if or (.Values.serverDefinitions.existingSecret) (.Values.serverDefinitions.servers) }}
+        {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
         - name: definitions
           secret:
             secretName: {{ include "pgadmin.serverDefinitionsSecret" . }}
