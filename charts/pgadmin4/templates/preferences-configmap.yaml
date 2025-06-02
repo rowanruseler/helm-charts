@@ -7,6 +7,6 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels: {{ include "pgadmin.labels" . | nindent 4 }}
 data:
-  servers.json: | {{ dict "preferences" .Values.preferences.data | toPrettyJson | nindent 4 }}
+  preferences.json: | {{ dict "preferences" .Values.preferences.data | toPrettyJson | nindent 4 }}
     
 {{- end }}
