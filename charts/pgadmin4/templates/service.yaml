@@ -23,4 +23,4 @@ spec:
     {{- end }}
       protocol: TCP
       name: http
-  selector: {{- include "pgadmin.selectorLabels" . | nindent 4 }}
+  selector: {{ include "pgadmin.selectorLabels" . | nindent 4 }}
