@@ -81,7 +81,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `preferences.enabled` | Specify if to create preferences configmap and mount it | `false` |
 | `preferences.existingConfigMap` | Already Existing Preferences ConfigMap Name | `""` |
-| `preferences.data` | Preferences Data | `{"misc:user_interface:theme": "dark"}` |
+| `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
