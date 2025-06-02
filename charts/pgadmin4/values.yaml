@@ -142,7 +142,7 @@ preferences:
   # If using an existing ConfigMap, it must contain a key named `preferences.json`
   existingConfigMap: ""
 
-  data:
+  data: {}
   #  misc:user_interface:theme: dark
 
 networkPolicy:
