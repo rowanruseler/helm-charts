@@ -24,18 +24,18 @@ spec:
         app.kubernetes.io/name: {{ include "pgadmin.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         {{- with .Values.podLabels }}
-        {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | indent 8 }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
         {{- with .Values.commonLabels }}
-        {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | indent 8 }}
+        {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
     {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations (and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret)) }}
       annotations:
       {{- with .Values.podAnnotations }}
-        {{ . | toYaml | indent 8 }}
+        {{- . | toYaml | nindent 8 }}
       {{- end }}
       {{- with .Values.templatedPodAnnotations }}
-        {{ tpl . $ | indent 8 }}
+        {{- tpl . $ | nindent 8 }}
       {{- end }}
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print .Template.BasePath "/auth-secret.yaml") . | sha256sum }}
