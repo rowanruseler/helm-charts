@@ -1,0 +1,10 @@
+{{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pgadmin.fullname" . }}-preferences
+  namespace: {{ include "pgadmin.namespaceName" . }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
+data:
+  preferences.json: | {{ dict "preferences" .Values.preferences.data | toPrettyJson | nindent 4 }}
+{{- end }}
