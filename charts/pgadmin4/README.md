@@ -80,7 +80,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `preferences.enabled` | Specify if to create preferences configmap and mount it | `false` |
-| `preferences.existingConfigMap` | Already Existing Preferences ConfigMap Name | `""` |
+| `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `ingress.enabled` | Enables Ingress | `false` |
