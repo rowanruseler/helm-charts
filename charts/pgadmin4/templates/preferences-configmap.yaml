@@ -8,5 +8,4 @@ metadata:
   labels: {{ include "pgadmin.labels" . | nindent 4 }}
 data:
   preferences.json: | {{ dict "preferences" .Values.preferences.data | toPrettyJson | nindent 4 }}
-    
 {{- end }}
