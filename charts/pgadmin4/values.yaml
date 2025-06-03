@@ -221,7 +221,7 @@ secretKeys:
 env:
   # can be email or nickname
   email: chart@domain.com
-  # Empty string to generate random password
+  # Empty string for random password generation
   password: SuperSecret
   # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
 
