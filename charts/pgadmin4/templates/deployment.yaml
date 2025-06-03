@@ -30,7 +30,7 @@ spec:
         {{- with .Values.commonLabels }}
         {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
-    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
+    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations (and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret)) (and .Values.preferences.enabled (not .Values.preferences.existingConfigMap)) }}
       annotations:
       {{- if .Values.podAnnotations }}
         {{- .Values.podAnnotations | toYaml | nindent 8 }}
@@ -40,6 +40,9 @@ spec:
       {{- end }}
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
+        checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
     spec:
@@ -173,6 +176,10 @@ spec:
               value: /pgadmin4/servers.json
           {{- end }}
           {{- end }}
+          {{- if .Values.preferences.enabled }}
+            - name: PGADMIN_PREFERENCES_JSON_FILE
+              value: /pgadmin4/preferences.json
+          {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
               value: {{ .value | quote }}
@@ -198,6 +205,11 @@ spec:
               mountPath: /pgadmin4/servers.json
               subPath: servers.json
           {{- end }}
+          {{- end }}
+          {{- if .Values.preferences.enabled }}
+            - name: preferences
+              mountPath: /pgadmin4/preferences.json
+              subPath: preferences.json
           {{- end }}
           {{- range .Values.extraConfigmapMounts }}
             - name: {{ .name }}
@@ -257,6 +269,11 @@ spec:
             - key: servers.json
               path: servers.json
         {{- end }}
+      {{- end }}
+      {{- if .Values.preferences.enabled }}
+        - name: preferences
+          configMap:
+            name: {{ .Values.preferences.existingConfigMap | default (printf "%s-preferences" (include "pgadmin.fullname" .)) }}
       {{- end }}
     {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
     {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}
