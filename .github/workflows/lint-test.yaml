@@ -3,40 +3,76 @@
 name: Lint and Test Charts
 on: pull_request
 
+# Prevent concurrent runs of the same workflow
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Set explicit permissions
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   lint-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Fetch and create local main branch
+        run: |
+          git fetch origin main
+          git branch main origin/main
 
       - name: Set up Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v4.3.0
         with:
-          version: v3.4.0
+          version: v3.13.3
 
-      - uses: actions/setup-python@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.13.2
+          python-version: '3.12'
+
+      - name: Install chart-testing
+        run: |
+          curl -sSL https://github.com/helm/chart-testing/releases/download/v3.9.0/chart-testing_3.9.0_linux_amd64.tar.gz | tar xz
+          sudo mv ct /usr/local/bin 
+
+      - name: Detect changed charts
+        id: changed
+        run: |
+          ct list-changed --config ct.yaml > changed.txt
+          if [ -s changed.txt ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Run chart-testing (lint)
         id: lint
-        uses: helm/chart-testing-action@v1.0.0
+        if: steps.changed.outputs.changed == 'true'
+        uses: helm/chart-testing-action@v2.0.0
         with:
           command: lint
           config: ct.yaml
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.2.0
-        if: steps.lint.outputs.changed == 'true'
+        uses: helm/kind-action@v1.8.0
+        if: steps.changed.outputs.changed == 'true'
         with:
           config: kind-config.yaml
           cluster_name: "pgadmin4"
 
       - name: Run chart-testing (install)
-        uses: helm/chart-testing-action@v1.0.0
+        if: steps.changed.outputs.changed == 'true'
+        uses: helm/chart-testing-action@v2.0.0
         with:
           command: install
           config: ct.yaml

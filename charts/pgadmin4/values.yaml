@@ -130,6 +130,21 @@ serverDefinitions:
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
+## Pre-load pgAdmin4 with user preferences
+## This mounts a preferences.json file to override default UI settings such as themes,
+## display options, or query tool behavior.
+## Docs: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html
+##
+preferences:
+  # Enable/disable preferences
+  enabled: false
+
+  # If using an existing ConfigMap, it must contain a key named `preferences.json`
+  existingConfigMap: ""
+
+  data: {}
+  #  misc:user_interface:theme: dark
+
 networkPolicy:
   enabled: true
 
