@@ -273,7 +273,7 @@ spec:
       {{- if .Values.preferences.enabled }}
         - name: preferences
           configMap:
-            name: {{ ternary (printf "%s-preferences" (include "pgadmin.fullname" .)) .Values.preferences.existingConfigMap (empty .Values.preferences.existingConfigMap) }}
+            name: {{ .Values.preferences.existingConfigMap | default (printf "%s-preferences" (include "pgadmin.fullname" .)) }}
       {{- end }}
     {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
     {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}
