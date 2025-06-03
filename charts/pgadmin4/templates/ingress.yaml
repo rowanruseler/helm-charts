@@ -3,7 +3,6 @@
 {{- $ingressSupportsIngressClassName := eq (include "pgadmin.ingress.supportsIngressClassName" .) "true" -}}
 {{- $ingressSupportsPathType := eq (include "pgadmin.ingress.supportsPathType" .) "true" -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 apiVersion: {{ include "pgadmin.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
@@ -50,7 +49,7 @@ spec:
                   name: http
             {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              servicePort: {{ .Values.service.port }}
             {{- end }}
         {{- end }}
   {{- end }}
