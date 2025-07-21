@@ -12,10 +12,7 @@ home: https://www.pgadmin.org/
 icon: https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png
 sources:
   - https://github.com/rowanruseler/helm-charts
-  - https://github.com/davides93/pg-admin4-helm-charts
 license: Apache-2.0
 maintainers:
   - name: rowanruseler
     email: rowanruseler@gmail.com
-  - name: davides93
-    email: davides93@users.noreply.github.com
