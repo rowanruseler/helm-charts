@@ -150,8 +150,16 @@ spec:
           {{- end }}
             - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
               value: {{ .Values.env.enhanced_cookie_protection | quote }}
+          {{- $hasEmail := false }}
+          {{- range .Values.envVarsExtra }}
+            {{- if eq .name "PGADMIN_DEFAULT_EMAIL" }}
+              {{- $hasEmail = true }}
+            {{- end }}
+          {{- end }}
+          {{- if not $hasEmail }}
             - name: PGADMIN_DEFAULT_EMAIL
               value: {{ .Values.env.email }}
+          {{- end }}
           {{- if .Values.env.pgpassfile }}
             - name: PGPASSFILE
               value: {{ .Values.env.pgpassfile }}
