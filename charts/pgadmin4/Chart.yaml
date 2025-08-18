@@ -2,7 +2,7 @@ apiVersion: v2
 description: pgAdmin4 is a web based administration tool for PostgreSQL database
 name: pgadmin4
 version: 1.48.0
-appVersion: "9.4"
+appVersion: "9.6"
 keywords:
   - pgadmin
   - postgres
