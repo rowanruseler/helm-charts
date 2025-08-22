@@ -58,15 +58,15 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `revisionHistoryLimit` | The number of old history to retain to allow rollback | `10` |
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
 | `priorityClassName` | Deployment priorityClassName | `""` |
-| `command` | Deployment command override | `""` |
+| `command` | Deployment command override | `[]` |
+| `args` | Deployment args override | `[]` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.clusterIP` | Service type Cluster IP | `""` |
 | `service.loadBalancerIP` | Service Load Balancer IP | `""` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
-| `service.portName` | Name of the port on the service | `http` |
 | `service.targetPort` | Internal service port | `http` |
-| `service.nodePort` | Kubernetes service nodePort | `` |
+| `service.nodePort` | Kubernetes service nodePort | `""` |
 | `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
 | `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
@@ -102,7 +102,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
 | `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
-| `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
+| `env.contextPath` | Context path for accessing pgadmin | `""` |
 | `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
 | `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
@@ -114,6 +114,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `persistentVolume.subPath` | Subdirectory of the volume to mount at | `unset` |
 | `securityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 pod | `` |
 | `containerSecurityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 container | `` |
+| `probeScheme` | All Deployments Probe Scheme | `HTTP` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `startupProbe` | [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
