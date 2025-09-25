@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: {{ include "pgadmin.fullname" . }}
   namespace: {{ include "pgadmin.namespaceName" . }}
-  labels:
-    {{- include "pgadmin.labels" . | nindent 4 }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
-  annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
+  annotations: {{ include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.service.type }}
@@ -19,10 +18,9 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
-    {{- if .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
+    {{- with .Values.service.nodePort }}
+      nodePort: {{ . }}
     {{- end }}
       protocol: TCP
-      name: {{ .Values.service.portName }}
-  selector:
-    {{- include "pgadmin.selectorLabels" . | nindent 4 }}
+      name: http
+  selector: {{ include "pgadmin.selectorLabels" . | nindent 4 }}

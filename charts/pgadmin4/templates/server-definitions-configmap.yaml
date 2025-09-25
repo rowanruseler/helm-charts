@@ -4,8 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "pgadmin.fullname" . }}-server-definitions
   namespace: {{ include "pgadmin.namespaceName" . }}
-  labels:
-    {{- include "pgadmin.labels" . | nindent 4 }}
+  labels: {{ include "pgadmin.labels" . | nindent 4 }}
 data:
   servers.json: |-
     {{ include "pgadmin.serverDefinitions" . | nindent 4 | trim }}
