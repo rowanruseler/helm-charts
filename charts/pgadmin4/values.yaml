@@ -148,6 +148,13 @@ preferences:
 networkPolicy:
   enabled: true
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  hostnames: []
+  parentRefs: {}
+  matches: []
+
 ## Ingress
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
