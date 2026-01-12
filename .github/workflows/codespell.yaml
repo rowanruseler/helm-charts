@@ -3,6 +3,9 @@
 name: Codespell
 on: pull_request
 
+permissions:
+  contents: read
+
 jobs:
   codespell:
     name: Codespell
@@ -11,7 +14,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Codespell
-        uses: codespell-project/actions-codespell@master
+        uses: codespell-project/actions-codespell@v2
         with:
           ignore_words_list: iam,aks
           check_filenames: true

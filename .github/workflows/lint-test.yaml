@@ -39,24 +39,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install chart-testing
-        run: |
-          curl -sSL https://github.com/helm/chart-testing/releases/download/v3.9.0/chart-testing_3.9.0_linux_amd64.tar.gz | tar xz
-          sudo mv ct /usr/local/bin 
-
-      - name: Detect changed charts
-        id: changed
-        run: |
-          ct list-changed --config ct.yaml > changed.txt
-          if [ -s changed.txt ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Run chart-testing (lint)
         id: lint
-        if: steps.changed.outputs.changed == 'true'
         uses: helm/chart-testing-action@v2.0.0
         with:
           command: lint
@@ -64,13 +48,13 @@ jobs:
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.8.0
-        if: steps.changed.outputs.changed == 'true'
+        if: steps.lint.conclusion == 'success'
         with:
           config: kind-config.yaml
           cluster_name: "pgadmin4"
 
       - name: Run chart-testing (install)
-        if: steps.changed.outputs.changed == 'true'
+        if: steps.lint.conclusion == 'success'
         uses: helm/chart-testing-action@v2.0.0
         with:
           command: install
