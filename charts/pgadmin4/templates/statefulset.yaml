@@ -1,7 +1,7 @@
-{{- if eq .Values.workload.kind "Deployment" -}}
+{{- if eq .Values.workload.kind "StatefulSet" -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
-apiVersion: {{ template "deployment.apiVersion" . }}
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: {{ $fullName }}
   namespace: {{ include "pgadmin.namespaceName" . }}
@@ -11,13 +11,14 @@ metadata:
   annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 4 }}
 {{- end }}
 spec:
+  serviceName: {{ $fullName }}
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "pgadmin.selectorLabels" . | nindent 6 }}
 {{- if .Values.strategy }}
-  strategy:
+  updateStrategy:
     {{- .Values.strategy | toYaml | nindent 4 }}
 {{- end }}
   template:
@@ -233,13 +234,14 @@ spec:
       {{ tpl . $ | nindent 8 }}
     {{- end }}
       volumes:
+      {{- if not .Values.persistentVolume.enabled }}
         - name: pgadmin-data
-        {{- if .Values.persistentVolume.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ $fullName }}{{- end }}
-        {{- else }}
           emptyDir: {}
-        {{- end }}
+      {{- else if .Values.persistentVolume.existingClaim }}
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolume.existingClaim }}
+      {{- end }}
       {{- range .Values.extraConfigmapMounts }}
         - name: {{ .name }}
           configMap:
@@ -308,4 +310,27 @@ spec:
       dnsConfig:
         {{- .Values.dnsConfig | toYaml | nindent 8 }}
     {{- end }}
+{{- if and .Values.persistentVolume.enabled (not .Values.persistentVolume.existingClaim) }}
+  volumeClaimTemplates:
+  - metadata:
+      name: pgadmin-data
+      labels:
+        {{- include "pgadmin.labels" . | nindent 8 }}
+      {{- with .Values.persistentVolume.annotations }}
+      annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
+      {{- end }}
+    spec:
+      accessModes:
+        {{- .Values.persistentVolume.accessModes | toYaml | nindent 8 }}
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistentVolume.size }}
+{{- end }}
 {{- end }}
