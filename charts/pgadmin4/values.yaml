@@ -175,6 +175,79 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  #
+  #
+  #
+#if want to use istio gateway and virtual service instead of ingress
+istioIngress:
+  enabled: false
+  
+  # The label selector for your *existing* Istio Ingress Gateway pods.
+  # This tells the 'Gateway' resource which gateway *deployment* to attach to.
+  # 'ingressgateway' is a common default label.
+  selector: "" 
+  #selector: "ingressgateway"
+  
+  # A list of hostnames this Gateway will manage.
+  #
+  endpoints:
+    - "test.example.com"
+
+  # --- TLS Configuration for Istio Gateway ---
+  tls:
+    enabled: false
+    # The name of the K8s Secret containing the cert.
+    # Istio's 'Gateway' resource will reference this name in its 'credentialName' field.
+    # Should be in istio-ingress namespace where istio ingress gateway is installed
+    secretCertName: "my-istio-tls-secret" 
+    
+  # Defines the ports on the Istio Ingress Gateway.
+  gateway:
+    enabled: false
+    ports:
+      http:
+        number: 80
+        protocol: HTTP
+        isTlsRedirect: true      # If true, the template generates a rule to redirect HTTP->HTTPS.
+        isTlsTermination: false
+      https:
+        number: 443
+        protocol: HTTPS
+        isTlsRedirect: false
+        isTlsTermination: true   # If true, the gateway terminates TLS (handles HTTPS).
+        tlsMode: SIMPLE          # 'SIMPLE': Standard TLS. 'MUTUAL': mTLS. 'PASSTHROUGH': Send TLS to pod.
+
+  # --- Istio VirtualService Configuration ---
+  # The VirtualService defines *how* traffic is routed *after* it enters the Gateway.
+
+  virtualService:
+    enabled: false
+    gateway: ""
+    config:
+      # 'http' is a list of ordered routing rules. First match wins.
+      http:
+      - name: "pgadmin-route"
+        match:
+        - uri:
+            prefix: "/"
+        route:
+        - destination:
+            host: "pgadmin"    
+            portNumber: 80
+          weight: 100
+        rewrite:
+          uri: "/" 
+        corsPolicy:
+          allowOrigins:
+            - exact: "*"
+          allowHeaders:
+          - "*"
+          allowMethods:
+          - "*"
+          exposeHeaders:
+          - "*"
+          maxAge: "24h" 
+
 
 # Additional config maps to be mounted inside a container
 # Can be used to map config maps for sidecar as well

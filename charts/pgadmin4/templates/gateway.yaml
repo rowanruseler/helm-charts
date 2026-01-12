@@ -1,0 +1,40 @@
+{{- if and .Values.istioIngress.enabled .Values.istioIngress.gateway.enabled }}
+{{- $fullName := include "pgadmin.fullname" . -}}
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ include "pgadmin.namespaceName" . }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+spec:
+  selector:
+    istio: {{ .Values.istioIngress.selector | default "ingressgateway" }}
+  servers:
+    {{- range $name, $config := .Values.istioIngress.gateway.ports }}
+    {{- if or (not $config.isTlsTermination) (and $config.isTlsTermination $.Values.istioIngress.tls.enabled) }}
+    - port:
+        number: {{ $config.number }}
+        name: {{ $name }}
+        protocol: {{ $config.protocol }}
+      hosts:
+      {{- range $.Values.istioIngress.endpoints }}
+      - {{ . | quote }}
+      {{- end }}
+      
+      {{- if and $.Values.istioIngress.tls.enabled $config.isTlsRedirect }}
+      # Corrected to use httpsRedirect
+      tls:
+        httpsRedirect: true
+      {{- end }}
+
+      {{- if and $.Values.istioIngress.tls.enabled $config.isTlsTermination }}
+      tls:
+        mode: {{ $config.tlsMode | default "SIMPLE" }}
+        {{- if or (eq ($config.tlsMode | default "SIMPLE") "SIMPLE") (eq $config.tlsMode "MUTUAL") }}
+        credentialName: {{ $.Values.istioIngress.tls.secretCertName }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,86 @@
+
+{{- if and .Values.istioIngress.enabled .Values.istioIngress.virtualService.enabled }}
+{{- $vsConfig := .Values.istioIngress.virtualService.config }}
+{{- $fullName := include "pgadmin.fullname" . -}}
+{{- $defaultHost := printf "%s.%s.svc.cluster.local" ( $fullName | default .Release.Name) .Release.Namespace }}
+{{- $defaultPort := .Values.service.port }}
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ include "pgadmin.namespaceName" . }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+spec:
+  hosts:
+  {{- range .Values.istioIngress.endpoints }}
+  - {{ . | default "test.example.com" | quote }}
+  {{- end }}
+  gateways:
+  # This MUST match the metadata.name of your Gateway resource
+  - {{ if .Values.istioIngress.virtualService.gateway }}
+    {{ .Values.istioIngress.virtualService.gateway }}
+    {{- else }}
+    {{ $fullName }}
+    {{- end }}
+  http:
+  {{- range $routeBlock := $vsConfig.http }}
+  - 
+    {{- if $routeBlock.name }}
+    name: {{ $routeBlock.name | quote }}
+    {{- end }}
+
+    {{- if $routeBlock.match }}
+    match: {{ toYaml $routeBlock.match | nindent 6 }}
+    {{- end }}
+    
+    {{- if $routeBlock.route }}
+    route:
+    {{- range $route := $routeBlock.route }}
+    - destination:
+        host: {{ $route.destination.host | default $defaultHost }}
+        port:
+          number: {{ $route.destination.portNumber | default $defaultPort }}
+        {{- if $route.destination.subset }}
+        subset: {{ $route.destination.subset | quote }}
+        {{- end }}
+      weight: {{ $route.weight }}
+    {{- end }}
+    {{- end }}
+
+    {{- if $routeBlock.redirect }}
+    redirect: {{ toYaml $routeBlock.redirect | nindent 6 }}
+    {{- end }}
+
+    {{- if $routeBlock.rewrite }}
+    rewrite: {{ toYaml $routeBlock.rewrite | nindent 6 }}
+    {{- end }}
+    
+    {{- if $routeBlock.timeout }}
+    timeout: {{ $routeBlock.timeout | quote }}
+    {{- end }}
+    
+    {{- if $routeBlock.retries }}
+    retries: {{ toYaml $routeBlock.retries | nindent 6 }}
+    {{- end }}
+    
+    {{- if $routeBlock.fault }}
+    fault: {{ toYaml $routeBlock.fault | nindent 6 }}
+    {{- end }}
+    
+    {{- if $routeBlock.mirror }}
+    mirror:
+      host: {{ $routeBlock.mirror.host | required "mirror.host must be set" }}
+      port:
+        number: {{ $routeBlock.mirror.portNumber | default $defaultPort }}
+      {{- if $routeBlock.mirror.subset }}
+      subset: {{ $routeBlock.mirror.subset | quote }}
+      {{- end }}
+    {{- end }}
+
+    {{- if $routeBlock.corsPolicy }}
+    corsPolicy: {{ toYaml $routeBlock.corsPolicy | nindent 6 }}
+    {{- end }}
+  {{- end }}
+{{- end }}

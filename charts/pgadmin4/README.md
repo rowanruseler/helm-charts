@@ -97,6 +97,16 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `ingress.hosts.paths.path` | Ingress accepted path | `/` |
 | `ingress.hosts.paths.pathType` | Ingress type of path | `Prefix` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
+| `istioIngress.enabled` | Enable Istio Gateway instead of Ingress | `false` |
+| `istioIngress.selector` | Label selector for Istio Ingress Gateway pods | `""` |
+| `istioIngress.endpoints` | Hosts served by Istio Gateway | `[""]` |
+| `istioIngress.tls.enabled` | Enable TLS for Istio gateway | `false` |
+| `istioIngress.tls.secretCertName` | TLS certificate secret name | `"my-istio-tls-secret"` |
+| `istioIngress.gateway.enabled` | Enable Istio Gateway resource | `false` |
+| `istioIngress.gateway.ports` | Istio gateway ports configuration | `{http: {...}, https: {...}}` |
+| `istioIngress.virtualService.enabled` | Enable Istio VirtualService | `false` |
+| `istioIngress.virtualService.gateway` | VirtualService gateway name | `""` |
+| `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
@@ -153,6 +163,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 > The values for "extraConfigmapMounts.[].configMap" and "extraSecretMounts.[].secret" can be either a simple string
 or a template string.
 Then it will be resolved for you.
+
+> The tls secrets needs to be created manually in istio-ingress namespace (considering your ingress gateway is installed in istio-ingress namespace) and it can then be referenced in "istio.tls.secretCertName"
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
