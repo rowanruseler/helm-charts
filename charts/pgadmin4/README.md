@@ -83,6 +83,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
+| `httpRoute.annotations | object | `{}` | Key-value map for controller-specific metadata |
+| `httpRoute.enabled` | bool | `false` | Switches from standard Ingress to Gateway API HTTPRoute resource generation. |
+| `httpRoute.hostnames` | list | `[]` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener. |
+| `httpRoute.matches` | list | `[]` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs. |
+| `httpRoute.parentRefs` | object | `{}` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment. |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.labels` | Custom labels | `{}` |
