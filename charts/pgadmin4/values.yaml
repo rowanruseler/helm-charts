@@ -148,6 +148,13 @@ preferences:
 networkPolicy:
   enabled: true
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  hostnames: []
+  parentRefs: {}
+  matches: []
+
 ## Ingress
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -387,24 +394,22 @@ containerSecurityContext:
   enabled: false
   allowPrivilegeEscalation: false
 
-## pgAdmin4 readiness and liveness probe initial delay and timeout
+## pgAdmin4 health check probe configuration 
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 ##
 livenessProbe:
-  initialDelaySeconds: 30
   periodSeconds: 20
   timeoutSeconds: 5
   failureThreshold: 3
 
 readinessProbe:
-  initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 3
   failureThreshold: 3
 
 startupProbe:
-  failureThreshold: 30
-  periodSeconds: 2
+  failureThreshold: 18
+  periodSeconds: 10
 
 ## Required to be enabled pre pgAdmin4 4.16 release, to set the ACL on /var/lib/pgadmin.
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
@@ -434,10 +439,13 @@ containerPorts:
   http: 80
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  ## You might also want to increase failure threshold value in startup probe configuration to
+  ## allow the container to start successfully on CPU limited environments.
+  ##
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -471,6 +479,10 @@ affinity: {}
 
 ## Pod DNS Policy
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+
+## Topology Spread Constraints to control how Pods are spread across your cluster
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+topologySpreadConstraints: []
 
 dnsPolicy: ""
 
