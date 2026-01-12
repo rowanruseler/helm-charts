@@ -51,7 +51,7 @@ metadata:
 data:
   config_local.py: |-
     import os
-    
+
     MASTER_PASSWORD_REQUIRED = True
     AUTHENTICATION_SOURCES = ['oauth2', 'internal']
     OAUTH2_AUTO_CREATE_USER = True

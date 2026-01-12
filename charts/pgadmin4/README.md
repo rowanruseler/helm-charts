@@ -9,7 +9,7 @@
 * Kubernetes 1.19+
 * Helm 3.7+
 
-## TL;DR;
+## TL;DR
 
 ```console
 helm repo add runix https://helm.runix.net
@@ -84,11 +84,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
-| `httpRoute.annotations | object | `{}` | Key-value map for controller-specific metadata |
-| `httpRoute.enabled` | bool | `false` | Switches from standard Ingress to Gateway API HTTPRoute resource generation. |
-| `httpRoute.hostnames` | list | `[]` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener. |
-| `httpRoute.matches` | list | `[]` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs. |
-| `httpRoute.parentRefs` | object | `{}` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment. |
+| `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
+| `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
+| `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener | `[]` |
+| `httpRoute.matches` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs | `[]` |
+| `httpRoute.parentRefs` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment | `{}` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.labels` | Custom labels | `{}` |
@@ -110,13 +110,13 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
-| `extraContainers` | Sidecar containers to add to the pgadmin4 pod  | `"[]"` |
+| `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `"[]"` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions. | `""` |
 | `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
-| `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod  | `"[]"` |
+| `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@domain.com` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
-| `env.pgpassfile` | Path to pgpasssfile (optional). Needed chart reinstall for apply changes | `` |
+| `env.pgpassfile` | Path to pgpassfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
 | `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
@@ -126,28 +126,27 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
-| `persistentVolume.existingClaim` | Persistent Volume existing claim name | | `unset` |
+| `persistentVolume.existingClaim` | Persistent Volume existing claim name | `unset` |
 | `persistentVolume.subPath` | Subdirectory of the volume to mount at | `unset` |
 | `securityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 pod | `` |
 | `containerSecurityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 container | `` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `startupProbe` | [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
-| `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory  | `false` |
-| `extraDeploy` | list of extra manifests to deploy | `[]` |
-| `extraInitContainers` | Init containers to launch alongside the app | `[]` |
+| `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory | `false` |
+| `extraDeploy` | List of extra manifests to deploy | `[]` |
 | `containerPorts.http` | Sets http port inside pgadmin container | `80` |
 | `resources` | CPU/memory resource requests/limits | `{}` |
 | `autoscaling.enabled` | Enables Autoscaling | `false` |
 | `autoscaling.minReplicas` | Minimum amount of Replicas | `1` |
-| `autoscaling.maxReplicas` | Maximum amount of Replicas| `100` |
+| `autoscaling.maxReplicas` | Maximum amount of Replicas | `100` |
 | `autoscaling.targetCPUUtilizationPercentage` | Target CPU Utilization in percentage | `80` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
-| `topologySpreadConstraints` | topology spread constraints for pods | `[]` |
-| `dnsPolicy` | DNS policy for pods  | `""` |
-| `dnsConfig` | DNS config for pods  | `{}` |
+| `topologySpreadConstraints` | Topology spread constraints for pods | `[]` |
+| `dnsPolicy` | DNS policy for pods | `""` |
+| `dnsConfig` | DNS config for pods | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
 | `templatedPodAnnotations` | Templated annotations for pod | `{}` |
 | `podLabels` | Labels for pod | `{}` |
@@ -156,16 +155,14 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.enabled` | Enables test | `true` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
-| `test.image.tag` | Docker image tag for test| `latest` |
+| `test.image.tag` | Docker image tag for test | `latest` |
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 | `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `` |
 
-> The values for "extraConfigmapMounts.[].configMap" and "extraSecretMounts.[].secret" can be either a simple string
-or a template string.
-Then it will be resolved for you.
+> **Note**: The values for `extraConfigmapMounts.[].configMap` and `extraSecretMounts.[].secret` can be either a simple string or a template string. It will be resolved automatically.
 
-> The tls secrets needs to be created manually in istio-ingress namespace (considering your ingress gateway is installed in istio-ingress namespace) and it can then be referenced in "istio.tls.secretCertName"
+> **Note**: The TLS secrets need to be created manually in the istio-ingress namespace (considering your ingress gateway is installed in the istio-ingress namespace) and can then be referenced in `istio.tls.secretCertName`.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
