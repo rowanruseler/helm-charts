@@ -6,6 +6,14 @@ global:
   # These will be merged with any chart-specific pull secrets.
   imagePullSecrets: []
 
+## Workload type - Deployment or StatefulSet
+## StatefulSet is useful for stable storage and network identity
+## When using StatefulSet, PVCs are managed via volumeClaimTemplates
+##
+workload:
+  # kind can be either "Deployment" or "StatefulSet"
+  kind: Deployment
+
 replicaCount: 1
 
 ## pgAdmin4 container image

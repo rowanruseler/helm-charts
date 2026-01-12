@@ -1,4 +1,4 @@
-{{- if and .Values.persistentVolume.enabled (not .Values.persistentVolume.existingClaim) }}
+{{- if and (eq .Values.workload.kind "Deployment") .Values.persistentVolume.enabled (not .Values.persistentVolume.existingClaim) }}
 {{- $fullName := include "pgadmin.fullname" . -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
