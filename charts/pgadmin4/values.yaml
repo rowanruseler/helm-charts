@@ -406,6 +406,10 @@ affinity: {}
 ## Pod DNS Policy
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
 
+## Topology Spread Constraints to control how Pods are spread across your cluster
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+topologySpreadConstraints: []
+
 dnsPolicy: ""
 
 ## Update pod DNS Config

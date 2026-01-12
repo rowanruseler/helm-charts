@@ -134,6 +134,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |
+| `topologySpreadConstraints` | topology spread constraints for pods | `[]` |
 | `dnsPolicy` | DNS policy for pods  | `""` |
 | `dnsConfig` | DNS config for pods  | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
