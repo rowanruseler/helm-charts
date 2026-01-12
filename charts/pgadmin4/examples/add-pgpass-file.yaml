@@ -4,8 +4,8 @@
 
 # Security
 ## Add .pgpass file to root of pgAdmin storage
-# For details Sse `Advanced tab -> Password File` in
-# https://www.pgadmin.org/docs/pgadmin4/4.23/server_dialog.html
+## For details see `Advanced tab -> Password File` in
+## https://www.pgadmin.org/docs/pgadmin4/4.23/server_dialog.html
 
 env:
   pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
