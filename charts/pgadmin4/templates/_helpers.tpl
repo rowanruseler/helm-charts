@@ -96,13 +96,6 @@ Generate chart secret name
 {{- end -}}
 
 {{/*
-Create the name of the namespace
-*/}}
-{{- define "pgadmin.namespaceName" -}}
-{{- default .Release.Namespace .Values.namespace | quote }}
-{{- end }}
-
-{{/*
 Return if ingress is stable.
 */}}
 {{- define "pgadmin.ingress.isStable" -}}

@@ -10,7 +10,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "pgadmin.fullname" . }}
-  namespace: {{ include "pgadmin.namespaceName" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
 spec:

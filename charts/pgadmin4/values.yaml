@@ -500,10 +500,6 @@ podLabels: {}
   # key1: value1
   # key2: value2
 
-## The name of the Namespace to deploy
-## If not set, .Release.Namespace is used
-namespace: null
-
 ## Init container configuration
 init:
   ## Init container resources
