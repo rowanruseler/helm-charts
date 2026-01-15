@@ -1,12 +1,6 @@
-{{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "ConfigMap") .Values.serverDefinitions.servers (not .Values.serverDefinitions.existingConfigmap) }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "pgadmin.fullname" . }}-server-definitions
-  namespace: {{ include "pgadmin.namespaceName" . }}
-  labels:
-    {{- include "pgadmin.labels" . | nindent 4 }}
-data:
-  servers.json: |-
-    {{ include "pgadmin.serverDefinitions" . | nindent 4 | trim }}
-{{- end }}
+{{/*
+DEPRECATED
+
+This template used to render the pgAdmin server definitions ConfigMap.
+If you want `servers.json` via ConfigMap, create it using `configMaps` and mount it via `extraVolumes` + `extraVolumeMounts`.
+*/}}

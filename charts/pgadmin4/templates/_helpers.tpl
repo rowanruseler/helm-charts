@@ -157,14 +157,8 @@ Useful for ensuring generated JSON has the correct types.
 {{ tpl (toPrettyJson (dict "Servers" $raw)) . }}
 {{- end -}}
 
-{{- define "pgadmin.serverDefinitionsConfigmap" -}}
-{{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "ConfigMap") -}}
-{{- default (printf "%s-server-definitions" (include "pgadmin.fullname" .)) .Values.serverDefinitions.existingConfigmap -}}
-{{- end -}}
-{{- end -}}
-
 {{- define "pgadmin.serverDefinitionsSecret" -}}
-{{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
+{{- if .Values.serverDefinitions.enabled -}}
 {{- default (printf "%s-server-definitions" (include "pgadmin.fullname" .)) (coalesce .Values.serverDefinitions.existingSecret .Values.existingSecret) -}}
 {{- end -}}
 {{- end -}}
@@ -224,13 +218,10 @@ Validation helpers.
 {{- $problems := list -}}
 {{- $_ := set $.Values "serverDefinitions" (default (dict) $.Values.serverDefinitions) -}}
 {{- $type := default "" $.Values.serverDefinitions.resourceType -}}
-{{- if and $.Values.serverDefinitions.enabled (not (or (eq $type "ConfigMap") (eq $type "Secret"))) -}}
-{{- $problems = append $problems "serverDefinitions.resourceType must be 'ConfigMap' or 'Secret'" -}}
+{{- if and $.Values.serverDefinitions.enabled (ne $type "Secret") -}}
+{{- $problems = append $problems "serverDefinitions.resourceType must be 'Secret' (ConfigMap is no longer supported; use configMaps + extraVolumes + extraVolumeMounts instead)" -}}
 {{- end -}}
-{{- if and $.Values.serverDefinitions.enabled (eq $type "ConfigMap") (not (or $.Values.serverDefinitions.servers $.Values.serverDefinitions.existingConfigmap)) -}}
-{{- $problems = append $problems "For serverDefinitions.resourceType=ConfigMap define either serverDefinitions.servers or serverDefinitions.existingConfigmap" -}}
-{{- end -}}
-{{- if and $.Values.serverDefinitions.enabled (eq $type "Secret") (not (or $.Values.serverDefinitions.servers $.Values.serverDefinitions.existingSecret $.Values.existingSecret)) -}}
+{{- if and $.Values.serverDefinitions.enabled (not (or $.Values.serverDefinitions.servers $.Values.serverDefinitions.existingSecret $.Values.existingSecret)) -}}
 {{- $problems = append $problems "For serverDefinitions.resourceType=Secret define serverDefinitions.servers or serverDefinitions.existingSecret" -}}
 {{- end -}}
 {{- if gt (len $problems) 0 -}}

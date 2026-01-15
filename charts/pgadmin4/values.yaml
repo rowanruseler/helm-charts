@@ -106,13 +106,10 @@ serverDefinitions:
   enabled: false
 
   ## Storage for the server JSON:
-  ##   ConfigMap - plain text (good for non-secret data)
   ##   Secret    - base-64 (better for credentials)
-  resourceType: ConfigMap
-
-  ## Use this only when `resourceType` = ConfigMap - point to an existing ConfigMap
-  ## that already holds your `servers.json`
-  existingConfigmap: ""
+  ## NOTE: ConfigMap-based server definitions are not supported anymore.
+  ## If you want `servers.json` via ConfigMap, create it using `configMaps` and mount it via `extraVolumes` + `extraVolumeMounts`.
+  resourceType: Secret
 
   ## Use this only when `resourceType` = Secret - point to an existing Secret
   ## that already holds your `servers.json`
@@ -134,19 +131,37 @@ serverDefinitions:
   #    SSLMode: "prefer"
   #    MaintenanceDB: "postgres"
 
-## Pre-load pgAdmin4 with user preferences
-## This mounts a preferences.json file to override default UI settings such as themes,
-## display options, or query tool behavior
-## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html
-preferences:
-  ## Enable/disable preferences
-  enabled: false
-
-  ## If using an existing ConfigMap, it must contain a key named `preferences.json`
-  existingConfigMap: ""
-
-  data: {}
-  #  misc:user_interface:theme: dark
+## Generic ConfigMaps
+## Allows creating arbitrary ConfigMaps from `values.yaml`.
+## Notes:
+## - ConfigMaps do not support `.stringData` like Secrets; `stringData` is accepted here as an alias for convenience.
+## - To enable pgAdmin preferences, mount a `preferences.json` file to `/pgadmin4/preferences.json`.
+configMaps: []
+##   - name: custom-config
+##     data:
+##       config_local.py: |-
+##         AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+##         OAUTH2_CONFIG = [
+##           {
+##             'OAUTH2_NAME': 'microsoft-oidc',
+##             'OAUTH2_DISPLAY_NAME': 'Microsoft OIDC',
+##             'OAUTH2_CLIENT_ID': 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+##             'OAUTH2_SERVER_METADATA_URL': 'https://login.microsoftonline.com/.../v2.0/.well-known/openid-configuration',
+##             'OAUTH2_SCOPE': 'openid profile email',
+##           }
+##         ]
+##
+##       # Ref: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html
+##       preferences.json: |-
+##         {
+##           "preferences":
+##             {
+##                 "browser:display:show_system_objects":  true,
+##                 "browser:display:show_user_defined_templates": true,
+##                 "browser:display:confirm_on_refresh_close": false,
+##                 "misc:user_interface:theme": "dark",
+##             }
+##           }
 
 ## Network policy configuration
 networkPolicy:
@@ -230,36 +245,27 @@ istioIngress:
     config:
       ## http is a list of ordered routing rules. First match wins
       http:
-      - name: "pgadmin-route"
-        match:
-        - uri:
-            prefix: "/"
-        route:
-        - destination:
-            host: "pgadmin"
-            portNumber: 80
-          weight: 100
-        rewrite:
-          uri: "/"
-        corsPolicy:
-          allowOrigins:
-            - exact: "*"
-          allowHeaders:
-          - "*"
-          allowMethods:
-          - "*"
-          exposeHeaders:
-          - "*"
-          maxAge: "24h"
-
-## Additional config maps to be mounted inside a container
-## Can be used to map config maps for sidecar as well
-extraConfigmapMounts: []
-  # - name: certs-configmap
-  #   mountPath: /etc/ssl/certs
-  #   subPath: ""
-  #   configMap: certs-configmap
-  #   readOnly: true
+        - name: "pgadmin-route"
+          match:
+            - uri:
+                prefix: "/"
+          route:
+            - destination:
+                host: "pgadmin"
+                portNumber: 80
+              weight: 100
+          rewrite:
+            uri: "/"
+          corsPolicy:
+            allowOrigins:
+              - exact: "*"
+            allowHeaders:
+              - "*"
+            allowMethods:
+              - "*"
+            exposeHeaders:
+              - "*"
+            maxAge: "24h"
 
 ## Additional secret mounts to be mounted inside a container
 extraSecretMounts: []
@@ -315,23 +321,11 @@ env:
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
   enhanced_cookie_protection: "False"
 
-  ## Add custom environment variables that will be injected to deployment
-  ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
-  variables: []
-  # - name: PGADMIN_LISTEN_ADDRESS
-  #   value: "0.0.0.0"
-  # - name: PGADMIN_LISTEN_PORT
-  #   value: "8080"
-
-## Additional environment variables from ConfigMaps
-envVarsFromConfigMaps: []
-  # - array-of
-  # - config-map-names
-
-## Additional environment variables from Secrets
-envVarsFromSecrets: []
-  # - array-of
-  # - secret-names
+  ## Add any additional environment variables as plain key/value pairs.
+  ## Example:
+  ##   env:
+  ##     PGADMIN_PREFERENCES_JSON_FILE: "/pgadmin4/preferences.json"
+  ##     MY_CUSTOM_FLAG: "true"
 
 ## Additional environment variables
 envVarsExtra: []
