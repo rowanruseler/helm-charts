@@ -1,0 +1,21 @@
+{{/*
+Generic ConfigMaps
+
+- Renders arbitrary ConfigMaps declared under `.Values.configMaps`.
+*/}}
+
+{{- range $cm := .Values.configMaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $cm.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "pgadmin.labels" $ | nindent 4 }}
+data:
+  {{- range $key, $value := $cm.data }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+  {{- end }}
+{{- end }}

@@ -75,14 +75,11 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `hostAliases` | Add entries to Pod /etc/hosts | `` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
-| `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `ConfigMap` |
-| `serverDefinitions.existingConfigmap` | The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap` | `""` |
-| `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
-| `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
+| `serverDefinitions.resourceType` | Server definitions resource type (Secret only) | `Secret` |
+| `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions (`servers.json`) | `""` |
+| `serverDefinitions.useStringData` | Put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
-| `preferences.enabled` | Specify if to create preferences configmap and mount it | `false` |
-| `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
-| `preferences.data` | Preferences Data | `{}` |
+| `configMaps` | List of generic ConfigMaps to create (user-controlled). Use this if you want `servers.json` via ConfigMap. | `[]` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
 | `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
 | `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
@@ -108,7 +105,6 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `istioIngress.virtualService.enabled` | Enable Istio VirtualService | `false` |
 | `istioIngress.virtualService.gateway` | VirtualService gateway name | `""` |
 | `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
-| `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `"[]"` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions. | `""` |
@@ -119,8 +115,6 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `env.pgpassfile` | Path to pgpassfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
-| `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
-| `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
 | `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
@@ -160,7 +154,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 | `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `` |
 
-> **Note**: The values for `extraConfigmapMounts.[].configMap` and `extraSecretMounts.[].secret` can be either a simple string or a template string. It will be resolved automatically.
+> **Note**: The values for `extraSecretMounts.[].secret` can be either a simple string or a template string. It will be resolved automatically.
 
 > **Note**: The TLS secrets need to be created manually in the istio-ingress namespace (considering your ingress gateway is installed in the istio-ingress namespace) and can then be referenced in `istio.tls.secretCertName`.
 

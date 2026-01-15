@@ -31,7 +31,7 @@ spec:
         {{- with .Values.commonLabels }}
         {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
         {{- end }}
-    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations (and .Values.serverDefinitions.enabled (not .Values.serverDefinitions.existingConfigmap) (not .Values.serverDefinitions.existingSecret)) (and .Values.preferences.enabled (not .Values.preferences.existingConfigMap)) }}
+    {{- if or (not .Values.existingSecret) .Values.podAnnotations .Values.templatedPodAnnotations }}
       annotations:
       {{- if .Values.podAnnotations }}
         {{- .Values.podAnnotations | toYaml | nindent 8 }}
@@ -41,9 +41,6 @@ spec:
       {{- end }}
       {{- if not .Values.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
-      {{- end }}
-      {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
-        checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
       {{- end }}
     {{- end }}
     spec:
@@ -146,6 +143,10 @@ spec:
             {{- .Values.readinessProbe | toYaml | nindent 12 }}
         {{- end }}
           env:
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
           {{- with .Values.envVarsExtra }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -171,52 +172,22 @@ spec:
             - name: SCRIPT_NAME
               value: {{ .Values.env.contextPath }}
           {{- end }}
-          {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
-          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
+          {{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
+          {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: PGADMIN_SERVER_JSON_FILE
               value: /pgadmin4/servers.json
           {{- end }}
-          {{- end }}
-          {{- if .Values.preferences.enabled }}
-            - name: PGADMIN_PREFERENCES_JSON_FILE
-              value: /pgadmin4/preferences.json
-          {{- end }}
-          {{- range .Values.env.variables }}
-            - name: {{ .name | quote }}
-              value: {{ .value | quote }}
-          {{- end }}
-          {{- if or .Values.envVarsFromConfigMaps .Values.envVarsFromSecrets }}
-          envFrom:
-            {{- range .Values.envVarsFromConfigMaps }}
-            - configMapRef:
-                name: {{ . | quote }}
-            {{- end }}
-            {{- range .Values.envVarsFromSecrets }}
-            - secretRef:
-                name: {{ . | quote }}
-            {{- end }}
           {{- end }}
           volumeMounts:
             - name: pgadmin-data
               mountPath: /var/lib/pgadmin
               subPath: "{{ .Values.persistentVolume.subPath }}"
-          {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
-          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
+          {{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
+          {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
             - name: definitions
               mountPath: /pgadmin4/servers.json
               subPath: servers.json
           {{- end }}
-          {{- end }}
-          {{- if .Values.preferences.enabled }}
-            - name: preferences
-              mountPath: /pgadmin4/preferences.json
-              subPath: preferences.json
-          {{- end }}
-          {{- range .Values.extraConfigmapMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-              subPath: {{ .subPath }}
-              readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.extraSecretMounts }}
             - name: {{ .name }}
@@ -240,12 +211,6 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-      {{- range .Values.extraConfigmapMounts }}
-        - name: {{ .name }}
-          configMap:
-            name: {{ tpl (.configMap) $ }}
-            defaultMode: {{ .defaultMode | default 256 }}
-      {{- end }}
       {{- range .Values.extraSecretMounts }}
         - name: {{ .name }}
           secret:
@@ -255,26 +220,12 @@ spec:
       {{- if .Values.extraVolumes }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
-      {{- if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "Secret") -}}
+      {{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
         {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
         - name: definitions
           secret:
             secretName: {{ include "pgadmin.serverDefinitionsSecret" . }}
         {{- end }}
-      {{- else if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "ConfigMap") -}}
-        {{ if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.servers) }}
-        - name: definitions
-          configMap:
-            name: {{ include "pgadmin.serverDefinitionsConfigmap" . }}
-            items:
-            - key: servers.json
-              path: servers.json
-        {{- end }}
-      {{- end }}
-      {{- if .Values.preferences.enabled }}
-        - name: preferences
-          configMap:
-            name: {{ .Values.preferences.existingConfigMap | default (printf "%s-preferences" (include "pgadmin.fullname" .)) }}
       {{- end }}
     {{- if or .Values.imagePullSecrets .Values.global.imagePullSecrets }}
     {{- $pullSecrets := include "pgadmin.imagePullSecrets" . }}
