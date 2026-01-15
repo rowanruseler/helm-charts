@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ $fullName }}
-  namespace: {{ include "pgadmin.namespaceName" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
 {{- with .Values.annotations }}

@@ -8,7 +8,7 @@ apiVersion: {{ include "pgadmin.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
-  namespace: {{ include "pgadmin.namespaceName" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
     {{- with .Values.ingress.labels }}

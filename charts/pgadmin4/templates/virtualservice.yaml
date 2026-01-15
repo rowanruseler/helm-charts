@@ -9,7 +9,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: {{ $fullName }}
-  namespace: {{ include "pgadmin.namespaceName" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
 spec:
