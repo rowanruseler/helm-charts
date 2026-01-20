@@ -6,6 +6,10 @@ metadata:
   namespace: {{ include "pgadmin.namespaceName" . }}
   labels:
     {{- include "pgadmin.labels" . | nindent 4 }}
+  {{- if .Values.serverDefinitions.annotations }}
+  annotations:
+    {{- .Values.serverDefinitions.annotations | toYaml | nindent 4 }}
+  {{- end }}
 data:
   servers.json: |-
     {{ include "pgadmin.serverDefinitions" . | nindent 4 | trim }}
