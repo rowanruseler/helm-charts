@@ -79,6 +79,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `serverDefinitions.existingConfigmap` | The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap` | `""` |
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
 | `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
+| `serverDefinitions.annotations` | Annotations for ConfigMap or Secret, if you are not using existing resources. Useful for cluster webhooks | `{}` |
 | `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
 | `preferences.enabled` | Specify if to create preferences configmap and mount it | `false` |
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
