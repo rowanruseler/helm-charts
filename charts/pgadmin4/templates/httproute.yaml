@@ -14,7 +14,9 @@ spec:
   parentRefs:
     {{- toYaml .Values.httpRoute.parentRefs | nindent 4 }}
   hostnames:
-    {{- toYaml .Values.httpRoute.hostnames | nindent 4 }}
+    {{- range .Values.httpRoute.hostnames }}
+    - {{ tpl (.) $ | quote }}
+    {{- end }}
   rules:
     - matches:
       {{- if .Values.httpRoute.matches }}
