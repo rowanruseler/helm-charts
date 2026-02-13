@@ -124,7 +124,7 @@ serverDefinitions:
 
   ## Annotations for ConfigMap or Secret, if you are not using existing resources
   annotations: {}
-    # vault.security.banzaicloud.io/vault-role: my-role
+    # vault.security.example.io/vault-role: my-role
 
   ## Inline server definitions (ignore if you point to an existing resource)
   ## You can use Helm templates here, e.g. Host: "{{ .Values.example.host }}"
