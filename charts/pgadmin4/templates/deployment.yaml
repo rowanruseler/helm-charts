@@ -47,7 +47,7 @@ spec:
       {{- end }}
     {{- end }}
     spec:
-    {{- if .Values.serviceAccount.create }}
+    {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
       serviceAccountName: {{ default $fullName .Values.serviceAccount.name }}
     {{- end }}
     {{- if .Values.hostAliases }}
