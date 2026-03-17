@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   pgadmin4:
   - apiVersion: v2
+    appVersion: "9.13"
+    created: "2026-03-17T10:59:19.78834596Z"
+    description: pgAdmin4 is a web based administration tool for PostgreSQL database
+    digest: 6f615ad016402c4413845d2c2d020b5a0a0e71d21cd8b80ef63a1feeace972d5
+    home: https://www.pgadmin.org/
+    icon: https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png
+    keywords:
+    - pgadmin
+    - postgres
+    - database
+    - sql
+    maintainers:
+    - email: rowanruseler@gmail.com
+      name: rowanruseler
+    name: pgadmin4
+    sources:
+    - https://github.com/rowanruseler/helm-charts
+    urls:
+    - https://github.com/rowanruseler/helm-charts/releases/download/pgadmin4-1.62.0/pgadmin4-1.62.0.tgz
+    version: 1.62.0
+  - apiVersion: v2
     appVersion: "9.12"
     created: "2026-03-17T10:56:49.517676357Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
@@ -3589,4 +3610,4 @@ entries:
     urls:
     - pgadmin4-1.2.8.tgz
     version: 1.2.8
-generated: "2026-03-17T10:56:49.518176684Z"
+generated: "2026-03-17T10:59:19.788803655Z"
