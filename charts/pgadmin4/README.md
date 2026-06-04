@@ -89,6 +89,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
 | `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener | `[]` |
 | `httpRoute.matches` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs | `[]` |
+| `httpRoute.filters` | Modifiers applied to requests matching the route (e.g., URL rewrites, header mutations, or redirects); evaluated sequentially | `[]` |
 | `httpRoute.parentRefs` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment | `{}` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.annotations` | Ingress annotations | `{}` |

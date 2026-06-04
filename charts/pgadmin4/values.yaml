@@ -163,6 +163,7 @@ httpRoute:
   hostnames: []
   parentRefs: {}
   matches: []
+  filters: []
 
 ## Ingress configuration
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
