@@ -26,6 +26,10 @@ spec:
             type: PathPrefix
             value: /
       {{- end }}
+      {{- if .Values.httpRoute.filters }}
+      filters:
+        {{- toYaml .Values.httpRoute.filters | nindent 8 }}
+      {{- end }}
       backendRefs:
         - name: {{ include "pgadmin.fullname" . }}
           port: {{ .Values.service.port }}
