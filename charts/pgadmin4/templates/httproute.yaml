@@ -27,6 +27,9 @@ spec:
             value: /
       {{- end }}
       backendRefs:
-        - name: {{ include "pgadmin.fullname" . }}
+        - group: ''
+          kind: Service
+          name: {{ include "pgadmin.fullname" . }}
           port: {{ .Values.service.port }}
+          weight: 1
 {{- end }}
