@@ -159,6 +159,7 @@ networkPolicy:
 ## HTTP route configuration
 httpRoute:
   enabled: false
+  labels: {}
   annotations: {}
   hostnames: []
   parentRefs: {}
