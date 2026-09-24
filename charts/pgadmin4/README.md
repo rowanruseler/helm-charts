@@ -212,7 +212,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `test.hookDeletePolicy` | [Hook deletion policy](https://helm.sh/docs/topics/charts_hooks/#hook-deletion-policies) for the test Pod. Use `before-hook-creation` to keep the Pod for `helm test --logs` | `hook-succeeded` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
-| `test.image.tag` | Docker image tag for test | `latest` |
+| `test.image.tag` | Docker image tag for test | `1.38.0` |
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 | `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `` |
