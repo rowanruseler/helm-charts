@@ -5,6 +5,29 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: "9.18"
+    created: "2026-09-24T10:07:59.971022397Z"
+    description: pgAdmin4 is a web based administration tool for PostgreSQL database
+    digest: 5f4fbd5d88f47650ce84e38374cab45f96f86f8a495aaccb32f0f16f4f113142
+    home: https://www.pgadmin.org/
+    icon: https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png
+    keywords:
+    - pgadmin
+    - postgres
+    - database
+    - sql
+    maintainers:
+    - email: rowanruseler@gmail.com
+      name: rowanruseler
+    name: pgadmin4
+    sources:
+    - https://github.com/rowanruseler/helm-charts
+    urls:
+    - https://github.com/rowanruseler/helm-charts/releases/download/pgadmin4-1.68.1/pgadmin4-1.68.1.tgz
+    version: 1.68.1
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: "9.18"
     created: "2026-09-24T08:59:56.297627035Z"
     description: pgAdmin4 is a web based administration tool for PostgreSQL database
     digest: af65e71826fb7134360235eb7c503c9f00a36276884418e43ec6bd76ccbab10e
@@ -3897,4 +3920,4 @@ entries:
     urls:
     - pgadmin4-1.2.8.tgz
     version: 1.2.8
-generated: "2026-09-24T08:59:56.298107483Z"
+generated: "2026-09-24T10:07:59.971507574Z"
