@@ -13,9 +13,6 @@ permissions:
 
 env:
   CHART: charts/pgadmin4/Chart.yaml
-  # PRs opened with GITHUB_TOKEN don't trigger lint-test; set this secret to a
-  # GitHub App or fine-grained PAT token so they do.
-  GH_TOKEN: ${{ secrets.PGADMIN_BUMP_TOKEN || github.token }}
 
 jobs:
   bump:
@@ -23,10 +20,22 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      # PRs opened with GITHUB_TOKEN don't trigger lint-test, so use a GitHub
+      # App token when the app is configured.
+      - name: Create GitHub App token
+        id: app-token
+        if: vars.PGADMIN_BUMP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PGADMIN_BUMP_CLIENT_ID }}
+          private-key: ${{ secrets.PGADMIN_BUMP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          token: ${{ env.GH_TOKEN }}
+          token: ${{ steps.app-token.outputs.token || github.token }}
 
       - name: Find newer pgAdmin release
         id: check
@@ -65,6 +74,7 @@ jobs:
       - name: Open pull request
         if: steps.check.outputs.app_version
         env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
           APP_VERSION: ${{ steps.check.outputs.app_version }}
           CHART_VERSION: ${{ steps.check.outputs.chart_version }}
           BRANCH: ${{ steps.check.outputs.branch }}
