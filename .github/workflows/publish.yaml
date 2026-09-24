@@ -9,6 +9,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+      # Keyless cosign signing: the OIDC token proves this workflow's identity.
+      id-token: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -31,13 +33,29 @@ jobs:
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+    - name: Install cosign
+      if: hashFiles('.cr-release-packages/*.tgz') != ''
+      uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      with:
+        # The installer's default (v3.0.6) is affected by GHSA-fx35-mq7g-6g98.
+        cosign-release: v3.1.3
+
     # chart-releaser leaves the charts it released in .cr-release-packages.
-    - name: Push charts to ghcr.io
+    - name: Push and sign charts on ghcr.io
       if: hashFiles('.cr-release-packages/*.tgz') != ''
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "$GH_TOKEN" | helm registry login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+        echo "$GH_TOKEN" | cosign login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
         for pkg in .cr-release-packages/*.tgz; do
-          helm push "$pkg" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts"
+          out=$(helm push "$pkg" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts" 2>&1)
+          echo "$out"
+          ref=$(sed -n 's/^Pushed: \(.*\):[^:]*$/\1/p' <<< "$out")
+          digest=$(sed -n 's/^Digest: //p' <<< "$out")
+          if [[ -z "$ref" || -z "$digest" ]]; then
+            echo "could not read the pushed reference or digest" >&2
+            exit 1
+          fi
+          cosign sign --yes "${ref}@${digest}"
         done
