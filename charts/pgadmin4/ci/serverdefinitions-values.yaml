@@ -5,8 +5,8 @@ example:
   host: "localhost"
   port: 443
   shared: false
-  timeout: "60" # _helpers.tpl should convert this to an int
-  maintenancedb: postgres # _helpers.tpl should convert this to a str
+  timeout: "60"  # _helpers.tpl should convert this to an int
+  maintenancedb: postgres  # _helpers.tpl should convert this to a str
 
 ## Pre-load pgAdmin4 with servers at first start-up
 ## Servers are imported only the first time the config DB is created
