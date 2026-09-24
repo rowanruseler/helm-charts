@@ -275,6 +275,14 @@ extraConfigmapMounts: []
   #   configMap: certs-configmap
   #   readOnly: true
 
+## pgpass file for database connections, read from an existing Secret
+## An init container copies it into the pod with mode 0600, which libpq requires
+## and a Secret mount can't provide, and the chart sets PGPASSFILE to the copy
+## unless env.pgpassfile is set
+pgpass:
+  existingSecret: ""
+  key: pgpass
+
 ## Additional secret mounts to be mounted inside a container
 extraSecretMounts: []
   # - name: pgpassfile
