@@ -400,6 +400,7 @@ securityContext:
   fsGroup: 5050
 
 ## Container security context
+## See the README "Hardening" section for restricted Pod Security settings
 containerSecurityContext:
   enabled: false
   allowPrivilegeEscalation: false

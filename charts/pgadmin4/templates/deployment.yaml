@@ -230,6 +230,10 @@ spec:
           {{- if .Values.extraVolumeMounts }}
             {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
           {{- end }}
+          {{- range include "pgadmin.writableDirs" . | fromJsonArray }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+          {{- end }}
           resources:
             {{- .Values.resources | toYaml | nindent 12 }}
     {{- with .Values.extraContainers }}
@@ -257,6 +261,10 @@ spec:
       {{- end }}
       {{- if .Values.extraVolumes }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
+      {{- end }}
+      {{- range include "pgadmin.writableDirs" . | fromJsonArray }}
+        - name: {{ .name }}
+          emptyDir: {}
       {{- end }}
       {{- if and (.Values.serverDefinitions.enabled) (eq .Values.serverDefinitions.resourceType "Secret") -}}
         {{- if or (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}

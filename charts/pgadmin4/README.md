@@ -49,6 +49,27 @@ helm upgrade -n <namespace> <release> runix/pgadmin4 --version 1.67.0
 
 The new StatefulSet adopts the running pod and the existing PVC, so your data stays. You only need this step once.
 
+## Hardening
+
+To run pgAdmin under the Kubernetes `restricted` [Pod Security Standard](https://kubernetes.io/docs/concepts/security/pod-security-standards/), use:
+
+```yaml
+containerPorts:
+  http: 8080
+containerSecurityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+```
+
+Without privilege escalation, pgAdmin cannot bind port 80, so it listens on `containerPorts.http` instead. The Service keeps port 80 and targets the container port by name. With `readOnlyRootFilesystem`, the chart mounts emptyDirs at `/tmp` and `/var/log/pgadmin` unless `extraVolumeMounts` already covers those paths. CI installs and upgrades these values on every change (`ci/hardened-values.yaml`).
+
 ## Uninstall the Chart
 
 To uninstall/delete the `my-release` deployment:
