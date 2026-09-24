@@ -44,23 +44,28 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Run chart-testing (lint)
-        id: lint
+      - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.8.0
-        with:
-          command: lint
-          config: ct.yaml
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --config ct.yaml)
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run chart-testing (lint)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct lint --config ct.yaml
 
       - name: Create kind cluster
+        if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@v1.15.0
-        if: steps.lint.conclusion == 'success'
         with:
           config: kind-config.yaml
           cluster_name: "pgadmin4"
 
       - name: Run chart-testing (install)
-        if: steps.lint.conclusion == 'success'
-        uses: helm/chart-testing-action@v2.8.0
-        with:
-          command: install
-          config: ct.yaml
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct install --config ct.yaml
