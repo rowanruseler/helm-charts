@@ -48,6 +48,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `global.imageRegistry` | Global image pull registry for all images | `""` |
 | `global.imagePullSecrets` | Global image pull secrets, support both full format (- name: secret) and short format (- secret) | `[]` |
+| `nameOverride` | Override the chart name used in resource names and labels | `""` |
+| `fullnameOverride` | Override the full resource name | `""` |
 | `workload.kind` | Workload type (Deployment or StatefulSet) | `Deployment` |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
@@ -60,13 +62,14 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
 | `priorityClassName` | Deployment priorityClassName | `""` |
 | `command` | Deployment command override | `""` |
+| `args` | Deployment arguments override | `[]` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.clusterIP` | Service type Cluster IP | `""` |
 | `service.loadBalancerIP` | Service Load Balancer IP | `""` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
 | `service.portName` | Name of the port on the service | `http` |
-| `service.targetPort` | Internal service port | `http` |
+| `service.targetPort` | Internal service port | `80` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
 | `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
@@ -111,6 +114,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
+| `extraVolumes` | Additional volumes for the pgadmin4 pod | `[]` |
+| `extraVolumeMounts` | Additional volume mounts for the pgadmin4 container | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `"[]"` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions. | `""` |
 | `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
@@ -124,7 +129,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
-| `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
+| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
 | `persistentVolume.existingClaim` | Persistent Volume existing claim name | `unset` |

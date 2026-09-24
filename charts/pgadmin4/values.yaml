@@ -7,6 +7,12 @@ global:
   ## These will be merged with any chart-specific pull secrets
   imagePullSecrets: []
 
+## Override the chart name used in resource names and labels
+nameOverride: ""
+
+## Override the full resource name
+fullnameOverride: ""
+
 ## Workload type - Deployment or StatefulSet
 ## StatefulSet is useful for stable storage and network identity
 ## When using StatefulSet, PVCs are managed via volumeClaimTemplates
@@ -48,6 +54,9 @@ priorityClassName: ""
 ## Ref: https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
 ## Ref: https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206
 # command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
+
+## Deployment arguments override
+args: []
 
 ## Service configuration
 service:
