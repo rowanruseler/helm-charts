@@ -1,0 +1,27 @@
+#
+# values.yaml
+#
+
+# Use certificates that another tool mounts at a fixed path, for example
+# autocert at /var/run/autocert.step.sm. In server mode, pgAdmin only reads
+# files from its storage; SHARED_STORAGE adds the directory as named storage,
+# and "<name>:/<file>" paths resolve inside it.
+# Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
+env:
+  variables:
+    - name: PGADMIN_CONFIG_SHARED_STORAGE
+      value: "[{'name': 'autocert', 'path': '/var/run/autocert.step.sm', 'restricted_access': True}]"
+
+serverDefinitions:
+  enabled: true
+  servers:
+    1:
+      Name: "Postgres over verified TLS"
+      Group: "Servers"
+      Host: "postgres.example.svc"
+      Port: 5432
+      MaintenanceDB: "postgres"
+      Username: "postgres"
+      ConnectionParameters:
+        sslmode: "verify-full"
+        sslrootcert: "autocert:/root.crt"
