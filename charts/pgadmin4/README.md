@@ -136,6 +136,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
+| `httpRoute.labels` | Additional labels to add to the generated HTTPRoute resource metadata. | `{}` |
 | `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
 | `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
 | `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener | `[]` |
