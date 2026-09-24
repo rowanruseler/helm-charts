@@ -49,6 +49,16 @@ helm upgrade -n <namespace> <release> runix/pgadmin4 --version 1.67.0
 
 The new StatefulSet adopts the running pod and the existing PVC, so your data stays. You only need this step once.
 
+## Good to know
+
+### Default login and server definitions apply on first start only
+
+pgAdmin reads `env.email`, the default password, and `serverDefinitions` only when it creates its configuration database, on the first start with an empty `/var/lib/pgadmin`. With `persistentVolume.enabled`, later changes to these values have no effect on the existing volume. Change the login in pgAdmin itself, or start over with a new volume.
+
+### Running behind more than one proxy
+
+pgAdmin trusts the `X-Forwarded-*` headers of one proxy. Behind two, such as a cloud load balancer in front of the ingress controller, it builds `http://` URLs and OAuth2 providers reject the redirect URI. Set `PGADMIN_CONFIG_PROXY_X_FOR_COUNT`, `PGADMIN_CONFIG_PROXY_X_PROTO_COUNT`, and `PGADMIN_CONFIG_PROXY_X_HOST_COUNT` to the number of proxies, as in [`examples/behind-multiple-proxies.yaml`](examples/behind-multiple-proxies.yaml).
+
 ## Hardening
 
 To run pgAdmin under the Kubernetes `restricted` [Pod Security Standard](https://kubernetes.io/docs/concepts/security/pod-security-standards/), use:

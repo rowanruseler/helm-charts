@@ -1,0 +1,17 @@
+#
+# values.yaml
+#
+
+# pgAdmin trusts one proxy's X-Forwarded-* headers by default. With two proxies,
+# for example a cloud load balancer in front of the ingress controller, it builds
+# http:// URLs, and OAuth2 providers reject the redirect_uri. Set the counts to
+# the number of proxies in front of pgAdmin.
+# Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
+env:
+  variables:
+    - name: PGADMIN_CONFIG_PROXY_X_FOR_COUNT
+      value: "2"
+    - name: PGADMIN_CONFIG_PROXY_X_PROTO_COUNT
+      value: "2"
+    - name: PGADMIN_CONFIG_PROXY_X_HOST_COUNT
+      value: "2"
