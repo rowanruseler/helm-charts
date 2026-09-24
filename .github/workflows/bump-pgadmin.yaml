@@ -1,0 +1,96 @@
+name: Bump pgAdmin
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  CHART: charts/pgadmin4/Chart.yaml
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # PRs opened with GITHUB_TOKEN don't trigger lint-test, so use a GitHub
+      # App token when the app is configured.
+      - name: Create GitHub App token
+        id: app-token
+        if: vars.PGADMIN_BUMP_CLIENT_ID != ''
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PGADMIN_BUMP_CLIENT_ID }}
+          private-key: ${{ secrets.PGADMIN_BUMP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token || github.token }}
+
+      - name: Find newer pgAdmin release
+        id: check
+        run: |
+          latest=$(curl -fsSL 'https://hub.docker.com/v2/repositories/dpage/pgadmin4/tags?page_size=100' \
+            | jq -r '.results[].name | select(test("^[0-9]+\\.[0-9]+$"))' | sort -V | tail -1)
+          current=$(sed -n 's/^appVersion: "\(.*\)"$/\1/p' "$CHART")
+          echo "current=$current latest=$latest"
+
+          if [[ -z "$latest" || "$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)" == "$current" ]]; then
+            echo "Chart is up to date"
+            exit 0
+          fi
+
+          branch="pgadmin4-version-$latest"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists"
+            exit 0
+          fi
+
+          notes="https://www.pgadmin.org/docs/pgadmin4/$latest/release_notes_${latest//./_}.html"
+          if ! curl -fsSL -o /dev/null "$notes"; then
+            echo "Release notes for $latest are not published yet"
+            exit 0
+          fi
+
+          chart_version=$(sed -n 's/^version: //p' "$CHART")
+          IFS=. read -r major minor _ <<< "$chart_version"
+          {
+            echo "app_version=$latest"
+            echo "chart_version=$major.$((minor + 1)).0"
+            echo "branch=$branch"
+            echo "notes=$notes"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open pull request
+        if: steps.check.outputs.app_version
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          APP_VERSION: ${{ steps.check.outputs.app_version }}
+          CHART_VERSION: ${{ steps.check.outputs.chart_version }}
+          BRANCH: ${{ steps.check.outputs.branch }}
+          NOTES: ${{ steps.check.outputs.notes }}
+        run: |
+          sed -i -e "s/^version: .*/version: $CHART_VERSION/" \
+                 -e "s/^appVersion: .*/appVersion: \"$APP_VERSION\"/" "$CHART"
+          git diff
+
+          title="[pgAdmin4] Bump pgAdmin version to $CHART_VERSION and appVersion to $APP_VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git commit -s -m "$title" -m "ref: $NOTES" "$CHART"
+          git push origin "$BRANCH"
+          if ! python3 .github/scripts/pgadmin-release-notes.py "$NOTES" > body.md; then
+            echo "ref: $NOTES" > body.md
+          fi
+          gh pr create --base main --head "$BRANCH" --title "$title" --body-file body.md

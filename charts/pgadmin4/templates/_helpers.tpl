@@ -165,7 +165,13 @@ Useful for ensuring generated JSON has the correct types.
 
 {{- define "pgadmin.serverDefinitionsSecret" -}}
 {{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
-{{- default (printf "%s-server-definitions" (include "pgadmin.fullname" .)) (coalesce .Values.serverDefinitions.existingSecret .Values.existingSecret) -}}
+{{- if .Values.serverDefinitions.existingSecret -}}
+{{- .Values.serverDefinitions.existingSecret -}}
+{{- else if or .Values.serverDefinitions.servers (not .Values.existingSecret) -}}
+{{- printf "%s-server-definitions" (include "pgadmin.fullname" .) -}}
+{{- else -}}
+{{- .Values.existingSecret -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -236,4 +242,67 @@ Validation helpers.
 {{- if gt (len $problems) 0 -}}
 {{- fail (printf "\nVALUES VALIDATION:\n%s" (join "\n" $problems)) -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Env vars the chart sets, minus any name the user sets in envVarsExtra or
+env.variables, so the container never gets duplicate names.
+*/}}
+{{- define "pgadmin.env" -}}
+{{- $userSet := list -}}
+{{- range concat (.Values.envVarsExtra | default list) (.Values.env.variables | default list) -}}
+{{- $userSet = append $userSet .name -}}
+{{- end -}}
+{{- $env := list -}}
+{{- /* The pgAdmin image switches to 8080 in restricted security contexts otherwise. */ -}}
+{{- $env = append $env (dict "name" "PGADMIN_LISTEN_PORT" "value" (toString .Values.containerPorts.http)) -}}
+{{- $env = append $env (dict "name" "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION" "value" (toString .Values.env.enhanced_cookie_protection)) -}}
+{{- $env = append $env (dict "name" "PGADMIN_DEFAULT_EMAIL" "value" (toString .Values.env.email)) -}}
+{{- $pgpassfile := .Values.env.pgpassfile | default (ternary "/pgpass/pgpass" "" (not (empty .Values.pgpass.existingSecret))) -}}
+{{- if $pgpassfile -}}
+{{- $env = append $env (dict "name" "PGPASSFILE" "value" (toString $pgpassfile)) -}}
+{{- end -}}
+{{- $passwordRef := dict "name" (include "pgadmin.fullname" .) "key" "password" -}}
+{{- if .Values.existingSecret -}}
+{{- $passwordRef = dict "name" .Values.existingSecret "key" .Values.secretKeys.pgadminPasswordKey -}}
+{{- end -}}
+{{- $env = append $env (dict "name" "PGADMIN_DEFAULT_PASSWORD" "valueFrom" (dict "secretKeyRef" $passwordRef)) -}}
+{{- if .Values.env.contextPath -}}
+{{- $env = append $env (dict "name" "SCRIPT_NAME" "value" (toString .Values.env.contextPath)) -}}
+{{- end -}}
+{{- if and .Values.serverDefinitions.enabled (has .Values.serverDefinitions.resourceType (list "ConfigMap" "Secret")) (or .Values.serverDefinitions.existingConfigmap .Values.serverDefinitions.existingSecret .Values.existingSecret .Values.serverDefinitions.servers) -}}
+{{- $env = append $env (dict "name" "PGADMIN_SERVER_JSON_FILE" "value" "/pgadmin4/servers.json") -}}
+{{- end -}}
+{{- if .Values.preferences.enabled -}}
+{{- $env = append $env (dict "name" "PGADMIN_PREFERENCES_JSON_FILE" "value" "/pgadmin4/preferences.json") -}}
+{{- end -}}
+{{- $filtered := list -}}
+{{- range $env -}}
+{{- if not (has .name $userSet) -}}
+{{- $filtered = append $filtered . -}}
+{{- end -}}
+{{- end -}}
+{{- with $filtered -}}
+{{- toYaml . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Writable emptyDirs pgAdmin needs with a read-only root filesystem, as a JSON
+list of {name, path}. Paths the user already mounts are left out.
+*/}}
+{{- define "pgadmin.writableDirs" -}}
+{{- $dirs := list -}}
+{{- if and .Values.containerSecurityContext.enabled .Values.containerSecurityContext.readOnlyRootFilesystem -}}
+{{- $taken := list -}}
+{{- range .Values.extraVolumeMounts | default list -}}
+{{- $taken = append $taken .mountPath -}}
+{{- end -}}
+{{- range $name, $path := dict "pgadmin-tmp" "/tmp" "pgadmin-logs" "/var/log/pgadmin" -}}
+{{- if not (has $path $taken) -}}
+{{- $dirs = append $dirs (dict "name" $name "path" $path) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- toJson $dirs -}}
 {{- end -}}

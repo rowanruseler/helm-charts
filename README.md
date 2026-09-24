@@ -4,7 +4,13 @@
 
 ## Usage
 
-Add the repository: `helm repo add runix https://helm.runix.net`
+Install from the OCI registry:
+
+```console
+helm install my-release oci://ghcr.io/rowanruseler/charts/pgadmin4
+```
+
+Or add the Helm repository: `helm repo add runix https://helm.runix.net`
 
 ## Charts
 

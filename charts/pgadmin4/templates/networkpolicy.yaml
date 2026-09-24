@@ -16,5 +16,5 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   ingress:
   - ports:
-    - port: {{ .Values.service.targetPort }}
+    - port: {{ .Values.service.targetPort | default .Values.service.portName }}
 {{- end }}

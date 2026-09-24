@@ -32,6 +32,54 @@ The command deploys pgAdmin4 on the Kubernetes cluster in the default configurat
 
 > **Tip**: List all releases using `helm list`
 
+## Upgrading
+
+### To 1.67.0
+
+> **Breaking for `workload.kind: StatefulSet` only.** Deployment installs, the default, upgrade as usual.
+
+Before 1.67.0, the StatefulSet `volumeClaimTemplates` carried the chart and app version labels. Kubernetes does not allow changes to `volumeClaimTemplates`, so every upgrade of a StatefulSet install failed with `spec.volumeClaimTemplates: ... field is immutable`. From 1.67.0 on, `volumeClaimTemplates` only carry labels that never change.
+
+To upgrade a StatefulSet install to 1.67.0, delete the StatefulSet without deleting its pods and PVCs, then upgrade:
+
+```console
+kubectl delete statefulset -n <namespace> -l app.kubernetes.io/instance=<release> --cascade=orphan
+helm upgrade -n <namespace> <release> runix/pgadmin4 --version 1.67.0
+```
+
+The new StatefulSet adopts the running pod and the existing PVC, so your data stays. You only need this step once.
+
+## Good to know
+
+### Default login and server definitions apply on first start only
+
+pgAdmin reads `env.email`, the default password, and `serverDefinitions` only when it creates its configuration database, on the first start with an empty `/var/lib/pgadmin`. With `persistentVolume.enabled`, later changes to these values have no effect on the existing volume. Change the login in pgAdmin itself, or start over with a new volume.
+
+### Running behind more than one proxy
+
+pgAdmin trusts the `X-Forwarded-*` headers of one proxy. Behind two, such as a cloud load balancer in front of the ingress controller, it builds `http://` URLs and OAuth2 providers reject the redirect URI. Set `PGADMIN_CONFIG_PROXY_X_FOR_COUNT`, `PGADMIN_CONFIG_PROXY_X_PROTO_COUNT`, and `PGADMIN_CONFIG_PROXY_X_HOST_COUNT` to the number of proxies, as in [`examples/behind-multiple-proxies.yaml`](examples/behind-multiple-proxies.yaml).
+
+## Hardening
+
+To run pgAdmin under the Kubernetes `restricted` [Pod Security Standard](https://kubernetes.io/docs/concepts/security/pod-security-standards/), use:
+
+```yaml
+containerPorts:
+  http: 8080
+containerSecurityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+```
+
+Without privilege escalation, pgAdmin cannot bind port 80, so it listens on `containerPorts.http` instead. The Service keeps port 80 and targets the container port by name. With `readOnlyRootFilesystem`, the chart mounts emptyDirs at `/tmp` and `/var/log/pgadmin` unless `extraVolumeMounts` already covers those paths. CI installs and upgrades these values on every change (`ci/hardened-values.yaml`).
+
 ## Uninstall the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -48,6 +96,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | --------- | ----------- | ------- |
 | `global.imageRegistry` | Global image pull registry for all images | `""` |
 | `global.imagePullSecrets` | Global image pull secrets, support both full format (- name: secret) and short format (- secret) | `[]` |
+| `nameOverride` | Override the chart name used in resource names and labels | `""` |
+| `fullnameOverride` | Override the full resource name | `""` |
 | `workload.kind` | Workload type (Deployment or StatefulSet) | `Deployment` |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
 | `image.registry` | Docker image registry | `docker.io` |
@@ -60,13 +110,14 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
 | `priorityClassName` | Deployment priorityClassName | `""` |
 | `command` | Deployment command override | `""` |
+| `args` | Deployment arguments override | `[]` |
 | `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
 | `service.clusterIP` | Service type Cluster IP | `""` |
 | `service.loadBalancerIP` | Service Load Balancer IP | `""` |
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
 | `service.portName` | Name of the port on the service | `http` |
-| `service.targetPort` | Internal service port | `http` |
+| `service.targetPort` | Container port the Service targets, a number or a port name. Empty means the port named `service.portName` | `""` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
 | `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
@@ -112,12 +163,16 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
+| `extraVolumes` | Additional volumes for the pgadmin4 pod | `[]` |
+| `extraVolumeMounts` | Additional volume mounts for the pgadmin4 container | `[]` |
 | `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `"[]"` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions. | `""` |
 | `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@domain.com` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
+| `pgpass.existingSecret` | Existing Secret with a pgpass file. An init container copies it into the pod with mode 0600 and the chart sets `PGPASSFILE`, unless `env.pgpassfile` is set | `""` |
+| `pgpass.key` | Key in `pgpass.existingSecret` that holds the pgpass file | `pgpass` |
 | `env.pgpassfile` | Path to pgpassfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
@@ -125,7 +180,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
-| `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
+| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
 | `persistentVolume.size` | Persistent Volume size | `10Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
 | `persistentVolume.existingClaim` | Persistent Volume existing claim name | `unset` |
@@ -155,9 +210,10 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `namespace` | Namespace where to deploy resources | `null` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.enabled` | Enables test | `true` |
+| `test.hookDeletePolicy` | [Hook deletion policy](https://helm.sh/docs/topics/charts_hooks/#hook-deletion-policies) for the test Pod. Use `before-hook-creation` to keep the Pod for `helm test --logs` | `hook-succeeded` |
 | `test.image.registry` | Docker image registry for test | `docker.io` |
 | `test.image.repository` | Docker image for test | `busybox` |
-| `test.image.tag` | Docker image tag for test | `latest` |
+| `test.image.tag` | Docker image tag for test | `1.38.0` |
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 | `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `` |

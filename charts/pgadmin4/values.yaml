@@ -7,6 +7,12 @@ global:
   ## These will be merged with any chart-specific pull secrets
   imagePullSecrets: []
 
+## Override the chart name used in resource names and labels
+nameOverride: ""
+
+## Override the full resource name
+fullnameOverride: ""
+
 ## Workload type - Deployment or StatefulSet
 ## StatefulSet is useful for stable storage and network identity
 ## When using StatefulSet, PVCs are managed via volumeClaimTemplates
@@ -49,13 +55,17 @@ priorityClassName: ""
 ## Ref: https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206
 # command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
 
+## Deployment arguments override
+args: []
+
 ## Service configuration
 service:
   type: ClusterIP
   clusterIP: ""
   loadBalancerIP: ""
   port: 80
-  targetPort: 80
+  ## Defaults to the container port named by portName, which follows containerPorts.http
+  targetPort: ""
   # targetPort: 4181  # To be used with a proxy extraContainer
   portName: http
 
@@ -266,6 +276,14 @@ extraConfigmapMounts: []
   #   configMap: certs-configmap
   #   readOnly: true
 
+## pgpass file for database connections, read from an existing Secret
+## An init container copies it into the pod with mode 0600, which libpq requires
+## and a Secret mount can't provide, and the chart sets PGPASSFILE to the copy
+## unless env.pgpassfile is set
+pgpass:
+  existingSecret: ""
+  key: pgpass
+
 ## Additional secret mounts to be mounted inside a container
 extraSecretMounts: []
   # - name: pgpassfile
@@ -391,6 +409,7 @@ securityContext:
   fsGroup: 5050
 
 ## Container security context
+## See the README "Hardening" section for restricted Pod Security settings
 containerSecurityContext:
   enabled: false
   allowPrivilegeEscalation: false
@@ -517,11 +536,14 @@ init:
 ## Chart test configuration
 test:
   enabled: true
+  ## When Helm deletes the test Pod. hook-succeeded removes it before
+  ## `helm test --logs` can read it; use before-hook-creation to keep it
+  hookDeletePolicy: hook-succeeded
   ## Container image for test-connection.yaml
   image:
     registry: docker.io
     repository: busybox
-    tag: latest
+    tag: "1.38.0"
   ## Resources request/limit for test-connection Pod
   resources: {}
     # limits:

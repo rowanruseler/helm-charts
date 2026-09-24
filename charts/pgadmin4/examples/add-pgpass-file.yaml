@@ -2,31 +2,13 @@
 # values.yaml
 #
 
-# Security
-## Add .pgpass file to root of pgAdmin storage
-## For details see `Advanced tab -> Password File` in
-## https://www.pgadmin.org/docs/pgadmin4/4.23/server_dialog.html
-
-env:
-  pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
-extraSecretMounts:
-- name: pgpassfile
-  secret: pgpassfile
-  subPath: pgpassfile
-  mountPath: "/var/lib/pgadmin/storage/pgadmin/file.pgpass"
-  readOnly: true
-VolumePermissions:
-  # chown -R pgadmin:pgadmin /var/lib/pgadmin
-  enabled: true
-extraInitContainers: |
-  - name: add-folder-for-pgpass
-    image: "dpage/pgadmin4:4.23"
-    command: ["/bin/mkdir", "-p", "/var/lib/pgadmin/storage/pgadmin"]
-    volumeMounts:
-      - name: pgadmin-data
-        mountPath: /var/lib/pgadmin
-    securityContext:
-      runAsUser: 5050
+# Use a pgpass file for server connections, so pgAdmin doesn't ask for passwords.
+# An init container copies the file into the pod with mode 0600 (libpq ignores
+# the file otherwise) and the chart points PGPASSFILE at the copy.
+# Ref: https://www.postgresql.org/docs/current/libpq-pgpass.html
+pgpass:
+  existingSecret: pgpassfile
+  key: pgpass
 
 #
 # secrets.yaml
@@ -38,6 +20,6 @@ metadata:
   name: pgpassfile
 type: Opaque
 stringData:
-  # https://www.postgresql.org/docs/9.4/libpq-pgpass.html
-  pgpassfile: |
-    hostname:port:database:username:password
+  # hostname:port:database:username:password
+  pgpass: |
+    postgres.example.svc:5432:*:postgres:changeme

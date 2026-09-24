@@ -8,10 +8,11 @@ jobs:
   publish:
     permissions:
       contents: write
+      packages: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
 
@@ -21,9 +22,22 @@ jobs:
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
     - name: Install Helm
-      uses: azure/setup-helm@v4
+      uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
 
     - name: Run chart-releaser
-      uses: helm/chart-releaser-action@v1.6.0
+      uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+      with:
+        config: .github/cr.yaml
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    # chart-releaser leaves the charts it released in .cr-release-packages.
+    - name: Push charts to ghcr.io
+      if: hashFiles('.cr-release-packages/*.tgz') != ''
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "$GH_TOKEN" | helm registry login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+        for pkg in .cr-release-packages/*.tgz; do
+          helm push "$pkg" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts"
+        done
