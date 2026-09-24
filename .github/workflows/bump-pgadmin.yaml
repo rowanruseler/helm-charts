@@ -90,4 +90,7 @@ jobs:
           git switch -c "$BRANCH"
           git commit -s -m "$title" -m "ref: $NOTES" "$CHART"
           git push origin "$BRANCH"
-          gh pr create --base main --head "$BRANCH" --title "$title" --body "ref: $NOTES"
+          if ! python3 .github/scripts/pgadmin-release-notes.py "$NOTES" > body.md; then
+            echo "ref: $NOTES" > body.md
+          fi
+          gh pr create --base main --head "$BRANCH" --title "$title" --body-file body.md
