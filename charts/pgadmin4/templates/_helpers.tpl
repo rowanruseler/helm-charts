@@ -245,19 +245,45 @@ Validation helpers.
 {{- end -}}
 
 {{/*
-PGADMIN_LISTEN_PORT from containerPorts.http, unless the user already sets it.
-The pgAdmin image switches to 8080 in restricted security contexts otherwise.
+Env vars the chart sets, minus any name the user sets in envVarsExtra or
+env.variables, so the container never gets duplicate names.
 */}}
-{{- define "pgadmin.listenPortEnv" -}}
-{{- $userSet := false -}}
+{{- define "pgadmin.env" -}}
+{{- $userSet := list -}}
 {{- range concat (.Values.envVarsExtra | default list) (.Values.env.variables | default list) -}}
-{{- if eq .name "PGADMIN_LISTEN_PORT" -}}
-{{- $userSet = true -}}
+{{- $userSet = append $userSet .name -}}
+{{- end -}}
+{{- $env := list -}}
+{{- /* The pgAdmin image switches to 8080 in restricted security contexts otherwise. */ -}}
+{{- $env = append $env (dict "name" "PGADMIN_LISTEN_PORT" "value" (toString .Values.containerPorts.http)) -}}
+{{- $env = append $env (dict "name" "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION" "value" (toString .Values.env.enhanced_cookie_protection)) -}}
+{{- $env = append $env (dict "name" "PGADMIN_DEFAULT_EMAIL" "value" (toString .Values.env.email)) -}}
+{{- $pgpassfile := .Values.env.pgpassfile | default (ternary "/pgpass/pgpass" "" (not (empty .Values.pgpass.existingSecret))) -}}
+{{- if $pgpassfile -}}
+{{- $env = append $env (dict "name" "PGPASSFILE" "value" (toString $pgpassfile)) -}}
+{{- end -}}
+{{- $passwordRef := dict "name" (include "pgadmin.fullname" .) "key" "password" -}}
+{{- if .Values.existingSecret -}}
+{{- $passwordRef = dict "name" .Values.existingSecret "key" .Values.secretKeys.pgadminPasswordKey -}}
+{{- end -}}
+{{- $env = append $env (dict "name" "PGADMIN_DEFAULT_PASSWORD" "valueFrom" (dict "secretKeyRef" $passwordRef)) -}}
+{{- if .Values.env.contextPath -}}
+{{- $env = append $env (dict "name" "SCRIPT_NAME" "value" (toString .Values.env.contextPath)) -}}
+{{- end -}}
+{{- if and .Values.serverDefinitions.enabled (has .Values.serverDefinitions.resourceType (list "ConfigMap" "Secret")) (or .Values.serverDefinitions.existingConfigmap .Values.serverDefinitions.existingSecret .Values.existingSecret .Values.serverDefinitions.servers) -}}
+{{- $env = append $env (dict "name" "PGADMIN_SERVER_JSON_FILE" "value" "/pgadmin4/servers.json") -}}
+{{- end -}}
+{{- if .Values.preferences.enabled -}}
+{{- $env = append $env (dict "name" "PGADMIN_PREFERENCES_JSON_FILE" "value" "/pgadmin4/preferences.json") -}}
+{{- end -}}
+{{- $filtered := list -}}
+{{- range $env -}}
+{{- if not (has .name $userSet) -}}
+{{- $filtered = append $filtered . -}}
 {{- end -}}
 {{- end -}}
-{{- if not $userSet -}}
-- name: PGADMIN_LISTEN_PORT
-  value: {{ .Values.containerPorts.http | quote }}
+{{- with $filtered -}}
+{{- toYaml . -}}
 {{- end -}}
 {{- end -}}
 

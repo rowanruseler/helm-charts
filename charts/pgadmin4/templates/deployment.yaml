@@ -167,41 +167,8 @@ spec:
           {{- with .Values.envVarsExtra }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with include "pgadmin.listenPortEnv" . }}
+          {{- with include "pgadmin.env" . }}
             {{- . | nindent 12 }}
-          {{- end }}
-            - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
-              value: {{ .Values.env.enhanced_cookie_protection | quote }}
-            - name: PGADMIN_DEFAULT_EMAIL
-              value: {{ .Values.env.email | quote }}
-          {{- $pgpassfile := .Values.env.pgpassfile | default (ternary "/pgpass/pgpass" "" (not (empty .Values.pgpass.existingSecret))) }}
-          {{- if $pgpassfile }}
-            - name: PGPASSFILE
-              value: {{ $pgpassfile | quote }}
-          {{- end }}
-            - name: PGADMIN_DEFAULT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-          {{- if not .Values.existingSecret }}
-                  name: {{ $fullName }}
-                  key: password
-          {{- else }}
-                  name: {{ .Values.existingSecret }}
-                  key: {{ .Values.secretKeys.pgadminPasswordKey }}
-          {{- end }}
-          {{- if .Values.env.contextPath }}
-            - name: SCRIPT_NAME
-              value: {{ .Values.env.contextPath | quote }}
-          {{- end }}
-          {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
-          {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
-            - name: PGADMIN_SERVER_JSON_FILE
-              value: /pgadmin4/servers.json
-          {{- end }}
-          {{- end }}
-          {{- if .Values.preferences.enabled }}
-            - name: PGADMIN_PREFERENCES_JSON_FILE
-              value: /pgadmin4/preferences.json
           {{- end }}
           {{- range .Values.env.variables }}
             - name: {{ .name | quote }}
