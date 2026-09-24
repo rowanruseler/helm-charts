@@ -165,7 +165,13 @@ Useful for ensuring generated JSON has the correct types.
 
 {{- define "pgadmin.serverDefinitionsSecret" -}}
 {{- if and .Values.serverDefinitions.enabled (eq .Values.serverDefinitions.resourceType "Secret") -}}
-{{- default (printf "%s-server-definitions" (include "pgadmin.fullname" .)) (coalesce .Values.serverDefinitions.existingSecret .Values.existingSecret) -}}
+{{- if .Values.serverDefinitions.existingSecret -}}
+{{- .Values.serverDefinitions.existingSecret -}}
+{{- else if or .Values.serverDefinitions.servers (not .Values.existingSecret) -}}
+{{- printf "%s-server-definitions" (include "pgadmin.fullname" .) -}}
+{{- else -}}
+{{- .Values.existingSecret -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
