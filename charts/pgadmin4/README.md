@@ -32,6 +32,23 @@ The command deploys pgAdmin4 on the Kubernetes cluster in the default configurat
 
 > **Tip**: List all releases using `helm list`
 
+## Upgrading
+
+### To 1.67.0
+
+> **Breaking for `workload.kind: StatefulSet` only.** Deployment installs, the default, upgrade as usual.
+
+Before 1.67.0, the StatefulSet `volumeClaimTemplates` carried the chart and app version labels. Kubernetes does not allow changes to `volumeClaimTemplates`, so every upgrade of a StatefulSet install failed with `spec.volumeClaimTemplates: ... field is immutable`. From 1.67.0 on, `volumeClaimTemplates` only carry labels that never change.
+
+To upgrade a StatefulSet install to 1.67.0, delete the StatefulSet without deleting its pods and PVCs, then upgrade:
+
+```console
+kubectl delete statefulset -n <namespace> -l app.kubernetes.io/instance=<release> --cascade=orphan
+helm upgrade -n <namespace> <release> runix/pgadmin4 --version 1.67.0
+```
+
+The new StatefulSet adopts the running pod and the existing PVC, so your data stays. You only need this step once.
+
 ## Uninstall the Chart
 
 To uninstall/delete the `my-release` deployment:

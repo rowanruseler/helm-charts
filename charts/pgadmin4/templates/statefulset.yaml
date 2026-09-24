@@ -315,7 +315,7 @@ spec:
   - metadata:
       name: pgadmin-data
       labels:
-        {{- include "pgadmin.labels" . | nindent 8 }}
+        {{- include "pgadmin.selectorLabels" . | nindent 8 }}
       {{- with .Values.persistentVolume.annotations }}
       annotations: {{- include "pgadmin.tplToMap" (dict "toMap" . "context" $) | nindent 8 }}
       {{- end }}
