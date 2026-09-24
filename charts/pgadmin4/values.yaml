@@ -535,6 +535,9 @@ init:
 ## Chart test configuration
 test:
   enabled: true
+  ## When Helm deletes the test Pod. hook-succeeded removes it before
+  ## `helm test --logs` can read it; use before-hook-creation to keep it
+  hookDeletePolicy: hook-succeeded
   ## Container image for test-connection.yaml
   image:
     registry: docker.io
