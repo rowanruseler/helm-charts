@@ -64,7 +64,8 @@ service:
   clusterIP: ""
   loadBalancerIP: ""
   port: 80
-  targetPort: 80
+  ## Defaults to the container port named by portName, which follows containerPorts.http
+  targetPort: ""
   # targetPort: 4181  # To be used with a proxy extraContainer
   portName: http
 

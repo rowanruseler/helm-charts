@@ -86,7 +86,7 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
 | `service.portName` | Name of the port on the service | `http` |
-| `service.targetPort` | Internal service port | `80` |
+| `service.targetPort` | Container port the Service targets, a number or a port name. Empty means the port named `service.portName` | `""` |
 | `service.nodePort` | Kubernetes service nodePort | `` |
 | `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
