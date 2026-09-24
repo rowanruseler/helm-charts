@@ -47,17 +47,28 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # v2.8.0
 
+      # ct only tests changed charts. When the CI setup itself changes, test all
+      # charts so the change is exercised before it merges.
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --config ct.yaml)
-          if [[ -n "$changed" ]]; then
+          if [[ -n "$(ct list-changed --config ct.yaml)" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif ! git diff --quiet origin/main...HEAD -- ct.yaml kind-config.yaml .github/workflows/lint-test.yaml; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "all=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --config ct.yaml
+        env:
+          ALL: ${{ steps.list-changed.outputs.all }}
+        run: |
+          args=(--config ct.yaml)
+          if [[ "$ALL" == true ]]; then
+            args+=(--all --check-version-increment=false)
+          fi
+          ct lint "${args[@]}"
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
@@ -68,4 +79,11 @@ jobs:
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --config ct.yaml
+        env:
+          ALL: ${{ steps.list-changed.outputs.all }}
+        run: |
+          args=(--config ct.yaml)
+          if [[ "$ALL" == true ]]; then
+            args+=(--all)
+          fi
+          ct install "${args[@]}"
