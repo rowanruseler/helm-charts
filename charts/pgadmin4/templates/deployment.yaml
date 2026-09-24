@@ -152,10 +152,10 @@ spec:
             - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
               value: {{ .Values.env.enhanced_cookie_protection | quote }}
             - name: PGADMIN_DEFAULT_EMAIL
-              value: {{ .Values.env.email }}
+              value: {{ .Values.env.email | quote }}
           {{- if .Values.env.pgpassfile }}
             - name: PGPASSFILE
-              value: {{ .Values.env.pgpassfile }}
+              value: {{ .Values.env.pgpassfile | quote }}
           {{- end }}
             - name: PGADMIN_DEFAULT_PASSWORD
               valueFrom:
@@ -169,7 +169,7 @@ spec:
           {{- end }}
           {{- if .Values.env.contextPath }}
             - name: SCRIPT_NAME
-              value: {{ .Values.env.contextPath }}
+              value: {{ .Values.env.contextPath | quote }}
           {{- end }}
           {{- if and (.Values.serverDefinitions.enabled) (or (eq .Values.serverDefinitions.resourceType "ConfigMap") (eq .Values.serverDefinitions.resourceType "Secret")) -}}
           {{- if or (.Values.serverDefinitions.existingConfigmap) (.Values.serverDefinitions.existingSecret) (.Values.existingSecret) (.Values.serverDefinitions.servers) }}
