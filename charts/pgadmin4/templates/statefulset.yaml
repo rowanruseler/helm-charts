@@ -62,7 +62,7 @@ spec:
       {{- end }}
     {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
-    {{- if or (.Values.VolumePermissions.enabled) .Values.extraInitContainers }}
+    {{- if or (.Values.VolumePermissions.enabled) .Values.pgpass.existingSecret .Values.extraInitContainers }}
       initContainers:
       {{- if .Values.VolumePermissions.enabled }}
         - name: init-chmod-data
@@ -75,6 +75,24 @@ spec:
               subPath: "{{ .Values.persistentVolume.subPath }}"
           securityContext:
             runAsUser: 0
+          resources:
+            {{- .Values.init.resources | toYaml | nindent 12 }}
+      {{- end }}
+      {{- if .Values.pgpass.existingSecret }}
+        - name: init-pgpass
+          image: {{ include "pgadmin.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # libpq ignores a pgpass file unless its mode is 0600, which a Secret mount can't provide.
+          command: ["install", "-m", "600", "/pgpass-secret/pgpass", "/pgpass/pgpass"]
+          volumeMounts:
+            - name: pgpass-secret
+              mountPath: /pgpass-secret
+              readOnly: true
+            - name: pgpass
+              mountPath: /pgpass
+        {{- if .Values.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
           resources:
             {{- .Values.init.resources | toYaml | nindent 12 }}
       {{- end }}
@@ -157,9 +175,10 @@ spec:
               value: {{ .Values.env.enhanced_cookie_protection | quote }}
             - name: PGADMIN_DEFAULT_EMAIL
               value: {{ .Values.env.email | quote }}
-          {{- if .Values.env.pgpassfile }}
+          {{- $pgpassfile := .Values.env.pgpassfile | default (ternary "/pgpass/pgpass" "" (not (empty .Values.pgpass.existingSecret))) }}
+          {{- if $pgpassfile }}
             - name: PGPASSFILE
-              value: {{ .Values.env.pgpassfile | quote }}
+              value: {{ $pgpassfile | quote }}
           {{- end }}
             - name: PGADMIN_DEFAULT_PASSWORD
               valueFrom:
@@ -228,6 +247,11 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- if .Values.pgpass.existingSecret }}
+            - name: pgpass
+              mountPath: /pgpass
+              readOnly: true
+          {{- end }}
           {{- if .Values.extraVolumeMounts }}
             {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
           {{- end }}
@@ -260,6 +284,17 @@ spec:
           secret:
             secretName: {{ tpl (.secret) $ }}
             defaultMode: {{ .defaultMode | default 256 }}
+      {{- end }}
+      {{- if .Values.pgpass.existingSecret }}
+        - name: pgpass-secret
+          secret:
+            secretName: {{ .Values.pgpass.existingSecret }}
+            defaultMode: 0440
+            items:
+              - key: {{ .Values.pgpass.key }}
+                path: pgpass
+        - name: pgpass
+          emptyDir: {}
       {{- end }}
       {{- if .Values.extraVolumes }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}

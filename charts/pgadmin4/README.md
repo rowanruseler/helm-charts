@@ -160,6 +160,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod | `"[]"` |
 | `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@domain.com` |
 | `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
+| `pgpass.existingSecret` | Existing Secret with a pgpass file. An init container copies it into the pod with mode 0600 and the chart sets `PGPASSFILE`, unless `env.pgpassfile` is set | `""` |
+| `pgpass.key` | Key in `pgpass.existingSecret` that holds the pgpass file | `pgpass` |
 | `env.pgpassfile` | Path to pgpassfile (optional). Needed chart reinstall for apply changes | `` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 | `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
