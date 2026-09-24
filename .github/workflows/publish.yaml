@@ -8,6 +8,7 @@ jobs:
   publish:
     permissions:
       contents: write
+      packages: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -29,3 +30,14 @@ jobs:
         config: .github/cr.yaml
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    # chart-releaser leaves the charts it released in .cr-release-packages.
+    - name: Push charts to ghcr.io
+      if: hashFiles('.cr-release-packages/*.tgz') != ''
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "$GH_TOKEN" | helm registry login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+        for pkg in .cr-release-packages/*.tgz; do
+          helm push "$pkg" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts"
+        done
