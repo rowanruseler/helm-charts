@@ -12,6 +12,14 @@ helm install my-release oci://ghcr.io/rowanruseler/charts/pgadmin4
 
 Or add the Helm repository: `helm repo add runix https://helm.runix.net`
 
+OCI charts are signed with [cosign](https://docs.sigstore.dev/cosign/) keyless signing. To check that a chart came from this repository's release workflow:
+
+```console
+cosign verify ghcr.io/rowanruseler/charts/pgadmin4:<version> \
+  --certificate-identity https://github.com/rowanruseler/helm-charts/.github/workflows/publish.yaml@refs/heads/main \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 ## Charts
 
 | Name | Description |
