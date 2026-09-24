@@ -18,7 +18,7 @@ spec:
   {{- end }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: {{ .Values.service.targetPort | default .Values.service.portName }}
     {{- if .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
     {{- end }}

@@ -243,3 +243,20 @@ Validation helpers.
 {{- fail (printf "\nVALUES VALIDATION:\n%s" (join "\n" $problems)) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+PGADMIN_LISTEN_PORT from containerPorts.http, unless the user already sets it.
+The pgAdmin image switches to 8080 in restricted security contexts otherwise.
+*/}}
+{{- define "pgadmin.listenPortEnv" -}}
+{{- $userSet := false -}}
+{{- range concat (.Values.envVarsExtra | default list) (.Values.env.variables | default list) -}}
+{{- if eq .name "PGADMIN_LISTEN_PORT" -}}
+{{- $userSet = true -}}
+{{- end -}}
+{{- end -}}
+{{- if not $userSet -}}
+- name: PGADMIN_LISTEN_PORT
+  value: {{ .Values.containerPorts.http | quote }}
+{{- end -}}
+{{- end -}}
