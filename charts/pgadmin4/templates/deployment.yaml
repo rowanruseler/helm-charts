@@ -40,10 +40,10 @@ spec:
         {{- tpl . $ | nindent 8 }}
       {{- end }}
       {{- if not .Values.existingSecret }}
-        checksum/secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
+        checksum/secret: {{ (include (print $.Template.BasePath "/auth-secret.yaml") . | fromYaml).data | toYaml | sha256sum }}
       {{- end }}
       {{- if and .Values.preferences.enabled (not .Values.preferences.existingConfigMap) }}
-        checksum/preferences: {{ include (print .Template.BasePath "/preferences-configmap.yaml") . | sha256sum }}
+        checksum/preferences: {{ (include (print .Template.BasePath "/preferences-configmap.yaml") . | fromYaml).data | toYaml | sha256sum }}
       {{- end }}
     {{- end }}
     spec:
