@@ -1,0 +1,13 @@
+# Restricted Pod Security settings, as documented in the README "Hardening" section.
+containerPorts:
+  http: 8080
+containerSecurityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault

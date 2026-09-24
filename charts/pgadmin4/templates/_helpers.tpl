@@ -260,3 +260,23 @@ The pgAdmin image switches to 8080 in restricted security contexts otherwise.
   value: {{ .Values.containerPorts.http | quote }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Writable emptyDirs pgAdmin needs with a read-only root filesystem, as a JSON
+list of {name, path}. Paths the user already mounts are left out.
+*/}}
+{{- define "pgadmin.writableDirs" -}}
+{{- $dirs := list -}}
+{{- if and .Values.containerSecurityContext.enabled .Values.containerSecurityContext.readOnlyRootFilesystem -}}
+{{- $taken := list -}}
+{{- range .Values.extraVolumeMounts | default list -}}
+{{- $taken = append $taken .mountPath -}}
+{{- end -}}
+{{- range $name, $path := dict "pgadmin-tmp" "/tmp" "pgadmin-logs" "/var/log/pgadmin" -}}
+{{- if not (has $path $taken) -}}
+{{- $dirs = append $dirs (dict "name" $name "path" $path) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- toJson $dirs -}}
+{{- end -}}
