@@ -1,0 +1,68 @@
+suite: traffic
+templates:
+  - ingress.yaml
+  - httproute.yaml
+  - virtualservice.yaml
+release:
+  name: t
+  namespace: ns
+# ingress.yaml falls back to pre-1.19 APIs unless the cluster advertises v1 (#424).
+capabilities:
+  apiVersions:
+    - networking.k8s.io/v1
+tests:
+  - it: routes Ingress paths to the chart Service
+    template: ingress.yaml
+    set:
+      ingress.enabled: true
+    asserts:
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service
+          value:
+            name: t-pgadmin4
+            port:
+              number: 80
+
+  # ArgoCD diffs against live objects; render the fields the API server defaults (#347).
+  - it: renders HTTPRoute backendRefs with defaulted fields
+    template: httproute.yaml
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: gw
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - name: gw
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: t-pgadmin4
+            port: 80
+            weight: 1
+
+  - it: routes the default VirtualService to the chart Service
+    template: virtualservice.yaml
+    set:
+      istioIngress.enabled: true
+      istioIngress.virtualService.enabled: true
+    asserts:
+      - equal:
+          path: spec.http[0].route[0].destination.host
+          value: t-pgadmin4.ns.svc.cluster.local
+
+  - it: routes to the Service in .Values.namespace
+    template: virtualservice.yaml
+    set:
+      namespace: other
+      istioIngress.enabled: true
+      istioIngress.virtualService.enabled: true
+    asserts:
+      - equal:
+          path: spec.http[0].route[0].destination.host
+          value: t-pgadmin4.other.svc.cluster.local

@@ -1,0 +1,183 @@
+suite: deployment
+templates:
+  - deployment.yaml
+  # included by the checksum annotations
+  - auth-secret.yaml
+  - preferences-configmap.yaml
+release:
+  name: t
+  namespace: ns
+tests:
+  - it: renders a Deployment by default
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: t-pgadmin4
+
+  - it: renders no Deployment when workload.kind is StatefulSet
+    template: deployment.yaml
+    set:
+      workload.kind: StatefulSet
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: keeps selector labels stable across chart versions
+    template: deployment.yaml
+    chart:
+      version: 9.9.9
+      appVersion: "99.0"
+    asserts:
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/name: pgadmin4
+            app.kubernetes.io/instance: t
+
+  - it: listens on containerPorts.http
+    template: deployment.yaml
+    set:
+      containerPorts.http: 8080
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_LISTEN_PORT
+            value: "8080"
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080
+
+  - it: reads the password from the chart Secret
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: t-pgadmin4
+                key: password
+
+  - it: reads the password from existingSecret
+    template: deployment.yaml
+    set:
+      existingSecret: my-secret
+      secretKeys.pgadminPasswordKey: pw
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: pw
+
+  - it: lets envVarsExtra replace a chart env var without duplicates
+    template: deployment.yaml
+    set:
+      envVarsExtra:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: me@example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_DEFAULT_EMAIL
+            value: me@example.com
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_DEFAULT_EMAIL
+            value: chart@domain.com
+
+  - it: mounts writable emptyDirs with a read-only root filesystem
+    template: deployment.yaml
+    set:
+      containerSecurityContext.enabled: true
+      containerSecurityContext.readOnlyRootFilesystem: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: pgadmin-tmp
+            mountPath: /tmp
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: pgadmin-logs
+            mountPath: /var/log/pgadmin
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: pgadmin-tmp
+            emptyDir: {}
+
+  - it: leaves a user-mounted /tmp alone
+    template: deployment.yaml
+    set:
+      containerSecurityContext.enabled: true
+      containerSecurityContext.readOnlyRootFilesystem: true
+      extraVolumeMounts:
+        - name: my-tmp
+          mountPath: /tmp
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: pgadmin-tmp
+            mountPath: /tmp
+
+  - it: copies pgpass into place with mode 600
+    template: deployment.yaml
+    set:
+      pgpass.existingSecret: pgpass
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: init-pgpass
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGPASSFILE
+            value: /pgpass/pgpass
+
+  - it: restarts pods when the password changes
+    template: deployment.yaml
+    asserts:
+      - exists:
+          path: spec.template.metadata.annotations["checksum/secret"]
+
+  - it: mounts server definitions from a ConfigMap
+    template: deployment.yaml
+    set:
+      serverDefinitions.enabled: true
+      serverDefinitions.servers:
+        firstServer:
+          Name: db
+          Group: Servers
+          Port: 5432
+          Username: postgres
+          Host: db
+          SSLMode: prefer
+          MaintenanceDB: postgres
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_SERVER_JSON_FILE
+            value: /pgadmin4/servers.json
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: definitions
+            configMap:
+              name: t-pgadmin4-server-definitions
+              items:
+                - key: servers.json
+                  path: servers.json
