@@ -1,7 +1,8 @@
 HELM ?= helm
+HELM_DOCS ?= helm-docs
 CHARTS := $(wildcard charts/*)
 
-.PHONY: test lint template unittest
+.PHONY: test lint template unittest docs
 
 test: lint template unittest
 
@@ -21,3 +22,6 @@ template:
 
 unittest:
 	$(HELM) unittest $(CHARTS)
+
+docs:
+	$(HELM_DOCS) --chart-search-root charts --sort-values-order file

@@ -1,0 +1,125 @@
+###### based on [dpage/pgadmin4]
+
+# pgAdmin 4
+
+[pgAdmin4](https://www.pgadmin.org/) is the leading Open Source management tool for Postgres, the world’s most advanced Open Source database. pgAdmin4 is designed to meet the needs of both novice and experienced Postgres users alike, providing a powerful graphical interface that simplifies the creation, maintenance and use of database objects.
+
+## Prerequisites
+
+* Kubernetes 1.19+
+* Helm 3.7+
+
+## TL;DR
+
+```console
+helm repo add runix https://helm.runix.net
+helm install pgadmin4 runix/pgadmin4
+```
+
+## Introduction
+
+This chart bootstraps a [pgAdmin4](https://www.pgadmin.org/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+## Install the Chart
+
+To install the chart with the release name `my-release`:
+
+```console
+helm install my-release runix/pgadmin4
+```
+
+The command deploys pgAdmin4 on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Upgrading
+
+### To 1.67.0
+
+> **Breaking for `workload.kind: StatefulSet` only.** Deployment installs, the default, upgrade as usual.
+
+Before 1.67.0, the StatefulSet `volumeClaimTemplates` carried the chart and app version labels. Kubernetes does not allow changes to `volumeClaimTemplates`, so every upgrade of a StatefulSet install failed with `spec.volumeClaimTemplates: ... field is immutable`. From 1.67.0 on, `volumeClaimTemplates` only carry labels that never change.
+
+To upgrade a StatefulSet install to 1.67.0, delete the StatefulSet without deleting its pods and PVCs, then upgrade:
+
+```console
+kubectl delete statefulset -n <namespace> -l app.kubernetes.io/instance=<release> --cascade=orphan
+helm upgrade -n <namespace> <release> runix/pgadmin4 --version 1.67.0
+```
+
+The new StatefulSet adopts the running pod and the existing PVC, so your data stays. You only need this step once.
+
+## Good to know
+
+### Default login and server definitions apply on first start only
+
+pgAdmin reads `env.email`, the default password, and `serverDefinitions` only when it creates its configuration database, on the first start with an empty `/var/lib/pgadmin`. With `persistentVolume.enabled`, later changes to these values have no effect on the existing volume. Change the login in pgAdmin itself, or start over with a new volume.
+
+### Certificates outside pgAdmin storage
+
+In server mode, pgAdmin only reads certificate files, such as `sslrootcert`, from its storage directory. To use certificates that something else mounts at a fixed path, for example autocert at `/var/run/autocert.step.sm`, register that directory with `PGADMIN_CONFIG_SHARED_STORAGE` and refer to files as `<name>:/<file>`. See [`examples/certificates-from-another-volume.yaml`](examples/certificates-from-another-volume.yaml).
+
+### Running behind more than one proxy
+
+pgAdmin trusts the `X-Forwarded-*` headers of one proxy. Behind two, such as a cloud load balancer in front of the ingress controller, it builds `http://` URLs and OAuth2 providers reject the redirect URI. Set `PGADMIN_CONFIG_PROXY_X_FOR_COUNT`, `PGADMIN_CONFIG_PROXY_X_PROTO_COUNT`, and `PGADMIN_CONFIG_PROXY_X_HOST_COUNT` to the number of proxies, as in [`examples/behind-multiple-proxies.yaml`](examples/behind-multiple-proxies.yaml).
+
+## Hardening
+
+To run pgAdmin under the Kubernetes `restricted` [Pod Security Standard](https://kubernetes.io/docs/concepts/security/pod-security-standards/), use:
+
+```yaml
+containerPorts:
+  http: 8080
+containerSecurityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+```
+
+Without privilege escalation, pgAdmin cannot bind port 80, so it listens on `containerPorts.http` instead. The Service keeps port 80 and targets the container port by name. With `readOnlyRootFilesystem`, the chart mounts emptyDirs at `/tmp` and `/var/log/pgadmin` unless `extraVolumeMounts` already covers those paths. CI installs and upgrades these values on every change (`ci/hardened-values.yaml`).
+
+## Uninstall the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```console
+helm delete --purge my-release
+```
+
+The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
+
+## Configuration
+
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+{{- range .Values }}
+| `{{ .Key }}` | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+{{- end }}
+
+> **Note**: The values for `extraConfigmapMounts.[].configMap` and `extraSecretMounts.[].secret` can be either a simple string or a template string. It will be resolved automatically.
+
+> **Note**: The TLS secrets need to be created manually in the istio-ingress namespace (considering your ingress gateway is installed in the istio-ingress namespace) and can then be referenced in `istio.tls.secretCertName`.
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
+
+```console
+helm install my-release runix/pgadmin4 \
+  --set env.password=SuperSecret
+```
+
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example:
+
+```console
+helm install my-release runix/pgadmin4 -f values.yaml
+```
+
+> **Tip**: You can use the default [values.yaml](https://github.com/rowanruseler/helm-charts/blob/main/charts/pgadmin4/values.yaml) and look on [examples](https://github.com/rowanruseler/helm-charts/blob/main/charts/pgadmin4/examples/).
+
+[dpage/pgadmin4]: https://hub.docker.com/r/dpage/pgadmin4

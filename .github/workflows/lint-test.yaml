@@ -14,6 +14,30 @@ permissions:
   packages: read
 
 jobs:
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install helm-docs
+        env:
+          VERSION: 1.14.2
+          SHA256: a8cf72ada34fad93285ba2a452b38bdc5bd52cc9a571236244ec31022928d6cc
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -sSfLO "https://github.com/norwoodj/helm-docs/releases/download/v${VERSION}/helm-docs_${VERSION}_Linux_x86_64.tar.gz"
+          echo "${SHA256}  helm-docs_${VERSION}_Linux_x86_64.tar.gz" | sha256sum -c -
+          tar -xzf "helm-docs_${VERSION}_Linux_x86_64.tar.gz" helm-docs
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Check the chart README is up to date
+        run: |
+          make docs
+          git diff --exit-code -- charts/*/README.md
+
   lint-test:
     name: lint-test (helm ${{ matrix.helm }})
     runs-on: ubuntu-latest
