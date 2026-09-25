@@ -202,6 +202,8 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `autoscaling.minReplicas` | Minimum amount of Replicas | `1` |
 | `autoscaling.maxReplicas` | Maximum amount of Replicas | `100` |
 | `autoscaling.targetCPUUtilizationPercentage` | Target CPU Utilization in percentage | `80` |
+| `autoscaling.targetMemoryUtilizationPercentage` | Target Memory Utilization in percentage | `nil` |
+| `autoscaling.behavior` | HPA scaling policies and stabilization windows (`spec.behavior`) | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
 | `affinity` | Node affinity for pod assignment | `{}` |

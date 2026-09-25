@@ -478,6 +478,11 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+  ## Scaling policies and stabilization windows (autoscaling/v2 spec.behavior)
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
+  behavior: {}
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 600
 
 ## Node labels for pgAdmin4 pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
