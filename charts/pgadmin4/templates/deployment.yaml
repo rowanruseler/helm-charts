@@ -311,7 +311,7 @@ spec:
         {{- .Values.tolerations | toYaml | nindent 8 }}
     {{- end }}
     {{- with .Values.topologySpreadConstraints }}
-    topologySpreadConstraints:
+      topologySpreadConstraints:
       {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if .Values.dnsPolicy }}
