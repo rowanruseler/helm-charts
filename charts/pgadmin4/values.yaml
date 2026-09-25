@@ -251,7 +251,8 @@ istioIngress:
             prefix: "/"
         route:
         - destination:
-            host: "pgadmin"
+            ## Defaults to the chart Service: <fullname>.<namespace>.svc.cluster.local
+            # host: ""
             portNumber: 80
           weight: 100
         rewrite:

@@ -2,7 +2,7 @@
 {{- if and .Values.istioIngress.enabled .Values.istioIngress.virtualService.enabled }}
 {{- $vsConfig := .Values.istioIngress.virtualService.config }}
 {{- $fullName := include "pgadmin.fullname" . -}}
-{{- $defaultHost := printf "%s.%s.svc.cluster.local" ( $fullName | default .Release.Name) .Release.Namespace }}
+{{- $defaultHost := printf "%s.%s.svc.cluster.local" ( $fullName | default .Release.Name) (default .Release.Namespace .Values.namespace) }}
 {{- $defaultPort := .Values.service.port }}
 
 apiVersion: networking.istio.io/v1beta1
