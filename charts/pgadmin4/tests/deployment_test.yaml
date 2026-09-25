@@ -181,3 +181,18 @@ tests:
               items:
                 - key: servers.json
                   path: servers.json
+
+  - it: puts topologySpreadConstraints in the pod spec
+    template: deployment.yaml
+    set:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: zone
+          whenUnsatisfiable: ScheduleAnyway
+      dnsPolicy: ClusterFirst
+    asserts:
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[0].topologyKey
+          value: zone
+      - notExists:
+          path: spec.template.topologySpreadConstraints

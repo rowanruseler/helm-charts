@@ -56,3 +56,18 @@ tests:
           content:
             name: PGADMIN_LISTEN_PORT
             value: "8080"
+
+  - it: puts topologySpreadConstraints in the pod spec
+    template: statefulset.yaml
+    set:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: zone
+          whenUnsatisfiable: ScheduleAnyway
+      dnsPolicy: ClusterFirst
+    asserts:
+      - equal:
+          path: spec.template.spec.topologySpreadConstraints[0].topologyKey
+          value: zone
+      - notExists:
+          path: spec.template.topologySpreadConstraints
