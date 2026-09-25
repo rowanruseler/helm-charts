@@ -172,7 +172,7 @@ httpRoute:
   labels: {}
   annotations: {}
   hostnames: []
-  parentRefs: {}
+  parentRefs: []
   matches: []
 
 ## Ingress configuration
