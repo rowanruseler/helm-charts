@@ -1,0 +1,32 @@
+suite: test-connection
+templates:
+  - tests/test-connection.yaml
+release:
+  name: t
+  namespace: ns
+tests:
+  - it: meets the restricted Pod Security Standard
+    asserts:
+      - equal:
+          path: spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.containers[0].securityContext
+          value:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+
+  - it: probes the Service port
+    set:
+      service.port: 8081
+    asserts:
+      - contains:
+          path: spec.containers[0].env
+          content:
+            name: PGADMIN_PORT
+            value: "8081"

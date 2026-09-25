@@ -1,0 +1,58 @@
+suite: statefulset
+templates:
+  - statefulset.yaml
+  # included by the checksum annotations
+  - auth-secret.yaml
+  - preferences-configmap.yaml
+release:
+  name: t
+  namespace: ns
+set:
+  workload.kind: StatefulSet
+tests:
+  - it: renders a StatefulSet bound to the chart Service
+    template: statefulset.yaml
+    asserts:
+      - isKind:
+          of: StatefulSet
+      - equal:
+          path: spec.serviceName
+          value: t-pgadmin4
+
+  - it: keeps selector labels stable across chart versions
+    template: statefulset.yaml
+    chart:
+      version: 9.9.9
+      appVersion: "99.0"
+    asserts:
+      - equal:
+          path: spec.selector.matchLabels
+          value:
+            app.kubernetes.io/name: pgadmin4
+            app.kubernetes.io/instance: t
+
+  # volumeClaimTemplates are immutable; labels that change per release break upgrades (#378).
+  - it: keeps volumeClaimTemplates labels stable across chart versions
+    template: statefulset.yaml
+    chart:
+      version: 9.9.9
+      appVersion: "99.0"
+    asserts:
+      - equal:
+          path: spec.volumeClaimTemplates[0].metadata
+          value:
+            name: pgadmin-data
+            labels:
+              app.kubernetes.io/name: pgadmin4
+              app.kubernetes.io/instance: t
+
+  - it: listens on containerPorts.http
+    template: statefulset.yaml
+    set:
+      containerPorts.http: 8080
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGADMIN_LISTEN_PORT
+            value: "8080"

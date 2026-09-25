@@ -39,6 +39,22 @@ jobs:
         with:
           version: ${{ matrix.helm }}
 
+      # Installed from the release tarball: Helm 4 can't verify a git install.
+      - name: Install helm-unittest
+        env:
+          VERSION: 1.1.2
+          SHA256: f3f6e4bcfbb73bf573434444af4ea506caaeb6f71dbb9891b499758574dd3161
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -sSfLO "https://github.com/helm-unittest/helm-unittest/releases/download/v${VERSION}/unittest-${VERSION}.tgz"
+          echo "${SHA256}  unittest-${VERSION}.tgz" | sha256sum -c -
+          mkdir -p helm-unittest "$(helm env HELM_PLUGINS)"
+          tar -xzf "unittest-${VERSION}.tgz" -C helm-unittest
+          helm plugin install "$RUNNER_TEMP/helm-unittest/unittest"
+
+      - name: Run helm-unittest
+        run: helm unittest charts/*
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:

@@ -1,0 +1,27 @@
+suite: service
+templates:
+  - service.yaml
+  - networkpolicy.yaml
+release:
+  name: t
+  namespace: ns
+tests:
+  - it: targets the container port by name
+    template: service.yaml
+    set:
+      containerPorts.http: 8080
+    asserts:
+      - equal:
+          path: spec.ports[0]
+          value:
+            port: 80
+            targetPort: http
+            protocol: TCP
+            name: http
+
+  - it: allows traffic to the named container port
+    template: networkpolicy.yaml
+    asserts:
+      - equal:
+          path: spec.ingress[0].ports[0].port
+          value: http

@@ -1,0 +1,62 @@
+suite: scaling
+templates:
+  - hpa.yaml
+  - pdb.yaml
+release:
+  name: t
+  namespace: ns
+tests:
+  - it: renders no HPA or PDB by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: scales the chosen workload kind
+    template: hpa.yaml
+    set:
+      autoscaling.enabled: true
+      workload.kind: StatefulSet
+    asserts:
+      - equal:
+          path: spec.scaleTargetRef
+          value:
+            apiVersion: apps/v1
+            kind: StatefulSet
+            name: t-pgadmin4
+      - notExists:
+          path: spec.behavior
+
+  - it: renders autoscaling.behavior
+    template: hpa.yaml
+    set:
+      autoscaling.enabled: true
+      autoscaling.behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 600
+    asserts:
+      - equal:
+          path: spec.behavior.scaleDown.stabilizationWindowSeconds
+          value: 600
+
+  - it: uses minAvailable by default
+    template: pdb.yaml
+    set:
+      podDisruptionBudget.enabled: true
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - notExists:
+          path: spec.maxUnavailable
+
+  - it: prefers maxUnavailable, including zero
+    template: pdb.yaml
+    set:
+      podDisruptionBudget.enabled: true
+      podDisruptionBudget.maxUnavailable: 0
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 0
+      - notExists:
+          path: spec.minAvailable

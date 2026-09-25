@@ -1,9 +1,9 @@
 HELM ?= helm
 CHARTS := $(wildcard charts/*)
 
-.PHONY: test lint template
+.PHONY: test lint template unittest
 
-test: lint template
+test: lint template unittest
 
 lint:
 	$(HELM) lint $(CHARTS)
@@ -18,3 +18,6 @@ template:
 			$(HELM) template test $$chart -f $$values > /dev/null; \
 		done; \
 	done
+
+unittest:
+	$(HELM) unittest $(CHARTS)
