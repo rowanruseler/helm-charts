@@ -140,6 +140,9 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
 | `networkPolicy.enabled` | Enables Network Policy | `true` |
+| `podDisruptionBudget.enabled` | Creates a PodDisruptionBudget | `false` |
+| `podDisruptionBudget.minAvailable` | Pods that must stay available during voluntary disruptions | `1` |
+| `podDisruptionBudget.maxUnavailable` | Pods that may be unavailable at once. Takes precedence over `minAvailable` | `nil` |
 | `httpRoute.labels` | Additional labels to add to the generated HTTPRoute resource metadata. | `{}` |
 | `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
 | `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |

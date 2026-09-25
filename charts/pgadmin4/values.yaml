@@ -166,6 +166,15 @@ preferences:
 networkPolicy:
   enabled: true
 
+## PodDisruptionBudget for voluntary disruptions such as node drains
+## With a single replica, minAvailable: 1 blocks drains until you scale up
+## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  ## Takes precedence over minAvailable when set
+  # maxUnavailable: 1
+
 ## HTTP route configuration
 httpRoute:
   enabled: false
