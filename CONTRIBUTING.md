@@ -13,8 +13,13 @@ into the project you can [fork this repository][2] and
 
 Sign-off commits to pass [DCO-checks][4].
 
+The chart README's configuration table is generated from the `# --` comments in
+`values.yaml` by [helm-docs][5]. When you add or change a value, document it
+there and run `make docs`; don't edit the table in `README.md` directly.
+
 
 [1]: https://github.com/rowanruseler/helm-charts/issues
 [2]: https://help.github.com/articles/fork-a-repo/
 [3]: https://help.github.com/articles/about-pull-requests/
 [4]: https://developercertificate.org/
+[5]: https://github.com/norwoodj/helm-docs

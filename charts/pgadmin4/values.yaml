@@ -1,16 +1,20 @@
 ## Global image configuration
 global:
   ## Overrides the Docker registry globally for all images
+  # -- Global image pull registry for all images
   imageRegistry: ""
   ## Add additional image pull secrets globally
   ## Support both full format (- name: secret) and short format (- secret)
   ## These will be merged with any chart-specific pull secrets
+  # -- Global image pull secrets, support both full format (- name: secret) and short format (- secret)
   imagePullSecrets: []
 
 ## Override the chart name used in resource names and labels
+# -- Override the chart name used in resource names and labels
 nameOverride: ""
 
 ## Override the full resource name
+# -- Override the full resource name
 fullnameOverride: ""
 
 ## Workload type - Deployment or StatefulSet
@@ -18,83 +22,110 @@ fullnameOverride: ""
 ## When using StatefulSet, PVCs are managed via volumeClaimTemplates
 workload:
   ## Kind can be either "Deployment" or "StatefulSet"
+  # -- Workload type (Deployment or StatefulSet)
   kind: Deployment
 
 ## Number of pgAdmin4 replicas
+# -- Number of pgadmin4 replicas
 replicaCount: 1
 
 ## pgAdmin4 container image
 image:
+  # -- Docker image registry
   registry: docker.io
+  # -- Docker image
   repository: dpage/pgadmin4
   ## Overrides the image tag whose default is the chart appVersion
+  # -- Docker image tag
   tag: ""
+  # -- Docker image pull policy
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets
 ## Secrets must be manually created in the namespace
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# -- Docker image pull secrets
 imagePullSecrets: []
   # - RegistryKeySecret
 
 ## Deployment annotations
+# -- Deployment Annotations
 annotations: {}
 
 ## The number of old history to retain to allow rollback
+# -- The number of old history to retain to allow rollback
 revisionHistoryLimit: 10
 
 ## Add labels to all the deployed resources
+# -- Add labels to all the deployed resources
 commonLabels: {}
 
 ## Priority class name for pod scheduling
+# -- Deployment priorityClassName
 priorityClassName: ""
 
 ## Deployment entrypoint override
 ## Useful when there's a requirement to modify container's default
 ## Ref: https://www.vaultproject.io/docs/platform/k8s/injector/examples#environment-variable-example
 ## Ref: https://github.com/postgres/pgadmin4/blob/master/Dockerfile#L206
-# command: "['/bin/sh', '-c', 'source /vault/secrets/config && <entrypoint script>']"
+# command: ["/bin/sh", "-c", "source /vault/secrets/config && <entrypoint script>"]
+# -- Container command override
+command: []
 
 ## Deployment arguments override
+# -- Deployment arguments override
 args: []
 
 ## Service configuration
 service:
+  # -- Service type (ClusterIP, NodePort or LoadBalancer)
   type: ClusterIP
+  # -- Service type Cluster IP
   clusterIP: ""
+  # -- Service Load Balancer IP
   loadBalancerIP: ""
+  # -- Service port
   port: 80
   ## Defaults to the container port named by portName, which follows containerPorts.http
+  # -- Container port the Service targets, a number or a port name. Empty means the port named `service.portName`
   targetPort: ""
   # targetPort: 4181  # To be used with a proxy extraContainer
+  # -- Name of the port on the service
   portName: http
 
   ## Special annotations at the service level, e.g.
   ## this will set vnet internal IPs rather than public IPs
   ## service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  # -- Service Annotations
   annotations: {}
 
   ## Specify the nodePort value for the service types
   ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-  # nodePort:
+  # -- Kubernetes service nodePort
+  nodePort: null
 
 ## Pod Service Account
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:
   ## Specifies whether a service account should be created
+  # -- Creates a ServiceAccount for the pod.
   create: false
   ## Annotations to add to the service account
+  # -- Annotations to add to the service account.
   annotations: {}
   ## The name of the service account to use
   ## If not set and create is true, a name is generated using the fullname template
+  # -- The name of the service account. Otherwise uses the fullname.
   name: ""
   ## Opt out of API credential automounting
   ## If you don't want the kubelet to automatically mount a ServiceAccount's API credentials,
   ## you can opt out of the default behavior
+  # -- Opt out of API credential automounting.
   automountServiceAccountToken: false
 
 ## Pod HostAliases
 ## Ref: https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/
+# -- Add entries to Pod /etc/hosts
 hostAliases: []
   # - ip: "127.0.0.1"
   #   hostnames:
@@ -102,6 +133,7 @@ hostAliases: []
 
 ## Strategy used to replace old Pods by new ones
 ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# -- Specifies the strategy used to replace old Pods by new ones
 strategy: {}
   # type: RollingUpdate
   # rollingUpdate:
@@ -113,31 +145,38 @@ strategy: {}
 ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
 serverDefinitions:
   ## Enable/disable server import
+  # -- Enables Server Definitions
   enabled: false
 
   ## Storage for the server JSON:
   ##   ConfigMap - plain text (good for non-secret data)
   ##   Secret    - base-64 (better for credentials)
+  # -- The type of resource to deploy server definitions (either `ConfigMap` or `Secret`)
   resourceType: ConfigMap
 
   ## Use this only when `resourceType` = ConfigMap - point to an existing ConfigMap
   ## that already holds your `servers.json`
+  # -- The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap`
   existingConfigmap: ""
 
   ## Use this only when `resourceType` = Secret - point to an existing Secret
   ## that already holds your `servers.json`
+  # -- The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret`
   existingSecret: ""
 
   ## Set to true to put raw JSON under `stringData` (handy for dry-runs/debug)
   ## Leave false to keep the default base-64 in `data`
+  # -- When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging
   useStringData: false
 
   ## Annotations for ConfigMap or Secret, if you are not using existing resources
+  # -- Annotations for ConfigMap or Secret, if you are not using existing resources. Useful for cluster webhooks
   annotations: {}
     # vault.security.example.io/vault-role: my-role
 
   ## Inline server definitions (ignore if you point to an existing resource)
   ## You can use Helm templates here, e.g. Host: "{{ .Values.example.host }}"
+  # -- Pre-configured server parameters
   servers:
   #  firstServer:
   #    Name: "Minimally Defined Server"
@@ -154,52 +193,71 @@ serverDefinitions:
 ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/preferences.html
 preferences:
   ## Enable/disable preferences
+  # -- Specify if to create preferences configmap and mount it
   enabled: false
 
   ## If using an existing ConfigMap, it must contain a key named `preferences.json`
+  # -- The name of a configMap containing your Preferences
   existingConfigMap: ""
 
+  # -- Preferences Data
   data: {}
   #  misc:user_interface:theme: dark
 
 ## Network policy configuration
 networkPolicy:
+  # -- Enables Network Policy
   enabled: true
 
 ## PodDisruptionBudget for voluntary disruptions such as node drains
 ## With a single replica, minAvailable: 1 blocks drains until you scale up
 ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget:
+  # -- Creates a PodDisruptionBudget
   enabled: false
+  # -- Pods that must stay available during voluntary disruptions
   minAvailable: 1
   ## Takes precedence over minAvailable when set
-  # maxUnavailable: 1
+  # -- Pods that may be unavailable at once. Takes precedence over `minAvailable`
+  maxUnavailable: null
 
 ## HTTP route configuration
 httpRoute:
+  # -- Switches from standard Ingress to Gateway API HTTPRoute resource generation
   enabled: false
+  # -- Additional labels to add to the generated HTTPRoute resource metadata.
   labels: {}
+  # -- Key-value map for controller-specific metadata
   annotations: {}
+  # -- FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener
   hostnames: []
+  # -- Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment
   parentRefs: []
+  # -- Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs
   matches: []
 
 ## Ingress configuration
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
+  # -- Enables Ingress
   enabled: false
   ## For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   ## Ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-  # ingressClassName: nginx
+  # -- Ingress Class Name, e.g. `nginx`
+  ingressClassName: ""
+  # -- Ingress annotations
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # -- Custom labels
   labels: {}
+  # -- Ingress hosts, each with a `host` and a list of `paths` (`path`, `pathType`)
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: Prefix
+  # -- Ingress TLS configuration
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -208,28 +266,37 @@ ingress:
 ## Istio ingress configuration
 ## Use Istio Gateway and VirtualService instead of Ingress
 istioIngress:
+  # -- Enable Istio Gateway instead of Ingress
   enabled: false
 
   ## The label selector for your existing Istio Ingress Gateway pods
   ## This tells the Gateway resource which gateway deployment to attach to
   ## Example: "ingressgateway" is a common default label
+  # -- Label selector for Istio Ingress Gateway pods
   selector: ""
 
   ## A list of hostnames this Gateway will manage
+  # -- Hosts served by Istio Gateway
+  # @default -- `[""]`
   endpoints:
     - "test.example.com"
 
   ## TLS configuration for Istio Gateway
   tls:
+    # -- Enable TLS for Istio gateway
     enabled: false
     ## The name of the K8s Secret containing the cert
     ## Istio's Gateway resource will reference this name in its credentialName field
     ## Should be in istio-ingress namespace where istio ingress gateway is installed
+    # -- TLS certificate secret name
     secretCertName: "my-istio-tls-secret"
 
   ## Defines the ports on the Istio Ingress Gateway
   gateway:
+    # -- Enable Istio Gateway resource
     enabled: false
+    # -- Istio gateway ports configuration
+    # @default -- `{http: {...}, https: {...}}`
     ports:
       http:
         number: 80
@@ -249,8 +316,12 @@ istioIngress:
   ## Istio VirtualService configuration
   ## The VirtualService defines how traffic is routed after it enters the Gateway
   virtualService:
+    # -- Enable Istio VirtualService
     enabled: false
+    # -- VirtualService gateway name
     gateway: ""
+    # -- VirtualService routing config
+    # @default -- `{}`
     config:
       ## http is a list of ordered routing rules. First match wins
       http:
@@ -279,6 +350,7 @@ istioIngress:
 
 ## Additional config maps to be mounted inside a container
 ## Can be used to map config maps for sidecar as well
+# -- Additional configMap volume mounts for pgadmin4 pod
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/ssl/certs
@@ -291,10 +363,13 @@ extraConfigmapMounts: []
 ## and a Secret mount can't provide, and the chart sets PGPASSFILE to the copy
 ## unless env.pgpassfile is set
 pgpass:
+  # -- Existing Secret with a pgpass file. An init container copies it into the pod with mode 0600 and the chart sets `PGPASSFILE`, unless `env.pgpassfile` is set
   existingSecret: ""
+  # -- Key in `pgpass.existingSecret` that holds the pgpass file
   key: pgpass
 
 ## Additional secret mounts to be mounted inside a container
+# -- Additional secret volume mounts for pgadmin4 pod
 extraSecretMounts: []
   # - name: pgpassfile
   #   secret: pgpassfile
@@ -303,10 +378,12 @@ extraSecretMounts: []
   #   readOnly: true
 
 ## Additional volumes to be mounted inside a container
+# -- Additional volume mounts for the pgadmin4 container
 extraVolumeMounts: []
 
 ## Specify additional containers in extraContainers
 ## For example, to add an authentication proxy to a pgadmin4 pod
+# -- Sidecar containers to add to the pgadmin4 pod
 extraContainers: |
 # - name: proxy
 #   image: quay.io/gambol99/keycloak-proxy:latest
@@ -325,11 +402,13 @@ extraContainers: |
 
 ## Name of existing secret to use for default pgadmin credentials
 ## env.password will be ignored and picked up from this secret
+# -- The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions.
 existingSecret: ""
 
 ## Name of key in existing secret to use for default pgadmin credentials
 ## Only used when existingSecret is set
 secretKeys:
+  # -- Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set.
   pgadminPasswordKey: password
 
 ## pgAdmin4 startup configuration
@@ -337,19 +416,25 @@ secretKeys:
 ## Chart reinstall needed to apply changes
 env:
   ## Can be email or nickname
+  # -- pgAdmin4 default email. Needed chart reinstall for apply changes
   email: chart@domain.com
+  # -- pgAdmin4 default password. Needed chart reinstall for apply changes
   password: SuperSecret
-  # pgpassfile: /var/lib/pgadmin/storage/pgadmin/file.pgpass
+  # -- Path to a pgpass file, e.g. `/var/lib/pgadmin/storage/pgadmin/file.pgpass`. Defaults to `/pgpass/pgpass` when `pgpass.existingSecret` is set
+  pgpassfile: ""
 
   ## Set context path for application (e.g. /pgadmin4/*)
-  # contextPath: /pgadmin4
+  # -- Context path for serving pgAdmin under a URL prefix, e.g. `/pgadmin4`
+  contextPath: ""
 
   ## If True, allows pgAdmin4 to create session cookies based on IP address
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
+  # -- Allows pgAdmin4 to create session cookies based on IP address
   enhanced_cookie_protection: "False"
 
   ## Add custom environment variables that will be injected to deployment
   ## Ref: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+  # -- Additional environment variables as a list of `name`/`value` pairs
   variables: []
   # - name: PGADMIN_LISTEN_ADDRESS
   #   value: "0.0.0.0"
@@ -357,16 +442,19 @@ env:
   #   value: "8080"
 
 ## Additional environment variables from ConfigMaps
+# -- Array of ConfigMap names to load as environment variables
 envVarsFromConfigMaps: []
   # - array-of
   # - config-map-names
 
 ## Additional environment variables from Secrets
+# -- Array of Secret names to load as environment variables
 envVarsFromSecrets: []
   # - array-of
   # - secret-names
 
 ## Additional environment variables
+# -- Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets)
 envVarsExtra: []
   # - name: POSTGRES_USERNAME
   #   valueFrom:
@@ -383,18 +471,23 @@ envVarsExtra: []
 persistentVolume:
   ## If true, pgAdmin4 will create/use a Persistent Volume Claim
   ## If false, use emptyDir
+  # -- If true, pgAdmin4 will create a Persistent Volume Claim
   enabled: true
 
   ## pgAdmin4 Persistent Volume Claim annotations
+  # -- Persistent Volume Claim annotations
   annotations: {}
 
   ## pgAdmin4 Persistent Volume access modes
   ## Must match those of existing PV or dynamic provisioner
   ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  # -- Persistent Volume access modes
+  # @default -- `[ReadWriteOnce]`
   accessModes:
     - ReadWriteOnce
 
   ## pgAdmin4 Persistent Volume Size
+  # -- Persistent Volume size
   size: 10Gi
 
   ## pgAdmin4 Persistent Volume Storage Class
@@ -402,17 +495,23 @@ persistentVolume:
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
   ## set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack)
-  # storageClass: "-"
-  # existingClaim: ""
+  # -- Persistent Volume Storage Class. `-` sets an empty storageClassName; empty uses the cluster default
+  storageClass: ""
+  # -- Persistent Volume existing claim name
+  existingClaim: ""
 
   ## Subdirectory of pgAdmin4 Persistent Volume to mount
   ## Useful if the volume's root directory is not empty
+  # -- Subdirectory of the volume to mount at
   subPath: ""
 
 ## Additional volumes to be added to the deployment
+# -- Additional volumes for the pgadmin4 pod
 extraVolumes: []
 
 ## Security context to be added to pgAdmin4 pods
+# -- Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 pod
+# @default -- ``
 securityContext:
   runAsUser: 5050
   runAsGroup: 5050
@@ -420,22 +519,30 @@ securityContext:
 
 ## Container security context
 ## See the README "Hardening" section for restricted Pod Security settings
+# -- Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 container
+# @default -- ``
 containerSecurityContext:
   enabled: false
   allowPrivilegeEscalation: false
 
 ## pgAdmin4 health check probe configuration
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+# -- [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout
+# @default -- ``
 livenessProbe:
   periodSeconds: 20
   timeoutSeconds: 5
   failureThreshold: 3
 
+# -- [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout
+# @default -- ``
 readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 3
   failureThreshold: 3
 
+# -- [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout
+# @default -- ``
 startupProbe:
   failureThreshold: 18
   periodSeconds: 10
@@ -444,12 +551,15 @@ startupProbe:
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 VolumePermissions:
   ## If true, enables an InitContainer to set permissions on /var/lib/pgadmin
+  # -- Enables init container that changes volume permissions in the data directory
   enabled: false
 
 ## List of extra manifests to deploy
+# -- List of extra manifests to deploy
 extraDeploy: []
 
 ## Additional InitContainers to initialize the pod
+# -- Sidecar init containers to add to the pgadmin4 pod
 extraInitContainers: |
 #   - name: add-folder-for-pgpass
 #     image: "dpage/pgadmin4:latest"
@@ -462,6 +572,7 @@ extraInitContainers: |
 
 ## Container port configuration
 containerPorts:
+  # -- Sets http port inside pgadmin container
   http: 80
 
 ## Resource limits and requests
@@ -471,6 +582,7 @@ containerPorts:
 ## lines, adjust them as necessary, and remove the curly braces after 'resources:'
 ## You might also want to increase failure threshold value in startup probe configuration to
 ## allow the container to start successfully on CPU limited environments
+# -- CPU/memory resource requests/limits
 resources: {}
   # limits:
   #   cpu: 100m
@@ -482,38 +594,50 @@ resources: {}
 ## Horizontal Pod Autoscaling
 ## Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 autoscaling:
+  # -- Enables Autoscaling
   enabled: false
+  # -- Minimum amount of Replicas
   minReplicas: 1
+  # -- Maximum amount of Replicas
   maxReplicas: 100
+  # -- Target CPU Utilization in percentage
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  # -- Target Memory Utilization in percentage, e.g. `80`
+  targetMemoryUtilizationPercentage: null
   ## Scaling policies and stabilization windows (autoscaling/v2 spec.behavior)
   ## Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
+  # -- HPA scaling policies and stabilization windows (`spec.behavior`)
   behavior: {}
   #   scaleDown:
   #     stabilizationWindowSeconds: 600
 
 ## Node labels for pgAdmin4 pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# -- Node labels for pod assignment
 nodeSelector: {}
 
 ## Node tolerations for server scheduling to nodes with taints
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+# -- Node tolerations for pod assignment
 tolerations: []
 
 ## Pod affinity
+# -- Node affinity for pod assignment
 affinity: {}
 
 ## Topology Spread Constraints to control how Pods are spread across your cluster
 ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+# -- Topology spread constraints for pods
 topologySpreadConstraints: []
 
 ## Pod DNS Policy
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+# -- DNS policy for pods
 dnsPolicy: ""
 
 ## Update pod DNS Config
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+# -- DNS config for pods
 dnsConfig: {}
 #  nameservers:
 #    - 192.0.2.1
@@ -526,40 +650,49 @@ dnsConfig: {}
 #    - name: edns0
 
 ## Pod annotations
+# -- Annotations for pod
 podAnnotations: {}
 
 ## Templated pod annotations
+# -- Templated annotations for pod
 templatedPodAnnotations: |-
 #   checksum/configmap-oauth2: {{ include "<parent-chart-name>/templates/configmap-oauth2.yaml" $ | sha256sum }}
 #   checksum/secret-oauth2: "{{ include "<parent-chart-name>/templates/secret-oauth2.yaml" $ | sha256sum }}"
 #   checksum/secret-pgpass: "{{ include "<parent-chart-name>/templates/secret-pgpass.yaml" $ | sha256sum }}"
 
 ## Pod labels
+# -- Labels for pod
 podLabels: {}
   # key1: value1
   # key2: value2
 
 ## The name of the Namespace to deploy
 ## If not set, .Release.Namespace is used
+# -- Namespace where to deploy resources
 namespace: null
 
 ## Init container configuration
 init:
   ## Init container resources
+  # -- Init container CPU/memory resource requests/limits
   resources: {}
 
 ## Chart test configuration
 test:
+  # -- Enables test
   enabled: true
-  ## When Helm deletes the test Pod. hook-succeeded removes it before
-  ## `helm test --logs` can read it; use before-hook-creation to keep it
+  # -- [Hook deletion policy](https://helm.sh/docs/topics/charts_hooks/#hook-deletion-policies) for the test Pod. Use `before-hook-creation` to keep the Pod so you can read its logs
   hookDeletePolicy: hook-succeeded
   ## Container image for test-connection.yaml
   image:
+    # -- Docker image registry for test
     registry: docker.io
+    # -- Docker image for test
     repository: busybox
+    # -- Docker image tag for test
     tag: "1.38.0"
   ## Resources request/limit for test-connection Pod
+  # -- CPU/memory resource requests/limits for test
   resources: {}
     # limits:
     #   cpu: 50m
@@ -568,12 +701,16 @@ test:
     #   cpu: 25m
     #   memory: 16Mi
   ## Security context for test-connection Pod
+  # -- Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod
+  # @default -- ``
   securityContext:
     runAsUser: 5051
     runAsGroup: 5051
     fsGroup: 5051
 
   ## Container Security context for test-connection Pod
+  # -- Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod
+  # @default -- `{readOnlyRootFilesystem: true, allowPrivilegeEscalation: false, capabilities: {drop: [ALL]}, seccompProfile: {type: RuntimeDefault}}`
   containerSecurityContext:
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false

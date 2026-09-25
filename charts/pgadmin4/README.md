@@ -102,40 +102,40 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `global.imagePullSecrets` | Global image pull secrets, support both full format (- name: secret) and short format (- secret) | `[]` |
 | `nameOverride` | Override the chart name used in resource names and labels | `""` |
 | `fullnameOverride` | Override the full resource name | `""` |
-| `workload.kind` | Workload type (Deployment or StatefulSet) | `Deployment` |
+| `workload.kind` | Workload type (Deployment or StatefulSet) | `"Deployment"` |
 | `replicaCount` | Number of pgadmin4 replicas | `1` |
-| `image.registry` | Docker image registry | `docker.io` |
-| `image.repository` | Docker image | `dpage/pgadmin4` |
+| `image.registry` | Docker image registry | `"docker.io"` |
+| `image.repository` | Docker image | `"dpage/pgadmin4"` |
 | `image.tag` | Docker image tag | `""` |
-| `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
+| `image.pullPolicy` | Docker image pull policy | `"IfNotPresent"` |
 | `imagePullSecrets` | Docker image pull secrets | `[]` |
 | `annotations` | Deployment Annotations | `{}` |
 | `revisionHistoryLimit` | The number of old history to retain to allow rollback | `10` |
 | `commonLabels` | Add labels to all the deployed resources | `{}` |
 | `priorityClassName` | Deployment priorityClassName | `""` |
-| `command` | Deployment command override | `""` |
+| `command` | Container command override | `[]` |
 | `args` | Deployment arguments override | `[]` |
-| `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
+| `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `"ClusterIP"` |
 | `service.clusterIP` | Service type Cluster IP | `""` |
 | `service.loadBalancerIP` | Service Load Balancer IP | `""` |
-| `service.annotations` | Service Annotations | `{}` |
 | `service.port` | Service port | `80` |
-| `service.portName` | Name of the port on the service | `http` |
 | `service.targetPort` | Container port the Service targets, a number or a port name. Empty means the port named `service.portName` | `""` |
-| `service.nodePort` | Kubernetes service nodePort | `` |
+| `service.portName` | Name of the port on the service | `"http"` |
+| `service.annotations` | Service Annotations | `{}` |
+| `service.nodePort` | Kubernetes service nodePort | `nil` |
 | `serviceAccount.create` | Creates a ServiceAccount for the pod. | `false` |
 | `serviceAccount.annotations` | Annotations to add to the service account. | `{}` |
-| `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `` |
+| `serviceAccount.name` | The name of the service account. Otherwise uses the fullname. | `""` |
 | `serviceAccount.automountServiceAccountToken` | Opt out of API credential automounting. | `false` |
-| `hostAliases` | Add entries to Pod /etc/hosts | `` |
+| `hostAliases` | Add entries to Pod /etc/hosts | `[]` |
 | `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
 | `serverDefinitions.enabled` | Enables Server Definitions | `false` |
-| `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `ConfigMap` |
+| `serverDefinitions.resourceType` | The type of resource to deploy server definitions (either `ConfigMap` or `Secret`) | `"ConfigMap"` |
 | `serverDefinitions.existingConfigmap` | The name of a configMap containing Server Definitions. Only used when `serverDefinitions.resourceType` is `ConfigMap` | `""` |
 | `serverDefinitions.existingSecret` | The name of a Secret containing Server Definitions. Only used when `serverDefinitions.resourceType` is `Secret` | `""` |
 | `serverDefinitions.useStringData` | When `resourceType` = `Secret` put raw JSON under `stringData:` instead of base-64 under `data:`. Useful for debugging | `false` |
 | `serverDefinitions.annotations` | Annotations for ConfigMap or Secret, if you are not using existing resources. Useful for cluster webhooks | `{}` |
-| `serverDefinitions.servers` | Pre-configured server parameters | `{}` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `nil` |
 | `preferences.enabled` | Specify if to create preferences configmap and mount it | `false` |
 | `preferences.existingConfigMap` | The name of a configMap containing your Preferences | `""` |
 | `preferences.data` | Preferences Data | `{}` |
@@ -143,20 +143,17 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `podDisruptionBudget.enabled` | Creates a PodDisruptionBudget | `false` |
 | `podDisruptionBudget.minAvailable` | Pods that must stay available during voluntary disruptions | `1` |
 | `podDisruptionBudget.maxUnavailable` | Pods that may be unavailable at once. Takes precedence over `minAvailable` | `nil` |
+| `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
 | `httpRoute.labels` | Additional labels to add to the generated HTTPRoute resource metadata. | `{}` |
 | `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
-| `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
 | `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener | `[]` |
-| `httpRoute.matches` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs | `[]` |
 | `httpRoute.parentRefs` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment | `[]` |
+| `httpRoute.matches` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs | `[]` |
 | `ingress.enabled` | Enables Ingress | `false` |
+| `ingress.ingressClassName` | Ingress Class Name, e.g. `nginx` | `""` |
 | `ingress.annotations` | Ingress annotations | `{}` |
 | `ingress.labels` | Custom labels | `{}` |
-| `ingress.ingressClassName` | Ingress Class Name. MAY be required for Kubernetes versions >= 1.18 | `""` |
-| `ingress.hosts.host` | Ingress accepted hostname | `nil` |
-| `ingress.hosts.paths` | Ingress paths list | `[]` |
-| `ingress.hosts.paths.path` | Ingress accepted path | `/` |
-| `ingress.hosts.paths.pathType` | Ingress type of path | `Prefix` |
+| `ingress.hosts` | Ingress hosts, each with a `host` and a list of `paths` (`path`, `pathType`) | `[{"host":"chart-example.local","paths":[{"path":"/","pathType":"Prefix"}]}]` |
 | `ingress.tls` | Ingress TLS configuration | `[]` |
 | `istioIngress.enabled` | Enable Istio Gateway instead of Ingress | `false` |
 | `istioIngress.selector` | Label selector for Istio Ingress Gateway pods | `""` |
@@ -169,43 +166,45 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `istioIngress.virtualService.gateway` | VirtualService gateway name | `""` |
 | `istioIngress.virtualService.config` | VirtualService routing config | `{}` |
 | `extraConfigmapMounts` | Additional configMap volume mounts for pgadmin4 pod | `[]` |
+| `pgpass.existingSecret` | Existing Secret with a pgpass file. An init container copies it into the pod with mode 0600 and the chart sets `PGPASSFILE`, unless `env.pgpassfile` is set | `""` |
+| `pgpass.key` | Key in `pgpass.existingSecret` that holds the pgpass file | `"pgpass"` |
 | `extraSecretMounts` | Additional secret volume mounts for pgadmin4 pod | `[]` |
-| `extraVolumes` | Additional volumes for the pgadmin4 pod | `[]` |
 | `extraVolumeMounts` | Additional volume mounts for the pgadmin4 container | `[]` |
-| `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `"[]"` |
+| `extraContainers` | Sidecar containers to add to the pgadmin4 pod | `""` |
 | `existingSecret` | The name of an existing secret containing the pgadmin4 default password and, optionally, Server Definitions. | `""` |
 | `secretKeys.pgadminPasswordKey` | Name of key in existing secret to use for default pgadmin credentials. Only used when `existingSecret` is set. | `"password"` |
-| `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod | `"[]"` |
-| `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `chart@domain.com` |
-| `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `SuperSecret` |
-| `pgpass.existingSecret` | Existing Secret with a pgpass file. An init container copies it into the pod with mode 0600 and the chart sets `PGPASSFILE`, unless `env.pgpassfile` is set | `""` |
-| `pgpass.key` | Key in `pgpass.existingSecret` that holds the pgpass file | `pgpass` |
-| `env.pgpassfile` | Path to pgpassfile (optional). Needed chart reinstall for apply changes | `` |
+| `env.email` | pgAdmin4 default email. Needed chart reinstall for apply changes | `"chart@domain.com"` |
+| `env.password` | pgAdmin4 default password. Needed chart reinstall for apply changes | `"SuperSecret"` |
+| `env.pgpassfile` | Path to a pgpass file, e.g. `/var/lib/pgadmin/storage/pgadmin/file.pgpass`. Defaults to `/pgpass/pgpass` when `pgpass.existingSecret` is set | `""` |
+| `env.contextPath` | Context path for serving pgAdmin under a URL prefix, e.g. `/pgadmin4` | `""` |
 | `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
-| `env.contextPath` | Context path for accessing pgadmin (optional) | `` |
+| `env.variables` | Additional environment variables as a list of `name`/`value` pairs | `[]` |
 | `envVarsFromConfigMaps` | Array of ConfigMap names to load as environment variables | `[]` |
 | `envVarsFromSecrets` | Array of Secret names to load as environment variables | `[]` |
 | `envVarsExtra` | Array of arbitrary environment variable definitions (e.g., for fetching from Kubernetes Secrets) | `[]` |
 | `persistentVolume.enabled` | If true, pgAdmin4 will create a Persistent Volume Claim | `true` |
+| `persistentVolume.annotations` | Persistent Volume Claim annotations | `{}` |
 | `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
-| `persistentVolume.size` | Persistent Volume size | `10Gi` |
-| `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
-| `persistentVolume.existingClaim` | Persistent Volume existing claim name | `unset` |
-| `persistentVolume.subPath` | Subdirectory of the volume to mount at | `unset` |
+| `persistentVolume.size` | Persistent Volume size | `"10Gi"` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class. `-` sets an empty storageClassName; empty uses the cluster default | `""` |
+| `persistentVolume.existingClaim` | Persistent Volume existing claim name | `""` |
+| `persistentVolume.subPath` | Subdirectory of the volume to mount at | `""` |
+| `extraVolumes` | Additional volumes for the pgadmin4 pod | `[]` |
 | `securityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 pod | `` |
 | `containerSecurityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin4 container | `` |
 | `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
-| `startupProbe` | [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `startupProbe` | [startup probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
 | `VolumePermissions.enabled` | Enables init container that changes volume permissions in the data directory | `false` |
 | `extraDeploy` | List of extra manifests to deploy | `[]` |
+| `extraInitContainers` | Sidecar init containers to add to the pgadmin4 pod | `""` |
 | `containerPorts.http` | Sets http port inside pgadmin container | `80` |
 | `resources` | CPU/memory resource requests/limits | `{}` |
 | `autoscaling.enabled` | Enables Autoscaling | `false` |
 | `autoscaling.minReplicas` | Minimum amount of Replicas | `1` |
 | `autoscaling.maxReplicas` | Maximum amount of Replicas | `100` |
 | `autoscaling.targetCPUUtilizationPercentage` | Target CPU Utilization in percentage | `80` |
-| `autoscaling.targetMemoryUtilizationPercentage` | Target Memory Utilization in percentage | `nil` |
+| `autoscaling.targetMemoryUtilizationPercentage` | Target Memory Utilization in percentage, e.g. `80` | `nil` |
 | `autoscaling.behavior` | HPA scaling policies and stabilization windows (`spec.behavior`) | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
@@ -214,15 +213,15 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `dnsPolicy` | DNS policy for pods | `""` |
 | `dnsConfig` | DNS config for pods | `{}` |
 | `podAnnotations` | Annotations for pod | `{}` |
-| `templatedPodAnnotations` | Templated annotations for pod | `{}` |
+| `templatedPodAnnotations` | Templated annotations for pod | `""` |
 | `podLabels` | Labels for pod | `{}` |
-| `namespace` | Namespace where to deploy resources | `null` |
+| `namespace` | Namespace where to deploy resources | `nil` |
 | `init.resources` | Init container CPU/memory resource requests/limits | `{}` |
 | `test.enabled` | Enables test | `true` |
-| `test.hookDeletePolicy` | [Hook deletion policy](https://helm.sh/docs/topics/charts_hooks/#hook-deletion-policies) for the test Pod. Use `before-hook-creation` to keep the Pod for `helm test --logs` | `hook-succeeded` |
-| `test.image.registry` | Docker image registry for test | `docker.io` |
-| `test.image.repository` | Docker image for test | `busybox` |
-| `test.image.tag` | Docker image tag for test | `1.38.0` |
+| `test.hookDeletePolicy` | [Hook deletion policy](https://helm.sh/docs/topics/charts_hooks/#hook-deletion-policies) for the test Pod. Use `before-hook-creation` to keep the Pod so you can read its logs | `"hook-succeeded"` |
+| `test.image.registry` | Docker image registry for test | `"docker.io"` |
+| `test.image.repository` | Docker image for test | `"busybox"` |
+| `test.image.tag` | Docker image tag for test | `"1.38.0"` |
 | `test.resources` | CPU/memory resource requests/limits for test | `{}` |
 | `test.securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test Pod | `` |
 | `test.containerSecurityContext` | Custom [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for test pod | `{readOnlyRootFilesystem: true, allowPrivilegeEscalation: false, capabilities: {drop: [ALL]}, seccompProfile: {type: RuntimeDefault}}` |
