@@ -146,9 +146,15 @@ The command removes nearly all the Kubernetes components associated with the cha
 | `httpRoute.enabled` | Switches from standard Ingress to Gateway API HTTPRoute resource generation | `false` |
 | `httpRoute.labels` | Additional labels to add to the generated HTTPRoute resource metadata. | `{}` |
 | `httpRoute.annotations` | Key-value map for controller-specific metadata | `{}` |
-| `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener | `[]` |
-| `httpRoute.parentRefs` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment | `[]` |
+| `httpRoute.hostnames` | FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway/ListenerSet listeners (no need to set them when `listenerSet.enabled` is true) | `[]` |
+| `httpRoute.parentRefs` | Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment. If empty and `listenerSet.enabled` is true, the route attaches to the chart's ListenerSet | `[]` |
 | `httpRoute.matches` | Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs | `[]` |
+| `httpRoute.listenerSetSectionName` | Optional listener name of the chart's ListenerSet to attach to (only used when `parentRefs` is empty and `listenerSet.enabled` is true). Attaches to all listeners if empty | `""` |
+| `listenerSet.enabled` | Enables Gateway API ListenerSet resource generation | `false` |
+| `listenerSet.labels` | Additional labels to add to the generated ListenerSet resource metadata. | `{}` |
+| `listenerSet.annotations` | Key-value map for controller-specific metadata | `{}` |
+| `listenerSet.parentRef` | Gateway the listeners are attached to (`name`, and optionally `namespace`, `group`, `kind`) | `{}` |
+| `listenerSet.listeners` | Listeners to add to the parent Gateway (`name`, `port`, `protocol`, and optionally `hostname`, `tls`, `allowedRoutes`) | `[]` |
 | `ingress.enabled` | Enables Ingress | `false` |
 | `ingress.ingressClassName` | Ingress Class Name, e.g. `nginx` | `""` |
 | `ingress.annotations` | Ingress annotations | `{}` |

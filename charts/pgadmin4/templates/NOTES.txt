@@ -15,8 +15,16 @@ This is insecure. Set a strong password or use an existingSecret.
   {{- end }}
 {{- end }}
 {{- else if .Values.httpRoute.enabled }}
+{{- if .Values.httpRoute.hostnames }}
 {{- range .Values.httpRoute.hostnames }}
   http://{{ tpl . $ }}
+{{- end }}
+{{- else if .Values.listenerSet.enabled }}
+{{- range .Values.listenerSet.listeners }}
+{{- if .hostname }}
+  {{ if eq .protocol "HTTPS" }}https{{ else }}http{{ end }}://{{ .hostname }}
+{{- end }}
+{{- end }}
 {{- end }}
   Use https if your Gateway listener terminates TLS.
 {{- else if and .Values.istioIngress.enabled .Values.istioIngress.virtualService.enabled }}
