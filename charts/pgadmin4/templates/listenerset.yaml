@@ -1,0 +1,21 @@
+{{- if .Values.listenerSet.enabled -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: ListenerSet
+metadata:
+  name: {{ include "pgadmin.fullname" . }}
+  namespace: {{ include "pgadmin.namespaceName" . }}
+  labels:
+    {{- include "pgadmin.labels" . | nindent 4 }}
+    {{- with .Values.listenerSet.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.listenerSet.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRef:
+    {{- toYaml .Values.listenerSet.parentRef | nindent 4 }}
+  listeners:
+    {{- toYaml .Values.listenerSet.listeners | nindent 4 }}
+{{- end }}

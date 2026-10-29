@@ -15,11 +15,22 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
+    {{- if .Values.httpRoute.parentRefs }}
     {{- toYaml .Values.httpRoute.parentRefs | nindent 4 }}
+    {{- else if .Values.listenerSet.enabled }}
+    - group: gateway.networking.k8s.io
+      kind: ListenerSet
+      name: {{ include "pgadmin.fullname" . }}
+      {{- with .Values.httpRoute.listenerSetSectionName }}
+      sectionName: {{ . }}
+      {{- end }}
+    {{- end }}
+  {{- if .Values.httpRoute.hostnames }}
   hostnames:
     {{- range .Values.httpRoute.hostnames }}
     - {{ tpl (.) $ | quote }}
     {{- end }}
+  {{- end }}
   rules:
     - matches:
       {{- if .Values.httpRoute.matches }}
