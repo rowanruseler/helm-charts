@@ -2,6 +2,7 @@ suite: traffic
 templates:
   - ingress.yaml
   - httproute.yaml
+  - listenerset.yaml
   - virtualservice.yaml
 release:
   name: t
@@ -66,3 +67,54 @@ tests:
       - equal:
           path: spec.http[0].route[0].destination.host
           value: t-pgadmin4.other.svc.cluster.local
+
+  - it: renders a ListenerSet attached to a Gateway
+    template: listenerset.yaml
+    set:
+      listenerSet.enabled: true
+      listenerSet.parentRef.name: gw
+      listenerSet.listeners:
+        - name: https
+          hostname: pgadmin.example.com
+          port: 443
+          protocol: HTTPS
+    asserts:
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+      - isKind:
+          of: ListenerSet
+      - equal:
+          path: spec.parentRef
+          value:
+            name: gw
+      - equal:
+          path: spec.listeners[0].hostname
+          value: pgadmin.example.com
+
+  - it: attaches the HTTPRoute to the ListenerSet without hostnames
+    template: httproute.yaml
+    set:
+      httpRoute.enabled: true
+      listenerSet.enabled: true
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - group: gateway.networking.k8s.io
+              kind: ListenerSet
+              name: t-pgadmin4
+      - notExists:
+          path: spec.hostnames
+
+  - it: keeps explicit HTTPRoute parentRefs when a ListenerSet is enabled
+    template: httproute.yaml
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: gw
+      listenerSet.enabled: true
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - name: gw

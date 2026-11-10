@@ -239,6 +239,14 @@ Validation helpers.
 {{- if and $.Values.serverDefinitions.enabled (eq $type "Secret") (not (or $.Values.serverDefinitions.servers $.Values.serverDefinitions.existingSecret $.Values.existingSecret)) -}}
 {{- $problems = append $problems "For serverDefinitions.resourceType=Secret define serverDefinitions.servers or serverDefinitions.existingSecret" -}}
 {{- end -}}
+{{- if $.Values.listenerSet.enabled -}}
+{{- if not (and $.Values.listenerSet.parentRef $.Values.listenerSet.parentRef.name) -}}
+{{- $problems = append $problems "listenerSet.parentRef.name is required when listenerSet.enabled=true" -}}
+{{- end -}}
+{{- if not $.Values.listenerSet.listeners -}}
+{{- $problems = append $problems "listenerSet.listeners must contain at least one listener when listenerSet.enabled=true" -}}
+{{- end -}}
+{{- end -}}
 {{- if gt (len $problems) 0 -}}
 {{- fail (printf "\nVALUES VALIDATION:\n%s" (join "\n" $problems)) -}}
 {{- end -}}
