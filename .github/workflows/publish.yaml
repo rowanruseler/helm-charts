@@ -24,7 +24,7 @@ jobs:
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
     - name: Install Helm
-      uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5.1.0
 
     - name: Run chart-releaser
       uses: helm/chart-releaser-action@92c6b97fa9f664492a2592e0d1d80bc6bf378957 # v1.9.0
@@ -35,7 +35,7 @@ jobs:
 
     - name: Install cosign
       if: hashFiles('.cr-release-packages/*.tgz') != ''
-      uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
       with:
         # The installer's default (v3.0.6) is affected by GHSA-fx35-mq7g-6g98.
         cosign-release: v3.1.3
