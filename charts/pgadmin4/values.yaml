@@ -229,12 +229,42 @@ httpRoute:
   labels: {}
   # -- Key-value map for controller-specific metadata
   annotations: {}
-  # -- FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway listener
+  # -- FQDNs for Layer 7 matching. If empty, matches all hostnames on the parent Gateway/ListenerSet listeners (no need to set them when `listenerSet.enabled` is true)
   hostnames: []
-  # -- Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment
+  # -- Binds this route to specific Gateway resources (name/namespace), enabling the data plane attachment. If empty and `listenerSet.enabled` is true, the route attaches to the chart's ListenerSet
   parentRefs: []
+  # -- Optional listener name of the chart's ListenerSet to attach to (only used when `parentRefs` is empty and `listenerSet.enabled` is true). Attaches to all listeners if empty
+  listenerSetSectionName: ""
   # -- Core routing rules (path/headers) and backendRefs; evaluated in order until a match occurs
   matches: []
+
+## Gateway API ListenerSet configuration (gateway.networking.k8s.io/v1)
+## Ref: https://gateway-api.sigs.k8s.io/reference/spec/#listenerset
+## The parent Gateway must allow attachment via `spec.allowedListeners`.
+listenerSet:
+  # -- Enables Gateway API ListenerSet resource generation
+  enabled: false
+  # -- Additional labels to add to the generated ListenerSet resource metadata.
+  labels: {}
+  # -- Key-value map for controller-specific metadata
+  annotations: {}
+  # -- Gateway the listeners are attached to (`name`, and optionally `namespace`, `group`, `kind`)
+  parentRef: {}
+    # name: my-gateway
+    # namespace: gateway-system
+  # -- Listeners to add to the parent Gateway (`name`, `port`, `protocol`, and optionally `hostname`, `tls`, `allowedRoutes`)
+  listeners: []
+    # - name: https
+    #   hostname: pgadmin.example.com
+    #   port: 443
+    #   protocol: HTTPS
+    #   tls:
+    #     mode: Terminate
+    #     certificateRefs:
+    #       - name: pgadmin-tls
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: Same
 
 ## Ingress configuration
 ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
